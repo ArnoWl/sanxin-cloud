@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/sanxin-cloud/sanxin-cloud.iml" filepath="$PROJECT_DIR$/sanxin-cloud/sanxin-cloud.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sanxin-cloud-admin-api/sanxin-cloud-admin-api.iml" filepath="$PROJECT_DIR$/sanxin-cloud-admin-api/sanxin-cloud-admin-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sanxin-cloud-admin-web/sanxin-cloud-admin-web.iml" filepath="$PROJECT_DIR$/sanxin-cloud-admin-web/sanxin-cloud-admin-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sanxin-cloud-common/sanxin-cloud-common.iml" filepath="$PROJECT_DIR$/sanxin-cloud-common/sanxin-cloud-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sanxin-cloud-config/sanxin-cloud-config.iml" filepath="$PROJECT_DIR$/sanxin-cloud-config/sanxin-cloud-config.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sanxin-cloud-eureka1/sanxin-cloud-eureka1.iml" filepath="$PROJECT_DIR$/sanxin-cloud-eureka1/sanxin-cloud-eureka1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sanxin-cloud-eureka2/sanxin-cloud-eureka2.iml" filepath="$PROJECT_DIR$/sanxin-cloud-eureka2/sanxin-cloud-eureka2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sanxin-cloud-gateway/sanxin-cloud-gateway.iml" filepath="$PROJECT_DIR$/sanxin-cloud-gateway/sanxin-cloud-gateway.iml" />
+    </modules>
+  </component>
+</project>
