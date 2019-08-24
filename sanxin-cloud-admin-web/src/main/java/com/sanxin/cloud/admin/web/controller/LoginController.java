@@ -2,6 +2,7 @@ package com.sanxin.cloud.admin.web.controller;
 
 import com.sanxin.cloud.admin.api.service.LoginService;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.config.redis.RedisUtilsService;
 import com.sanxin.cloud.entity.SysConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,11 +20,15 @@ public class LoginController {
 
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private RedisUtilsService redisUtilsService;
 
 
 
     @PostMapping("/loginOut")
     public RestResult loginOut(){
+        redisUtilsService.setKey("aaa","哈哈哈哈");
+        System.out.print(redisUtilsService.getKey("aaa"));
         List<SysConfig> list=loginService.queryList();
         RestResult restResult=RestResult.success("退出成功",list);
         return  restResult;
