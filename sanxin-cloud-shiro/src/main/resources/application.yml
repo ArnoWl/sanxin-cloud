@@ -1,0 +1,25 @@
+# 服务端口号
+server:
+  port: 8000
+
+spring:
+  application:
+    name: sanxin-cloud-shiro # 对外暴露的服务名称
+
+# 客户端注册进eureka服务列表里
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka/,http://localhost:7002/eureka/
+    healthcheck:
+      enabled: true
+  instance:
+    instance-id: Shiro  # 人性化显示出服务的信息
+    prefer-ip-address: false    # 访问路径可显示ip地址
+    lease-renewal-interval-in-seconds: 2
+    lease-expiration-duration-in-seconds: 5
+
+# 使用actuator来展示项目的基本信息
+info:
+  author.name: Arno
+  app.name: 三心网络科技
