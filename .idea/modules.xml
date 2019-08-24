@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/sanxin-cloud-eureka1/sanxin-cloud-eureka1.iml" filepath="$PROJECT_DIR$/sanxin-cloud-eureka1/sanxin-cloud-eureka1.iml" />
       <module fileurl="file://$PROJECT_DIR$/sanxin-cloud-eureka2/sanxin-cloud-eureka2.iml" filepath="$PROJECT_DIR$/sanxin-cloud-eureka2/sanxin-cloud-eureka2.iml" />
       <module fileurl="file://$PROJECT_DIR$/sanxin-cloud-gateway/sanxin-cloud-gateway.iml" filepath="$PROJECT_DIR$/sanxin-cloud-gateway/sanxin-cloud-gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sanxin-cloud-shiro/sanxin-cloud-shiro.iml" filepath="$PROJECT_DIR$/sanxin-cloud-shiro/sanxin-cloud-shiro.iml" />
     </modules>
   </component>
 </project>

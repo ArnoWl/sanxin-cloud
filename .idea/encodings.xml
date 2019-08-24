@@ -9,5 +9,6 @@
     <file url="file://$PROJECT_DIR$/sanxin-cloud-eureka1" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sanxin-cloud-eureka2" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sanxin-cloud-gateway" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/sanxin-cloud-shiro" charset="UTF-8" />
   </component>
 </project>
