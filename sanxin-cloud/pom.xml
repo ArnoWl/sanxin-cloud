@@ -15,6 +15,7 @@
         <module>../sanxin-cloud-gateway</module>
         <module>../sanxin-cloud-admin-api</module>
         <module>../sanxin-cloud-admin-web</module>
+        <module>../sanxin-cloud-shiro</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -32,6 +33,8 @@
         <velocity.version>2.0</velocity.version>
         <freemarker.version>2.3.23</freemarker.version>
         <mybatis.version>1.3.2</mybatis.version>
+        <ali.fastjson.varsion>1.2.47</ali.fastjson.varsion>
+        <shiro.version>1.4.0</shiro.version>
 
     </properties>
 
@@ -109,6 +112,19 @@
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${mybatis.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${ali.fastjson.varsion}</version>
+            </dependency>
+
+            <!---->
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-spring</artifactId>
+                <version>${shiro.version}</version>
             </dependency>
 
 

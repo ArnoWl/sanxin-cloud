@@ -6,12 +6,12 @@ spring:
   application:
     name: sanxin-cloud-admin-web # 对外暴露的服务名称
   resources:
-    static-locations: classpath:templates/,classpath:static/
+    static-locations: classpath:templates/,classpath:admin/
   mvc:
     view:
-      prefix: pages/
+      prefix: /
       suffix: .html
-    static-path-pattern: /static/**
+    static-path-pattern: /admin/**
   datasource: # 数据库配置
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
