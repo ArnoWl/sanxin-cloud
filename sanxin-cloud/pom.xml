@@ -14,7 +14,6 @@
         <module>../sanxin-cloud-eureka2</module>
         <module>../sanxin-cloud-gateway</module>
         <module>../sanxin-cloud-admin-api</module>
-        <module>../sanxin-cloud-shiro</module>
     </modules>
     <packaging>pom</packaging>
 
