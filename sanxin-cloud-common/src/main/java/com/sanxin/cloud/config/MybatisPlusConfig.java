@@ -1,13 +1,17 @@
 package com.sanxin.cloud.config;
 
-import com.baomidou.mybatisplus.core.injector.ISqlInjector;
-import com.baomidou.mybatisplus.extension.injector.LogicSqlInjector;
-import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
+import com.baomidou.mybatisplus.mapper.ISqlInjector;
+import com.baomidou.mybatisplus.mapper.LogicSqlInjector;
+import com.baomidou.mybatisplus.plugins.OptimisticLockerInterceptor;
+import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.plugins.PerformanceInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.util.StringUtils;
+
+import javax.activation.DataSource;
 
 /**
  * @author arno
@@ -19,12 +23,16 @@ import org.springframework.context.annotation.Configuration;
 @MapperScan("com.sanxin.cloud.mapper")
 public class MybatisPlusConfig {
 
+
     /**
      * 分页插件
      */
     @Bean
     public PaginationInterceptor paginationInterceptor() {
-        return new PaginationInterceptor();
+        PaginationInterceptor page = new PaginationInterceptor();
+        //设置方言类型
+        page.setDialectType("mysql");
+        return page;
     }
 
     /**

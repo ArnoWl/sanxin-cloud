@@ -4,3 +4,4 @@ spring:
     name: sanxin-cloud-common # 对外暴露的服务名称
 logging:
   level: debug
+
