@@ -1,7 +1,6 @@
 package com.sanxin.cloud.entity;
 
 import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -17,7 +16,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 系统角色表
+ * 平台菜单表
  * </p>
  *
  * @author Arno
@@ -25,8 +24,8 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@TableName("sys_roles")
-public class SysRoles implements Serializable {
+@TableName("sys_menus")
+public class SysMenus implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,31 +33,45 @@ public class SysRoles implements Serializable {
     private Integer id;
 
     /**
-     * 角色名称
+     * 父级id  0表示父级
+     */
+    @TableField("parent_id")
+    private Integer parentId;
+
+    /**
+     * 菜单名称
+     */
+    private String title;
+
+    /**
+     * 与视图的文件夹名称和路由路径对应
      */
     private String name;
 
     /**
-     * 角色菜单权限逗号分隔字符串
-     */
-    @TableField("menu_ids")
-    private String menuIds;
-
-    /**
-     * 1有效 0无效
+     * 1有效  0无效
      */
     private Integer status;
 
     /**
-     * 创建时间
+     * 菜单图标样式
      */
-    private Date createtime;
+    private String icon;
 
     /**
-     * 目标id
+     * 自定义菜单路由地址
      */
-    @TableField("target_id")
-    private Integer targetId;
+    private String jump;
+
+    /**
+     * 排序  从大到小降序
+     */
+    private Integer sort;
+
+    /**
+     * 菜单类型 1菜单 2权限 3开发
+     */
+    private Integer type;
 
 
 }

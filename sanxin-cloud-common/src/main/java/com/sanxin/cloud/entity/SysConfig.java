@@ -1,9 +1,7 @@
 package com.sanxin.cloud.entity;
 
 import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
 
@@ -17,7 +15,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 系统角色表
+ * 
  * </p>
  *
  * @author Arno
@@ -25,8 +23,8 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@TableName("sys_roles")
-public class SysRoles implements Serializable {
+@TableName("sys_config")
+public class SysConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,31 +32,24 @@ public class SysRoles implements Serializable {
     private Integer id;
 
     /**
-     * 角色名称
+     * 键名
      */
-    private String name;
+    private String keyval;
 
     /**
-     * 角色菜单权限逗号分隔字符串
+     * 参数
      */
-    @TableField("menu_ids")
-    private String menuIds;
+    private String vals;
 
     /**
-     * 1有效 0无效
+     * 描述
+     */
+    private String remark;
+
+    /**
+     * 0启用 -1禁用
      */
     private Integer status;
-
-    /**
-     * 创建时间
-     */
-    private Date createtime;
-
-    /**
-     * 目标id
-     */
-    @TableField("target_id")
-    private Integer targetId;
 
 
 }
