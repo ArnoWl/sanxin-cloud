@@ -86,11 +86,6 @@
                 <artifactId>mybatis-plus</artifactId>
                 <version>${baomidou.mybatisplus.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-generator</artifactId>
-                <version>${baomidou.mybatisplus.version}</version>
-            </dependency>
             <!-- mybatisplus 代码生成器 -->
             <!-- 模板引擎 -->
             <dependency>
