@@ -7,13 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="sanxin-cloud-admin-api" />
-        <module name="sanxin-cloud-admin-web" />
         <module name="sanxin-cloud-common" />
         <module name="sanxin-cloud-config" />
         <module name="sanxin-cloud-eureka1" />
         <module name="sanxin-cloud-eureka2" />
         <module name="sanxin-cloud-gateway" />
-        <module name="sanxin-cloud-shiro" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
