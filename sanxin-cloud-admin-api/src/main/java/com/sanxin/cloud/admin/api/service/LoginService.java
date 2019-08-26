@@ -1,8 +1,21 @@
 package com.sanxin.cloud.admin.api.service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.StaticUtils;
+import com.sanxin.cloud.common.pwd.PwdEncode;
+import com.sanxin.cloud.common.random.RandNumUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
+import com.sanxin.cloud.entity.SysRoles;
+import com.sanxin.cloud.entity.SysUser;
+import com.sanxin.cloud.enums.RandNumType;
+import com.sanxin.cloud.service.SysConfigService;
 import com.sanxin.cloud.service.SysRolesService;
+import com.sanxin.cloud.service.SysUserService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,10 +29,10 @@ import org.springframework.stereotype.Service;
 public class LoginService {
 
 
-//    @Autowired
-//    public ISysConfigService iSysConfigService;
-//    @Autowired
-//    public ISysUserService iSysUserService;
+    @Autowired
+    public SysConfigService sysConfigService;
+    @Autowired
+    public SysUserService sysUserService;
     @Autowired
     public RedisUtilsService redisUtilsService;
     @Autowired
@@ -33,36 +46,33 @@ public class LoginService {
      * @return
      */
     public RestResult login(String username ,String password){
-//        System.out.print("shul:"+iSysConfigService.queryTest().size());
-//        if(StringUtils.isEmpty(username)){
-//            return RestResult.fail("请输入账号");
-//        }
-//        if(StringUtils.isEmpty(password)){
-//            return RestResult.fail("请输入密码");
-//        }
-//        //先清除账号残留的token
-//        loginOutByUsername(username);
-//        QueryWrapper<SysUser> wrapper=new QueryWrapper<>();
-//        wrapper.eq("user_name",username);
-//        SysUser sysUser=iSysUserService.getOne(wrapper);
-//        if(sysUser==null){
-//            return RestResult.fail("账户不存在");
-//        }
-//        if(FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysUser.getStatus())){
-//            return RestResult.fail("账户被冻结");
-//        }
-//        String pwd= PwdEncode.encodePwd(password);
-//        if(!pwd.equals(sysUser.getPassword())){
-//            return RestResult.fail("账号或密码错误");
-//        }
-//        String key=username;
-//        String token= RandNumUtils.get(RandNumType.NUMBER_LETTER_SYMBOL,16);
-//        long max_time=2*60*60;//两个小时有效
-//        redisUtilsService.setKey(token,key,max_time);
-//        redisUtilsService.setKey(username+"_token",token,max_time);
-//        return RestResult.success("登陆成功",token);
-        System.out.print("hahaha:"+sysRolesService.selectList(null).size());
-        return null;
+        if(StringUtils.isEmpty(username)){
+            return RestResult.fail("请输入账号");
+        }
+        if(StringUtils.isEmpty(password)){
+            return RestResult.fail("请输入密码");
+        }
+        //先清除账号残留的token
+        loginOutByUsername(username);
+        Wrapper<SysUser> wrapper=new EntityWrapper<>();
+        wrapper.eq("login",username);
+        SysUser sysUser=sysUserService.selectOne(wrapper);
+        if(sysUser==null){
+            return RestResult.fail("账户不存在");
+        }
+        if(FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysUser.getStatus())){
+            return RestResult.fail("账户被冻结");
+        }
+        String pwd= PwdEncode.encodePwd(password);
+        if(!pwd.equals(sysUser.getPassword())){
+            return RestResult.fail("账号或密码错误");
+        }
+        String key=username;
+        String token= PwdEncode.encodePwd(RandNumUtils.get(RandNumType.NUMBER_LETTER_SYMBOL,16));
+        long max_time=2*60*60;//两个小时有效
+        redisUtilsService.setKey(token,key,max_time);
+        redisUtilsService.setKey(username+"_token",token,max_time);
+        return RestResult.success("登陆成功",token);
     }
 
 
@@ -97,27 +107,35 @@ public class LoginService {
      * @return
      */
     public RestResult getUserInfo(String token){
-//        if(StringUtils.isBlank(token)){
-//            return RestResult.fail("1001","token is empty",null);
-//        }
-//        String key=redisUtilsService.getKey(token);
-//        if(StringUtils.isEmpty(key)){
-//            return RestResult.fail("1001","token is timeout",null);
-//        }
-//        QueryWrapper<SysUser> wrapper=new QueryWrapper<>();
-//        wrapper.eq("user_name",key);
-//        SysUser sysUser=iSysUserService.getOne(wrapper);
-//        if(sysUser==null){
-//            return RestResult.fail("1001","账户不存在",null);
-//        }
-//        if(FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysUser.getStatus())){
-//            return RestResult.fail("1001","账户被冻结",null);
-//        }
-//        JSONObject jsonObject=new JSONObject();
-//        jsonObject.put("roleid",sysUser.getRoleid());
-//        jsonObject.put("headurl",sysUser.getHeadurl());
-//        jsonObject.put("nickname",sysUser.getName());
-//        return RestResult.success("获取成功",jsonObject);
-        return null;
+        if(StringUtils.isBlank(token)){
+            return RestResult.fail("1001","token is empty",null);
+        }
+        String key=redisUtilsService.getKey(token);
+        if(StringUtils.isEmpty(key)){
+            return RestResult.fail("1001","token is timeout",null);
+        }
+        Wrapper<SysUser> wrapper=new EntityWrapper<>();
+        wrapper.eq("login",key);
+        SysUser sysUser=sysUserService.selectOne(wrapper);
+        if(sysUser==null){
+            return RestResult.fail("1001","账户不存在",null);
+        }
+        if(FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysUser.getStatus())){
+            return RestResult.fail("1001","账户被冻结",null);
+        }
+        SysRoles sysRoles=sysRolesService.selectById(sysUser.getRoleid());
+        JSONArray role=new JSONArray();
+        role.add(sysUser.getRoleid());
+
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("roles",String.valueOf(role));
+        if(!StringUtils.isEmpty(sysUser.getHeadurl())){
+            jsonObject.put("headurl",sysUser.getHeadurl());
+        }else{
+            jsonObject.put("headurl","https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+        }
+        jsonObject.put("nickname",sysUser.getName());
+        jsonObject.put("introduction",sysRoles.getName());
+        return RestResult.success("获取成功",jsonObject);
     }
 }

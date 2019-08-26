@@ -30,9 +30,8 @@ spring:
     password:
     jedis:
       pool:
-        max-wait: 100ms
-        max-active: 600
-    timeout: 100ms
+        max-wait: 1000ms
+        max-active: 8
 
 mybatis-plus:
   mapper-locations:  classpath:mybatis/mapper/*.xml

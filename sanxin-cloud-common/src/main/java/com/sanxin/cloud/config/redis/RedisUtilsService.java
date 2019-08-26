@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class RedisUtilsService {
 	protected final static Logger logger = LoggerFactory.getLogger(RedisUtilsService.class);
 	@Autowired
 	private volatile RedisTemplate redisTemplate;
-	
+
 	/**
 	 * 秒级内做并发处理
 	 * @param key
@@ -46,7 +47,7 @@ public class RedisUtilsService {
 			 return true;
 		 }
 	}
-	
+
 	 /**
      * 获取唯一Id
      * @param key
@@ -70,7 +71,7 @@ public class RedisUtilsService {
             return Long.valueOf(first + String.format("%16d", randNo));
         }
     }
-    
+
     /**
      * 设置无限期 键值对信息
      * @param key
@@ -80,7 +81,7 @@ public class RedisUtilsService {
     		setStringSerializer(redisTemplate);
     		redisTemplate.opsForValue().set(key,value);
     }
-    
+
     /**
      * 设置有限期 键值对信息
      * @param key
@@ -91,19 +92,22 @@ public class RedisUtilsService {
     		setStringSerializer(redisTemplate);
 		redisTemplate.opsForValue().set(key,value,second,TimeUnit.SECONDS);
     }
-    
-    
+
+
     /**
      * 根据键获取值
      * @param key
      * @return
      */
     public String getKey(String key) {
-    		setStringSerializer(redisTemplate);
-    		String val=String.valueOf(redisTemplate.opsForValue().get(key));
-    		return val;
+		setStringSerializer(redisTemplate);
+		if(StringUtils.isEmpty(key)){
+			return "";
+		}
+		String val=String.valueOf(redisTemplate.opsForValue().get(key));
+		return val;
     }
-    
+
     /**
      * 根据键获取值
      * @param key
@@ -114,7 +118,7 @@ public class RedisUtilsService {
 		Set<String> val=redisTemplate.keys(key);
 		return val;
     }
-    
+
     /**
      * 批量删除
      * @param keys
@@ -124,7 +128,7 @@ public class RedisUtilsService {
 			redisTemplate.delete(k);
 		}
     }
-	
+
 	/**
 	 * 删除key
 	 * @param key
@@ -133,7 +137,7 @@ public class RedisUtilsService {
 		 setStringSerializer(redisTemplate);
 		 redisTemplate.delete(key);
 	}
-	
+
 	private void setStringSerializer(RedisTemplate<String, String> template) {
 		RedisSerializer stringRedisSerializer = new StringRedisSerializer();
         template.setDefaultSerializer(stringRedisSerializer);

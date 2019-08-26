@@ -7,7 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author arno
@@ -28,10 +31,10 @@ public class LoginController {
         return result;
     }
 
-    @PostMapping("/user/getInfo")
-    public RestResult getInfo(String token){
+    @RequestMapping("/user/getInfo")
+    public RestResult getInfo(HttpServletRequest request, String token){
         RestResult result=loginService.getUserInfo(token);
-        return RestResult.success("登陆成功",token);
+        return result;
     }
 
 
