@@ -6,14 +6,6 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
 
-
-
-import com.baomidou.mybatisplus.annotations.Version;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
-
 /**
  * <p>
  * 平台用户表
@@ -22,8 +14,6 @@ import lombok.experimental.Accessors;
  * @author Arno
  * @since 2019-08-26
  */
-@Data
-@Accessors(chain = true)
 @TableName("sys_user")
 public class SysUser implements Serializable {
 
@@ -69,5 +59,82 @@ public class SysUser implements Serializable {
      */
     private Integer status;
 
+    public Integer getId() {
+        return id;
+    }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
+    public Integer getRoleid() {
+        return roleid;
+    }
+
+    public void setRoleid(Integer roleid) {
+        this.roleid = roleid;
+    }
+    public String getHeadurl() {
+        return headurl;
+    }
+
+    public void setHeadurl(String headurl) {
+        this.headurl = headurl;
+    }
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "SysUser{" +
+        "id=" + id +
+        ", login=" + login +
+        ", password=" + password +
+        ", name=" + name +
+        ", phone=" + phone +
+        ", createtime=" + createtime +
+        ", roleid=" + roleid +
+        ", headurl=" + headurl +
+        ", status=" + status +
+        "}";
+    }
 }

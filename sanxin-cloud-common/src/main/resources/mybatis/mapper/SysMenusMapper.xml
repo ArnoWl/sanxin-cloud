@@ -6,11 +6,10 @@
     <resultMap id="BaseResultMap" type="com.sanxin.cloud.entity.SysMenus">
         <id column="id" property="id" />
         <result column="parent_id" property="parentId" />
-        <result column="title" property="title" />
         <result column="name" property="name" />
+        <result column="url" property="url" />
         <result column="status" property="status" />
         <result column="icon" property="icon" />
-        <result column="jump" property="jump" />
         <result column="sort" property="sort" />
         <result column="type" property="type" />
     </resultMap>

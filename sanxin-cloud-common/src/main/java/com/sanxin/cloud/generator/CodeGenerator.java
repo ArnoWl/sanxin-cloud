@@ -20,7 +20,7 @@ public class CodeGenerator {
 
     public static void main(String[] args) {
 //      erateByTables(false, packageName, "arno", "powerplus", "sys_menus");
-        createTable("sys_config");
+        createTable("sys_menus");
         System.out.println("completed...");
     }
 
@@ -143,7 +143,7 @@ public class CodeGenerator {
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         //strategy.setSuperEntityClass("com.baomidou.ant.common.BaseEntity");
-        strategy.setEntityLombokModel(true);
+        strategy.setEntityLombokModel(false);
         strategy.setRestControllerStyle(true);
         // 公共父类
         //strategy.setSuperControllerClass("com.baomidou.ant.common.BaseController");

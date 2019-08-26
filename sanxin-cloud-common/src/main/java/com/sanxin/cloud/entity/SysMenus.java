@@ -6,14 +6,6 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
 
-
-
-import com.baomidou.mybatisplus.annotations.Version;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
-
 /**
  * <p>
  * 平台菜单表
@@ -22,8 +14,6 @@ import lombok.experimental.Accessors;
  * @author Arno
  * @since 2019-08-26
  */
-@Data
-@Accessors(chain = true)
 @TableName("sys_menus")
 public class SysMenus implements Serializable {
 
@@ -41,12 +31,12 @@ public class SysMenus implements Serializable {
     /**
      * 菜单名称
      */
-    private String title;
+    private String name;
 
     /**
-     * 与视图的文件夹名称和路由路径对应
+     * 菜单url(若是以&_blank结尾, 表示此页面在新窗口打开)
      */
-    private String name;
+    private String url;
 
     /**
      * 1有效  0无效
@@ -54,14 +44,9 @@ public class SysMenus implements Serializable {
     private Integer status;
 
     /**
-     * 菜单图标样式
+     * 图标
      */
     private String icon;
-
-    /**
-     * 自定义菜单路由地址
-     */
-    private String jump;
 
     /**
      * 排序  从大到小降序
@@ -73,5 +58,74 @@ public class SysMenus implements Serializable {
      */
     private Integer type;
 
+    public Integer getId() {
+        return id;
+    }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "SysMenus{" +
+        "id=" + id +
+        ", parentId=" + parentId +
+        ", name=" + name +
+        ", url=" + url +
+        ", status=" + status +
+        ", icon=" + icon +
+        ", sort=" + sort +
+        ", type=" + type +
+        "}";
+    }
 }

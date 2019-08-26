@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanxin.cloud.mapper.SysLogsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sanxin.cloud.entity.SysLogs">
+        <id column="id" property="id" />
+        <result column="login_account" property="loginAccount" />
+        <result column="login_ip" property="loginIp" />
+        <result column="action_url" property="actionUrl" />
+        <result column="module" property="module" />
+        <result column="method" property="method" />
+        <result column="action_time" property="actionTime" />
+        <result column="description" property="description" />
+        <result column="createtime" property="createtime" />
+        <result column="status" property="status" />
+        <result column="type" property="type" />
+    </resultMap>
+
+</mapper>

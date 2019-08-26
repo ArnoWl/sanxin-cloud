@@ -7,14 +7,6 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
 
-
-
-import com.baomidou.mybatisplus.annotations.Version;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
-
 /**
  * <p>
  * 系统角色表
@@ -23,8 +15,6 @@ import lombok.experimental.Accessors;
  * @author Arno
  * @since 2019-08-26
  */
-@Data
-@Accessors(chain = true)
 @TableName("sys_roles")
 public class SysRoles implements Serializable {
 
@@ -60,5 +50,58 @@ public class SysRoles implements Serializable {
     @TableField("target_id")
     private Integer targetId;
 
+    public Integer getId() {
+        return id;
+    }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getMenuIds() {
+        return menuIds;
+    }
+
+    public void setMenuIds(String menuIds) {
+        this.menuIds = menuIds;
+    }
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
+    public Integer getTargetId() {
+        return targetId;
+    }
+
+    public void setTargetId(Integer targetId) {
+        this.targetId = targetId;
+    }
+
+    @Override
+    public String toString() {
+        return "SysRoles{" +
+        "id=" + id +
+        ", name=" + name +
+        ", menuIds=" + menuIds +
+        ", status=" + status +
+        ", createtime=" + createtime +
+        ", targetId=" + targetId +
+        "}";
+    }
 }

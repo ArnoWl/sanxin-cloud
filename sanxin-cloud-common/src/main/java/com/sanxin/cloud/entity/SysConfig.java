@@ -5,14 +5,6 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
 
-
-
-import com.baomidou.mybatisplus.annotations.Version;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
-
 /**
  * <p>
  * 
@@ -21,8 +13,6 @@ import lombok.experimental.Accessors;
  * @author Arno
  * @since 2019-08-26
  */
-@Data
-@Accessors(chain = true)
 @TableName("sys_config")
 public class SysConfig implements Serializable {
 
@@ -51,5 +41,50 @@ public class SysConfig implements Serializable {
      */
     private Integer status;
 
+    public Integer getId() {
+        return id;
+    }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public String getKeyval() {
+        return keyval;
+    }
+
+    public void setKeyval(String keyval) {
+        this.keyval = keyval;
+    }
+    public String getVals() {
+        return vals;
+    }
+
+    public void setVals(String vals) {
+        this.vals = vals;
+    }
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "SysConfig{" +
+        "id=" + id +
+        ", keyval=" + keyval +
+        ", vals=" + vals +
+        ", remark=" + remark +
+        ", status=" + status +
+        "}";
+    }
 }
