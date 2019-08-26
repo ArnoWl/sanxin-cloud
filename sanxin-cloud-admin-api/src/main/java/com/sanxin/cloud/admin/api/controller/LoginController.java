@@ -41,6 +41,6 @@ public class LoginController {
     @PostMapping("/loginOut")
     public RestResult loginOut(String token){
         loginService.loginOutByToken(token);
-        return  RestResult.success("退出成功了");
+        return  RestResult.success("退出成功");
     }
 }
