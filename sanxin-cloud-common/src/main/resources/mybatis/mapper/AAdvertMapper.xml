@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanxin.cloud.mapper.AAdvertMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sanxin.cloud.entity.AAdvert">
+        <id column="id" property="id" />
+        <result column="nick_name" property="nickName" />
+        <result column="phone" property="phone" />
+        <result column="country_id" property="countryId" />
+        <result column="pro_id" property="proId" />
+        <result column="city_id" property="cityId" />
+        <result column="area_id" property="areaId" />
+        <result column="address_detail" property="addressDetail" />
+        <result column="company_name" property="companyName" />
+        <result column="license_code" property="licenseCode" />
+        <result column="license_img" property="licenseImg" />
+        <result column="company_img" property="companyImg" />
+    </resultMap>
+
+</mapper>

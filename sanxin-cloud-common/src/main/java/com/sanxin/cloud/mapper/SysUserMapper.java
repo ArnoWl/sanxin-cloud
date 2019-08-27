@@ -17,5 +17,5 @@ import java.util.List;
  */
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
-    List<SysUser> querySysUserList(IPage<SysUser> page, SysUser user);
+    Page<SysUser> querySysUserList(IPage<SysUser> page, SysUser user);
 }
