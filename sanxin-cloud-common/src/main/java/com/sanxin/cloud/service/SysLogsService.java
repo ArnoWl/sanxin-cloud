@@ -1,7 +1,7 @@
 package com.sanxin.cloud.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.sanxin.cloud.entity.SysLogs;
-import com.baomidou.mybatisplus.service.IService;
 
 /**
  * <p>

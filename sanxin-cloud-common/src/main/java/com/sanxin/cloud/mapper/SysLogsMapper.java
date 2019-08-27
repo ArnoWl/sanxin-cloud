@@ -1,7 +1,7 @@
 package com.sanxin.cloud.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.sanxin.cloud.entity.SysLogs;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
  * <p>

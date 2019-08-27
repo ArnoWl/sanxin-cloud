@@ -1,9 +1,9 @@
 package com.sanxin.cloud.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sanxin.cloud.entity.SysLogs;
 import com.sanxin.cloud.mapper.SysLogsMapper;
 import com.sanxin.cloud.service.SysLogsService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
