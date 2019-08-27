@@ -10,15 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * @author arno
  * @version 1.0
  * @date 2019-08-22
  */
 @RestController
-public class LoginController {
+public class LoginController extends  BaseController{
     protected final static Logger logger = LoggerFactory.getLogger(RedisUtilsService.class);
 
     @Autowired
@@ -32,14 +30,16 @@ public class LoginController {
     }
 
     @RequestMapping("/user/getInfo")
-    public RestResult getInfo(HttpServletRequest request, String token){
+    public RestResult getInfo(){
+        String token=getToken();
         RestResult result=loginService.getUserInfo(token);
         return result;
     }
 
 
     @PostMapping("/loginOut")
-    public RestResult loginOut(String token){
+    public RestResult loginOut(){
+        String token=getToken();
         loginService.loginOutByToken(token);
         return  RestResult.success("退出成功");
     }

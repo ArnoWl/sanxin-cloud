@@ -1,7 +1,10 @@
 package com.sanxin.cloud.mapper;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.sanxin.cloud.entity.SysUser;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
+    List<SysUser> querySysUserList(Page<SysUser> page, SysUser user);
 }
