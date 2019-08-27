@@ -38,7 +38,7 @@ public class SysConfig implements Serializable {
     private String remark;
 
     /**
-     * 0启用 -1禁用
+     * 1启用 0禁用
      */
     private Integer status;
 

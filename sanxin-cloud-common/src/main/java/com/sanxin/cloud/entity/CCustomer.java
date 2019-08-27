@@ -70,12 +70,12 @@ public class CCustomer implements Serializable {
     private String countryCode;
 
     /**
-     * 是否实名 -1未实名 0实名
+     * 是否实名 0未实名 1实名
      */
     private Integer isReal;
 
     /**
-     * 0有效 -1无效
+     * 1有效 0无效
      */
     private Integer status;
 
