@@ -1,7 +1,7 @@
 package com.sanxin.cloud.mapper;
 
+import com.sanxin.cloud.entity.CCustomer;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.sanxin.cloud.entity.SysConfig;
 
 /**
  * <p>
@@ -9,8 +9,8 @@ import com.sanxin.cloud.entity.SysConfig;
  * </p>
  *
  * @author Arno
- * @since 2019-08-26
+ * @since 2019-08-27
  */
-public interface SysConfigMapper extends BaseMapper<SysConfig> {
+public interface CCustomerMapper extends BaseMapper<CCustomer> {
 
 }

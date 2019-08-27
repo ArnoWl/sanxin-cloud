@@ -2,8 +2,7 @@ package com.sanxin.cloud.admin.api.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.pwd.PwdEncode;
@@ -54,9 +53,9 @@ public class LoginService {
         }
         //先清除账号残留的token
         loginOutByUsername(username);
-        Wrapper<SysUser> wrapper=new EntityWrapper<>();
+        QueryWrapper<SysUser> wrapper=new QueryWrapper<>();
         wrapper.eq("login",username);
-        SysUser sysUser=sysUserService.selectOne(wrapper);
+        SysUser sysUser=sysUserService.getOne(wrapper);
         if(sysUser==null){
             return RestResult.fail("账户不存在");
         }
@@ -114,16 +113,16 @@ public class LoginService {
         if(StringUtils.isEmpty(key)){
             return RestResult.fail("1001","token is timeout",null);
         }
-        Wrapper<SysUser> wrapper=new EntityWrapper<>();
+        QueryWrapper<SysUser> wrapper=new QueryWrapper<>();
         wrapper.eq("login",key);
-        SysUser sysUser=sysUserService.selectOne(wrapper);
+        SysUser sysUser=sysUserService.getOne(wrapper);
         if(sysUser==null){
             return RestResult.fail("1001","账户不存在",null);
         }
         if(FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysUser.getStatus())){
             return RestResult.fail("1001","账户被冻结",null);
         }
-        SysRoles sysRoles=sysRolesService.selectById(sysUser.getRoleid());
+        SysRoles sysRoles=sysRolesService.getById(sysUser.getRoleid());
         JSONArray role=new JSONArray();
         role.add(sysUser.getRoleid());
 

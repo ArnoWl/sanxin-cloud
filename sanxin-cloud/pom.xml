@@ -21,18 +21,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <spring-cloud.version>Finchley.SR3</spring-cloud.version>
-        <spring-boot.version>2.0.3.RELEASE</spring-boot.version>
+        <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
+        <spring-boot.version>2.1.0.RELEASE</spring-boot.version>
         <lombok.version>1.16.18</lombok.version>
         <mysql.version>5.1.46</mysql.version>
         <mybatisplus.version>1.0.5</mybatisplus.version>
         <alibaba.druid.version>1.1.6</alibaba.druid.version>
-        <baomidou.mybatisplus.version>2.2.0</baomidou.mybatisplus.version>
+        <baomidou.mybatisplus.version>3.1.0</baomidou.mybatisplus.version>
         <velocity.version>2.0</velocity.version>
         <freemarker.version>2.3.23</freemarker.version>
-        <mybatis.version>1.3.2</mybatis.version>
         <ali.fastjson.varsion>1.2.47</ali.fastjson.varsion>
-        <shiro.version>1.4.0</shiro.version>
 
     </properties>
 
@@ -78,8 +76,8 @@
             <!-- 定义 mybatis 版本 -->
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatisplus-spring-boot-starter</artifactId>
-                <version>${mybatisplus.version}</version>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${baomidou.mybatisplus.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
@@ -87,6 +85,11 @@
                 <version>${baomidou.mybatisplus.version}</version>
             </dependency>
             <!-- mybatisplus 代码生成器 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>${baomidou.mybatisplus.version}</version>
+            </dependency>
             <!-- 模板引擎 -->
             <dependency>
                 <groupId>org.apache.velocity</groupId>
@@ -100,27 +103,11 @@
                 <version>${freemarker.version}</version>
             </dependency>
 
-            <!-- 定义 mybatis 版本 -->
-            <dependency>
-                <groupId>org.mybatis.spring.boot</groupId>
-                <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${mybatis.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${ali.fastjson.varsion}</version>
             </dependency>
-
-            <!---->
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-spring</artifactId>
-                <version>${shiro.version}</version>
-            </dependency>
-
-
 
         </dependencies>
     </dependencyManagement>
