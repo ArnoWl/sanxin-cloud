@@ -22,7 +22,7 @@ public class CodeGenerator {
 
     public static void main(String[] args) {
 //      erateByTables(false, packageName, "arno", "powerplus", "sys_menus");
-        createTable("b_business");
+        createTable("c_customer");
         System.out.println("completed...");
     }
 
@@ -79,6 +79,69 @@ public class CodeGenerator {
         // dsc.setDriverName("com.mysql.jdbc.Driver"); //mysql5.6以下的驱动
         dsc.setUsername("root");
         dsc.setPassword("rhzh");
+        dsc.setTypeConvert(new ITypeConvert() {
+            @Override
+            //无论时间是什么类型在java里面都要是java.util.Date类型
+            public IColumnType processTypeConvert(GlobalConfig globalConfig, String fieldType) {
+                String t = fieldType.toLowerCase();
+                if (t.contains("char") || t.contains("text")) {
+                    return DbColumnType.STRING;
+                } else if (t.contains("bigint")) {
+                    return DbColumnType.LONG;
+                } else if (t.contains("tinyint(1)")) {
+                    return DbColumnType.BOOLEAN;
+                } else if (t.contains("int")) {
+                    return DbColumnType.INTEGER;
+                } else if (t.contains("text")) {
+                    return DbColumnType.STRING;
+                } else if (t.contains("bit")) {
+                    return DbColumnType.BOOLEAN;
+                } else if (t.contains("decimal")) {
+                    return DbColumnType.BIG_DECIMAL;
+                } else if (t.contains("clob")) {
+                    return DbColumnType.CLOB;
+                } else if (t.contains("blob")) {
+                    return DbColumnType.BLOB;
+                } else if (t.contains("binary")) {
+                    return DbColumnType.BYTE_ARRAY;
+                } else if (t.contains("float")) {
+                    return DbColumnType.FLOAT;
+                } else if (t.contains("double")) {
+                    return DbColumnType.DOUBLE;
+                } else if (t.contains("json") || t.contains("enum")) {
+                    return DbColumnType.STRING;
+                } else if (t.contains("date") || t.contains("time") || t.contains("year")) {
+                    switch (globalConfig.getDateType()) {
+                        case ONLY_DATE:
+                            return DbColumnType.DATE;
+                        case SQL_PACK:
+                            switch (t) {
+                                case "date":
+                                    return DbColumnType.DATE;
+                                case "time":
+                                    return DbColumnType.DATE;
+                                case "year":
+                                    return DbColumnType.DATE;
+                                default:
+                                    return DbColumnType.DATE;
+                            }
+                        case TIME_PACK:
+                            switch (t) {
+                                case "date":
+                                    return DbColumnType.DATE;
+                                case "time":
+                                    return DbColumnType.DATE;
+                                case "year":
+                                    return DbColumnType.DATE;
+                                default:
+                                    return DbColumnType.DATE;
+                            }
+                    }
+                }
+                return DbColumnType.STRING;
+            }
+        }) ;
+
         mpg.setDataSource(dsc);
 
         // 包配置
@@ -153,7 +216,7 @@ public class CodeGenerator {
         //strategy.setSuperEntityColumns("id");
         //表名
         strategy.setInclude(table);
-        strategy.setControllerMappingHyphenStyle(true);
+        strategy.setControllerMappingHyphenStyle(false);
         //根据你的表名来建对应的类名，如果你的表名没有什么下划线，比如test，那么你就可以取消这一步
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
