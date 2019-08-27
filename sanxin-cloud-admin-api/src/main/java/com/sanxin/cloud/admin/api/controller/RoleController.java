@@ -1,12 +1,12 @@
 package com.sanxin.cloud.admin.api.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.admin.api.service.RoleService;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  * @author arno
@@ -23,7 +23,7 @@ public class RoleController extends  BaseController{
      * @return
      */
     @RequestMapping("/role/querySysUserList")
-    public RestResult querySysUserList(IPage<SysUser> page, SysUser user){
+    public RestResult querySysUserList(Page<SysUser> page, SysUser user){
         String token=getToken();
         RestResult result=roleService.querySysUserList(page,user);
         return result;

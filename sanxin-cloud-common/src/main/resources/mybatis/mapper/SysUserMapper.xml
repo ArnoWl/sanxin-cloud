@@ -19,15 +19,13 @@
             resultType="com.sanxin.cloud.entity.SysUser">
         select * from sys_user
         where 1=1
-        <if test="login !=null and login != '' ">
-            and login=#{login,jdbcType=VARCHAR }
+        <if test="user.login !=null and user.login != '' ">
+            and login=#{user.login,jdbcType=VARCHAR }
         </if>
-        <if test="status !=null  ">
-            and status=#{status,jdbcType=INTEGER }
+        <if test="user.status !=null  ">
+            and status=#{user.status,jdbcType=INTEGER }
         </if>
         order by createtime desc
-
-
     </select>
 
 </mapper>

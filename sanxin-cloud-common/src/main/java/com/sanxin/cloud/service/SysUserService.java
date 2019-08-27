@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sanxin.cloud.entity.SysUser;
 
-import java.util.List;
-
 /**
  * <p>
  * 平台用户表 服务类
@@ -17,5 +15,5 @@ import java.util.List;
  */
 public interface SysUserService extends IService<SysUser> {
 
-    List<SysUser> querySysUserList(IPage<SysUser> page, SysUser user);
+    Page<SysUser> querySysUserList(Page<SysUser> page, SysUser user);
 }

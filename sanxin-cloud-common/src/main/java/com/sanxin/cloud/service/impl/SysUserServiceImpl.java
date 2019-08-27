@@ -22,7 +22,7 @@ import java.util.List;
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
     @Override
-    public List<SysUser> querySysUserList(IPage<SysUser> page, SysUser user) {
+    public Page<SysUser> querySysUserList(Page<SysUser> page, SysUser user) {
         return baseMapper.querySysUserList(page,user);
     }
 }

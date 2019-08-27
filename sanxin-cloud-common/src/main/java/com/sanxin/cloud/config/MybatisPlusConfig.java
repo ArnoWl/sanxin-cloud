@@ -8,13 +8,13 @@ import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author arno
  * @version 1.0
  * @date 2019-08-23
  */
-
 @Configuration
 @MapperScan("com.sanxin.cloud.mapper")
 public class MybatisPlusConfig {
