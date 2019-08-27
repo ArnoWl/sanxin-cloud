@@ -1,10 +1,13 @@
 package com.sanxin.cloud.service.impl;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.sanxin.cloud.entity.SysUser;
 import com.sanxin.cloud.mapper.SysUserMapper;
 import com.sanxin.cloud.service.SysUserService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +20,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
+    @Override
+    public List<SysUser> querySysUserList(Page<SysUser> page, SysUser user) {
+        return baseMapper.querySysUserList(page,user);
+    }
 }

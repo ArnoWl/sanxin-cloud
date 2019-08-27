@@ -72,7 +72,7 @@ public class LoginService {
         long max_time=2*60*60;//两个小时有效
         redisUtilsService.setKey(token,key,max_time);
         redisUtilsService.setKey(username+"_token",token,max_time);
-        return RestResult.success("登陆成功",token);
+        return RestResult.success("Success",token);
     }
 
 
@@ -136,6 +136,6 @@ public class LoginService {
         }
         jsonObject.put("nickname",sysUser.getName());
         jsonObject.put("introduction",sysRoles.getName());
-        return RestResult.success("获取成功",jsonObject);
+        return RestResult.success("Success",jsonObject);
     }
 }
