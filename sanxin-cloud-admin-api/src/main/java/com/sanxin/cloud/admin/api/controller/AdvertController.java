@@ -62,4 +62,15 @@ public class AdvertController {
         }
         return RestResult.success("操作失败");
     }
+
+    /**
+     * 查询广告申请详情
+     * @param id
+     * @return com.sanxin.cloud.common.rest.RestResult
+     */
+    @GetMapping(value = "/getAdvertDetail")
+    public RestResult getAdvertDetail(Integer id) {
+        AAdvert advert = advertService.getById(id);
+        return RestResult.success("", advert);
+    }
 }

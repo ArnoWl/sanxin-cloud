@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.BBusiness;
+import com.sanxin.cloud.enums.CardTypeEnums;
 import com.sanxin.cloud.service.BBusinessService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,10 @@ public class BusinessController {
             wrapper.eq("status", business.getStatus());
         }
         businessService.page(page, wrapper);
+        for (BBusiness b : page.getRecords()) {
+            b.setCardTypeName(CardTypeEnums.getName(b.getCardType()));
+            b.setPassWord(null);
+        }
         return RestResult.success("", page);
     }
 }

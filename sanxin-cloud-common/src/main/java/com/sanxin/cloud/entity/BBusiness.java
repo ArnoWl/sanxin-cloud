@@ -1,9 +1,11 @@
 package com.sanxin.cloud.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -108,12 +110,17 @@ public class BBusiness implements Serializable {
     /**
      * 申请时间
      */
-    private LocalDateTime createTime;
+    private Date createTime;
 
     /**
      * 审核时间
      */
-    private LocalDateTime checkTime;
+    private Date checkTime;
+    /**
+     * 证件类型
+     */
+    @TableField(exist = false)
+    private String cardTypeName;
 
     public Integer getId() {
         return id;
@@ -243,19 +250,27 @@ public class BBusiness implements Serializable {
     public void setStatus(Integer status) {
         this.status = status;
     }
-    public LocalDateTime getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(LocalDateTime createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
-    public LocalDateTime getCheckTime() {
+    public Date getCheckTime() {
         return checkTime;
     }
 
-    public void setCheckTime(LocalDateTime checkTime) {
+    public void setCheckTime(Date checkTime) {
         this.checkTime = checkTime;
+    }
+
+    public String getCardTypeName() {
+        return cardTypeName;
+    }
+
+    public void setCardTypeName(String cardTypeName) {
+        this.cardTypeName = cardTypeName;
     }
 
     @Override
