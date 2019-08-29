@@ -41,7 +41,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                              HttpServletResponse response, Object handler) throws Exception {
         String token=request.getHeader("sanxinToken");
         if(StringUtils.isEmpty(token)){
-            throw new ThrowJsonException("You cannot operate without this function permission");
+            throw new ThrowJsonException("Your landing has expired. Please re-login.");
         }else {
             RestResult result=loginService.getUserInfo(token);
             if(!result.status){

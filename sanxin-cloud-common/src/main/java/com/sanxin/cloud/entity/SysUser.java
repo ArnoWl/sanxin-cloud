@@ -1,6 +1,7 @@
 package com.sanxin.cloud.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -59,6 +60,12 @@ public class SysUser implements Serializable {
      * 1有效 0无效
      */
     private Integer status;
+
+    /**
+     * 角色名称
+     */
+    @TableField(exist = false)
+    private String rolename;
 
     public Integer getId() {
         return id;
@@ -124,6 +131,9 @@ public class SysUser implements Serializable {
         this.status = status;
     }
 
+
+
+
     @Override
     public String toString() {
         return "SysUser{" +
@@ -137,5 +147,13 @@ public class SysUser implements Serializable {
         ", headurl=" + headurl +
         ", status=" + status +
         "}";
+    }
+
+    public String getRolename() {
+        return rolename;
+    }
+
+    public void setRolename(String rolename) {
+        this.rolename = rolename;
     }
 }

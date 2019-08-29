@@ -3,6 +3,7 @@ package com.sanxin.cloud.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.SysUser;
 
 /**
@@ -15,5 +16,5 @@ import com.sanxin.cloud.entity.SysUser;
  */
 public interface SysUserService extends IService<SysUser> {
 
-    Page<SysUser> querySysUserList(Page<SysUser> page, SysUser user);
+    SPage<SysUser> querySysUserList(SPage<SysUser> page, SysUser user);
 }

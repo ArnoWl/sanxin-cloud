@@ -3,6 +3,7 @@ package com.sanxin.cloud.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.SysUser;
 import com.sanxin.cloud.mapper.SysUserMapper;
 import com.sanxin.cloud.service.SysUserService;
@@ -22,7 +23,7 @@ import java.util.List;
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
     @Override
-    public Page<SysUser> querySysUserList(Page<SysUser> page, SysUser user) {
+    public SPage<SysUser> querySysUserList(SPage<SysUser> page, SysUser user) {
         return baseMapper.querySysUserList(page,user);
     }
 }
