@@ -1,8 +1,8 @@
 package com.sanxin.cloud.admin.api.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.AAdvert;
 import com.sanxin.cloud.service.AAdvertService;
 import org.apache.commons.lang.StringUtils;
@@ -32,7 +32,7 @@ public class AdvertController {
      * @return 分页数据
      */
     @GetMapping(value = "/list")
-    public RestResult queryAdvertList(Page<AAdvert> page, AAdvert advert) {
+    public RestResult queryAdvertList(SPage<AAdvert> page, AAdvert advert) {
         QueryWrapper<AAdvert> wrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(advert.getNickName())) {
             wrapper.eq("nick_name", advert.getNickName());

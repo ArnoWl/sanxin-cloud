@@ -1,21 +1,19 @@
 package com.sanxin.cloud.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
-import java.io.Serializable;
 import java.util.Date;
+import com.baomidou.mybatisplus.annotation.TableId;
+import java.io.Serializable;
 
 /**
  * <p>
- *
+ * 代理
  * </p>
  *
- * @author Arno
- * @since 2019-08-27
+ * @author xiaoky
+ * @since 2019-08-29
  */
-public class BBusiness implements Serializable {
+public class AgAgent implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -33,7 +31,7 @@ public class BBusiness implements Serializable {
     private String phone;
 
     /**
-     * 登录密码
+     * 密码
      */
     private String passWord;
 
@@ -61,30 +59,6 @@ public class BBusiness implements Serializable {
      * 地区-详细地址
      */
     private String addressDetail;
-
-    /**
-     * 证件类型
-     */
-    private Integer cardType;
-
-    /**
-     * 证件号码
-     */
-    private String cardNo;
-
-    /**
-     * 证件正面
-     */
-    private String cardFront;
-
-    /**
-     * 证件反面
-     */
-    private String cardBack;
-    /**
-     * 护照
-     */
-    private String passPort;
 
     /**
      * 公司名称
@@ -120,11 +94,6 @@ public class BBusiness implements Serializable {
      * 审核时间
      */
     private Date checkTime;
-    /**
-     * 证件类型
-     */
-    @TableField(exist = false)
-    private String cardTypeName;
 
     public Integer getId() {
         return id;
@@ -147,15 +116,6 @@ public class BBusiness implements Serializable {
     public void setPhone(String phone) {
         this.phone = phone;
     }
-
-    public String getPassWord() {
-        return passWord;
-    }
-
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
-    }
-
     public Integer getCountryId() {
         return countryId;
     }
@@ -190,34 +150,6 @@ public class BBusiness implements Serializable {
 
     public void setAddressDetail(String addressDetail) {
         this.addressDetail = addressDetail;
-    }
-    public Integer getCardType() {
-        return cardType;
-    }
-
-    public void setCardType(Integer cardType) {
-        this.cardType = cardType;
-    }
-    public String getCardNo() {
-        return cardNo;
-    }
-
-    public void setCardNo(String cardNo) {
-        this.cardNo = cardNo;
-    }
-    public String getCardFront() {
-        return cardFront;
-    }
-
-    public void setCardFront(String cardFront) {
-        this.cardFront = cardFront;
-    }
-    public String getCardBack() {
-        return cardBack;
-    }
-
-    public void setCardBack(String cardBack) {
-        this.cardBack = cardBack;
     }
     public String getCompanyName() {
         return companyName;
@@ -269,25 +201,17 @@ public class BBusiness implements Serializable {
         this.checkTime = checkTime;
     }
 
-    public String getCardTypeName() {
-        return cardTypeName;
+    public String getPassWord() {
+        return passWord;
     }
 
-    public void setCardTypeName(String cardTypeName) {
-        this.cardTypeName = cardTypeName;
-    }
-
-    public String getPassPort() {
-        return passPort;
-    }
-
-    public void setPassPort(String passPort) {
-        this.passPort = passPort;
+    public void setPassWord(String passWord) {
+        this.passWord = passWord;
     }
 
     @Override
     public String toString() {
-        return "BBusiness{" +
+        return "AgAgent{" +
         "id=" + id +
         ", nickName=" + nickName +
         ", phone=" + phone +
@@ -296,10 +220,6 @@ public class BBusiness implements Serializable {
         ", cityId=" + cityId +
         ", areaId=" + areaId +
         ", addressDetail=" + addressDetail +
-        ", cardType=" + cardType +
-        ", cardNo=" + cardNo +
-        ", cardFront=" + cardFront +
-        ", cardBack=" + cardBack +
         ", companyName=" + companyName +
         ", licenseCode=" + licenseCode +
         ", licenseImg=" + licenseImg +
