@@ -123,11 +123,11 @@ public class LoginService {
             return RestResult.fail("1001","账户被冻结",null);
         }
         SysRoles sysRoles=sysRolesService.getById(sysUser.getRoleid());
-        JSONArray role=new JSONArray();
-        role.add(sysUser.getRoleid());
-
+        if(sysRoles==null || FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysRoles.getStatus())){
+            return RestResult.fail("1001","角色不存在或被冻结",null);
+        }
         JSONObject jsonObject=new JSONObject();
-        jsonObject.put("roles",String.valueOf(role));
+        jsonObject.put("roleid",String.valueOf(sysUser.getRoleid()));
         if(!StringUtils.isEmpty(sysUser.getHeadurl())){
             jsonObject.put("headurl",sysUser.getHeadurl());
         }else{

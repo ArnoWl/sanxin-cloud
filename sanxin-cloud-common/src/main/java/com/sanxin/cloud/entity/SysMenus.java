@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -58,6 +59,12 @@ public class SysMenus implements Serializable {
      * 菜单类型 1菜单 2权限 3开发
      */
     private Integer type;
+
+    @TableField(exist = false)
+    private List<SysMenus> childList;
+
+    @TableField(exist = false)
+    private String menuname;
 
     public Integer getId() {
         return id;
@@ -128,5 +135,21 @@ public class SysMenus implements Serializable {
         ", sort=" + sort +
         ", type=" + type +
         "}";
+    }
+
+    public List<SysMenus> getChildList() {
+            return childList;
+    }
+
+    public void setChildList(List<SysMenus> childList) {
+        this.childList = childList;
+    }
+
+    public String getMenuname() {
+        return menuname;
+    }
+
+    public void setMenuname(String menuname) {
+        this.menuname = menuname;
     }
 }

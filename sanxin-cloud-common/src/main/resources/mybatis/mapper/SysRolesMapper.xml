@@ -12,4 +12,16 @@
         <result column="target_id" property="targetId" />
     </resultMap>
 
+
+    <select id="queryRoles" parameterType="com.sanxin.cloud.entity.SysRoles" resultType="com.sanxin.cloud.entity.SysRoles">
+        select * from sys_roles a
+        where 1=1
+        <if test="role.name !=null and role.name != '' ">
+            and a.name=#{role.name,jdbcType=VARCHAR }
+        </if>
+        <if test="role.status !=null  ">
+            and a.status=#{role.status,jdbcType=INTEGER }
+        </if>
+        order by createtime asc
+    </select>
 </mapper>

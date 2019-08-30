@@ -1,5 +1,7 @@
 package com.sanxin.cloud.admin.api.controller;
 
+import com.sanxin.cloud.enums.LanguageEnums;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,5 +26,17 @@ public class BaseController {
     public String getToken(){
         String token=request.getHeader("sanxinToken");
         return token;
+    }
+
+    /**
+     * 获取 语言
+     * @return
+     */
+    public String getLanguage(){
+        String language=request.getHeader("languageToken");
+        if(StringUtils.isEmpty(language) || "undefined".equals(language) ){
+            language= LanguageEnums.CN.name();
+        }
+        return language;
     }
 }

@@ -1,12 +1,16 @@
 package com.sanxin.cloud.admin.api.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
+import com.sanxin.cloud.entity.SysMenus;
 import com.sanxin.cloud.entity.SysRoles;
 import com.sanxin.cloud.entity.SysUser;
+import com.sanxin.cloud.service.SysMenusService;
 import com.sanxin.cloud.service.SysRolesService;
 import com.sanxin.cloud.service.SysUserService;
 import org.apache.commons.lang.StringUtils;
@@ -27,6 +31,8 @@ public class RoleService {
     private SysUserService sysUserService;
     @Autowired
     private SysRolesService sysRolesService;
+    @Autowired
+    private SysMenusService sysMenusService;
     /**
      * 查询操作员列表
      * @param user
@@ -41,8 +47,8 @@ public class RoleService {
      * 查询所有角色
      * @return
      */
-    public RestResult queryRoleList() {
-        List<SysRoles> list=sysRolesService.list();
+    public RestResult queryRoleList(SysRoles roles) {
+        List<SysRoles> list=sysRolesService.queryRoles(roles);
         return RestResult.success("Success",list);
 
     }
@@ -86,5 +92,71 @@ public class RoleService {
         }
 
         return RestResult.success("成功");
+    }
+
+    /**
+     * 开启、关闭
+     * @param id
+     * @param status
+     * @return
+     */
+    public RestResult updateUserStatus(Integer id, Integer status) {
+        SysUser sysUser=new SysUser();
+        sysUser.setId(id);
+        sysUser.setStatus(status);
+        boolean flag= sysUserService.updateById(sysUser);
+        return RestResult.result(flag,"更新失败");
+    }
+
+    /**
+     * 查询菜单
+     * @param roleid
+     * @param language
+     * @return
+     */
+    public RestResult queryMenums(Integer roleid, String language) {
+        QueryWrapper<SysMenus> wrapper=new QueryWrapper<>();
+        wrapper.eq("parent_id",0);
+        wrapper.orderByAsc("sort");
+        List<SysMenus> list=sysMenusService.list(wrapper);
+        for (SysMenus m:list){
+
+        }
+        return null;
+    }
+
+    /**
+     * 查询当前角色菜单
+     * @param roleid
+     * @param language
+     * @return
+     */
+    public RestResult queryMyroleMenus(Integer roleid, String language) {
+        SysRoles sysRoles=sysRolesService.getById(roleid);
+        if(sysRoles==null || FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysRoles.getStatus())){
+            return RestResult.fail("角色不存在,或被关闭");
+        }
+        if(StringUtils.isEmpty(sysRoles.getMenuIds())){
+            return RestResult.fail("您未具备权限");
+        }
+        List<Integer> menuids=FunctionUtils.getIntegerList(sysRoles.getMenuIds().split(","));
+        QueryWrapper<SysMenus> wrapper=new QueryWrapper<>();
+        wrapper.eq("parent_id",0).in("id",menuids);
+        wrapper.orderByAsc("sort");
+        List<SysMenus> list=sysMenusService.list(wrapper);
+        for(SysMenus l:list){
+            QueryWrapper<SysMenus> childwrapper=new QueryWrapper<>();
+            childwrapper.eq("parent_id",l.getId()).in("id",menuids).eq("type","1");
+            childwrapper.orderByAsc("sort");
+            JSONObject object=JSONObject.parseObject(l.getName());
+            l.setMenuname(object.getString(language));
+            List<SysMenus> childList=sysMenusService.list(childwrapper);
+            for(SysMenus c:childList){
+                JSONObject jsonObject=JSONObject.parseObject(c.getName());
+                c.setMenuname(jsonObject.getString(language));
+            }
+            l.setChildList(childList);
+        }
+        return RestResult.success("Success",list);
     }
 }
