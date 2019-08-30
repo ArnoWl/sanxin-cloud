@@ -1,5 +1,6 @@
 package com.sanxin.cloud.admin.api.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.common.FunctionUtils;
@@ -114,15 +115,61 @@ public class RoleService {
      * @param language
      * @return
      */
-    public RestResult queryMenums(Integer roleid, String language) {
+    public RestResult queryMenus(Integer roleid, String language) {
+        List<Integer> menuids=null;
+        if(roleid!=null){
+            SysRoles sysRoles=sysRolesService.getById(roleid);
+            if(sysRoles==null || FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysRoles.getStatus())){
+                return RestResult.fail("角色不存在,或被关闭");
+            }
+            if(StringUtils.isEmpty(sysRoles.getMenuIds())){
+                return RestResult.fail("您未具备权限");
+            }
+            menuids=FunctionUtils.getIntegerList(sysRoles.getMenuIds().split(","));
+        }
         QueryWrapper<SysMenus> wrapper=new QueryWrapper<>();
         wrapper.eq("parent_id",0);
         wrapper.orderByAsc("sort");
         List<SysMenus> list=sysMenusService.list(wrapper);
-        for (SysMenus m:list){
 
+        JSONArray array =new JSONArray();
+        for (SysMenus l:list){
+            if(StringUtils.isEmpty(l.getName())){
+                continue;
+            }
+            JSONObject object=JSONObject.parseObject(l.getName());
+
+            JSONObject jsonObject=new JSONObject();
+            jsonObject.put("id",l.getId());
+            jsonObject.put("label",object.getString(language));
+
+            QueryWrapper<SysMenus> childwrapper=new QueryWrapper<>();
+            childwrapper.eq("parent_id",l.getId());
+            childwrapper.orderByAsc("sort");
+            List<SysMenus> childList=sysMenusService.list(childwrapper);
+            JSONArray childArr=new JSONArray();
+            for(SysMenus c:childList){
+                if(StringUtils.isEmpty(c.getName())){
+                    continue;
+                }
+                JSONObject parseObject=JSONObject.parseObject(c.getName());
+
+                JSONObject child=new JSONObject();
+                child.put("id",c.getId());
+                if(FunctionUtils.isEquals(1,c.getType())){
+                    child.put("label",parseObject.getString(language)+"(PAGE)");
+                }else{
+                    child.put("label",parseObject.getString(language)+"(BUTTON)");
+                }
+                childArr.add(child);
+            }
+            jsonObject.put("children",childArr);
+            array.add(jsonObject);
         }
-        return null;
+        JSONObject result=new JSONObject();
+        result.put("menusList",array);
+        result.put("checkData",JSONArray.toJSON(menuids));
+        return RestResult.success("SUCCESS",result);
     }
 
     /**
@@ -145,18 +192,34 @@ public class RoleService {
         wrapper.orderByAsc("sort");
         List<SysMenus> list=sysMenusService.list(wrapper);
         for(SysMenus l:list){
+            if(StringUtils.isEmpty(l.getName())){
+                continue;
+            }
+            JSONObject object=JSONObject.parseObject(l.getName());
+            l.setMenuname(object.getString(language));
+
             QueryWrapper<SysMenus> childwrapper=new QueryWrapper<>();
             childwrapper.eq("parent_id",l.getId()).in("id",menuids).eq("type","1");
             childwrapper.orderByAsc("sort");
-            JSONObject object=JSONObject.parseObject(l.getName());
-            l.setMenuname(object.getString(language));
             List<SysMenus> childList=sysMenusService.list(childwrapper);
             for(SysMenus c:childList){
+                if(StringUtils.isEmpty(c.getName())){
+                    continue;
+                }
                 JSONObject jsonObject=JSONObject.parseObject(c.getName());
                 c.setMenuname(jsonObject.getString(language));
             }
             l.setChildList(childList);
         }
         return RestResult.success("Success",list);
+    }
+
+
+    public RestResult updateRoleStatus(Integer id, Integer status) {
+        SysRoles sysRoles=new SysRoles();
+        sysRoles.setId(id);
+        sysRoles.setStatus(status);
+        boolean flag=sysRolesService.updateById(sysRoles);
+        return RestResult.result(flag);
     }
 }

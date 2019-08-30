@@ -70,12 +70,12 @@ public class RoleController extends  BaseController{
      * @return
      */
     @RequestMapping("/role/queryMenus")
-    public RestResult queryMenums(String roleid){
-        if(StringUtils.isEmpty(roleid)){
-            return RestResult.fail("角色不存在");
+    public RestResult queryMenus(String roleid){
+        Integer role=null;
+        if(!StringUtils.isEmpty(roleid)){
+            role=Integer.parseInt(roleid);
         }
-        Integer role=Integer.parseInt(roleid);
-        RestResult result=roleService.queryMenums(role,getLanguage());
+        RestResult result=roleService.queryMenus(role,getLanguage());
         return result;
     }
 
@@ -92,6 +92,12 @@ public class RoleController extends  BaseController{
         }
         Integer role=Integer.parseInt(roleid);
         RestResult result=roleService.queryMyroleMenus(role,getLanguage());
+        return result;
+    }
+
+    @RequestMapping("/role/updateRoleStatus")
+    public RestResult updateRoleStatus(Integer id,Integer status){
+        RestResult result=roleService.updateRoleStatus(id,status);
         return result;
     }
 }
