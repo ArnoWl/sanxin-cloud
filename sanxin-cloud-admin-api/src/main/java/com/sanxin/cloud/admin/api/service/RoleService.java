@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,6 +35,8 @@ public class RoleService {
     private SysRolesService sysRolesService;
     @Autowired
     private SysMenusService sysMenusService;
+    @Autowired
+    private UtilService utilService;
     /**
      * 查询操作员列表
      * @param user
@@ -145,7 +148,7 @@ public class RoleService {
 
             QueryWrapper<SysMenus> childwrapper=new QueryWrapper<>();
             childwrapper.eq("parent_id",l.getId());
-            childwrapper.orderByAsc("sort");
+            childwrapper.orderByAsc("type,sort");
             List<SysMenus> childList=sysMenusService.list(childwrapper);
             JSONArray childArr=new JSONArray();
             for(SysMenus c:childList){
@@ -157,9 +160,9 @@ public class RoleService {
                 JSONObject child=new JSONObject();
                 child.put("id",c.getId());
                 if(FunctionUtils.isEquals(1,c.getType())){
-                    child.put("label",parseObject.getString(language)+"(PAGE)");
+                    child.put("label",parseObject.getString(language)+"【PAGE】");
                 }else{
-                    child.put("label",parseObject.getString(language)+"(BUTTON)");
+                    child.put("label",parseObject.getString(language)+"【BUTTON】");
                 }
                 childArr.add(child);
             }
@@ -178,7 +181,7 @@ public class RoleService {
      * @param language
      * @return
      */
-    public RestResult queryMyroleMenus(Integer roleid, String language) {
+    public RestResult queryMyroleMenus(String token,Integer roleid, String language) {
         SysRoles sysRoles=sysRolesService.getById(roleid);
         if(sysRoles==null || FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysRoles.getStatus())){
             return RestResult.fail("角色不存在,或被关闭");
@@ -186,31 +189,37 @@ public class RoleService {
         if(StringUtils.isEmpty(sysRoles.getMenuIds())){
             return RestResult.fail("您未具备权限");
         }
-        List<Integer> menuids=FunctionUtils.getIntegerList(sysRoles.getMenuIds().split(","));
-        QueryWrapper<SysMenus> wrapper=new QueryWrapper<>();
-        wrapper.eq("parent_id",0).in("id",menuids);
-        wrapper.orderByAsc("sort");
-        List<SysMenus> list=sysMenusService.list(wrapper);
-        for(SysMenus l:list){
-            if(StringUtils.isEmpty(l.getName())){
-                continue;
-            }
-            JSONObject object=JSONObject.parseObject(l.getName());
-            l.setMenuname(object.getString(language));
-
-            QueryWrapper<SysMenus> childwrapper=new QueryWrapper<>();
-            childwrapper.eq("parent_id",l.getId()).in("id",menuids).eq("type","1");
-            childwrapper.orderByAsc("sort");
-            List<SysMenus> childList=sysMenusService.list(childwrapper);
-            for(SysMenus c:childList){
-                if(StringUtils.isEmpty(c.getName())){
+        List<SysMenus> list=utilService.getMenus(token);
+        if(list==null || list.size()<1){
+            List<Integer> menuids=FunctionUtils.getIntegerList(sysRoles.getMenuIds().split(","));
+            QueryWrapper<SysMenus> wrapper=new QueryWrapper<>();
+            wrapper.eq("parent_id",0).in("id",menuids);
+            wrapper.orderByAsc("sort");
+            list=sysMenusService.list(wrapper);
+            for(SysMenus l:list){
+                if(StringUtils.isEmpty(l.getName())){
                     continue;
                 }
-                JSONObject jsonObject=JSONObject.parseObject(c.getName());
-                c.setMenuname(jsonObject.getString(language));
+                JSONObject object=JSONObject.parseObject(l.getName());
+                l.setMenuname(object.getString(language));
+
+                QueryWrapper<SysMenus> childwrapper=new QueryWrapper<>();
+                childwrapper.eq("parent_id",l.getId()).in("id",menuids).eq("type","1");
+                childwrapper.orderByAsc("sort");
+                List<SysMenus> childList=sysMenusService.list(childwrapper);
+                for(SysMenus c:childList){
+                    if(StringUtils.isEmpty(c.getName())){
+                        continue;
+                    }
+                    JSONObject jsonObject=JSONObject.parseObject(c.getName());
+                    c.setMenuname(jsonObject.getString(language));
+                }
+                l.setChildList(childList);
             }
-            l.setChildList(childList);
+            //第一次设置菜单缓存
+            utilService.setMenus(token,list);
         }
+
         return RestResult.success("Success",list);
     }
 
@@ -220,6 +229,21 @@ public class RoleService {
         sysRoles.setId(id);
         sysRoles.setStatus(status);
         boolean flag=sysRolesService.updateById(sysRoles);
+        return RestResult.result(flag);
+    }
+
+    public RestResult updateRoles(Integer id,String name, String menuids) {
+        if(StringUtils.isEmpty(name)){
+            return RestResult.fail("请填写角色名称");
+        }
+        if(StringUtils.isEmpty(menuids)){
+            return RestResult.fail("请选择菜单");
+        }
+        SysRoles sysRoles=new SysRoles();
+        sysRoles.setId(id);
+        sysRoles.setName(name);
+        sysRoles.setMenuIds(menuids);
+        boolean flag=sysRolesService.saveOrUpdate(sysRoles);
         return RestResult.result(flag);
     }
 }
