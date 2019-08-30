@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.SysUser;
+import org.apache.ibatis.annotations.Param;
+import sun.jvm.hotspot.memory.Space;
 
 import java.util.List;
 
@@ -18,5 +20,5 @@ import java.util.List;
  */
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
-    SPage<SysUser> querySysUserList(IPage<SysUser> page, SysUser user);
+    SPage<SysUser> querySysUserList(SPage<SysUser> page, @Param("user") SysUser user);
 }

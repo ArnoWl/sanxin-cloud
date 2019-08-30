@@ -25,7 +25,7 @@ public class CorsFilter extends OncePerRequestFilter {
         response.setHeader("Access-Control-Allow-Origin","*");//* or origin as u prefer
         response.setHeader("Access-Control-Allow-Methods","PUT, POST, GET, OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type,sanxinToken");
+        response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type,sanxinToken,languageToken");
         logger.info("*********************************过滤器被使用**************************");
         if (req.getMethod().equals("OPTIONS")) {
             response.setStatus(HttpServletResponse.SC_OK);

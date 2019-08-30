@@ -155,7 +155,28 @@ public class RestResult implements Serializable {
         return restResult;
     }
 
+    public static RestResult result(boolean status){
+        if(status){
+            return RestResult.success("SUCCESS");
+        }else {
+            return RestResult.fail("FAIL");
+        }
+    }
 
+    public static RestResult result(boolean status,String msg){
+        if(status){
+            return RestResult.success("SUCCESS");
+        }else {
+            return RestResult.fail(msg);
+        }
+    }
 
+    public static RestResult result(boolean status,Object data){
+        if(status){
+            return RestResult.success(data);
+        }else {
+            return RestResult.fail(data);
+        }
+    }
 
 }

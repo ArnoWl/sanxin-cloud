@@ -7,6 +7,7 @@ import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.SysUser;
 import com.sanxin.cloud.mapper.SysUserMapper;
 import com.sanxin.cloud.service.SysUserService;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
