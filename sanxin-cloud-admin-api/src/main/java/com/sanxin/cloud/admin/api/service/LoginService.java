@@ -36,6 +36,8 @@ public class LoginService {
     public RedisUtilsService redisUtilsService;
     @Autowired
     public SysRolesService sysRolesService;
+    @Autowired
+    public UtilService utilService;
 
 
     /**
@@ -84,6 +86,7 @@ public class LoginService {
         if(!StringUtils.isBlank(key)){
             redisUtilsService.deleteKey(token);
             redisUtilsService.deleteKey(key);
+            utilService.removeMenus(token);
         }
     }
 
@@ -97,6 +100,7 @@ public class LoginService {
         if(!StringUtils.isBlank(token)){
             redisUtilsService.deleteKey(token);
             redisUtilsService.deleteKey(key);
+            utilService.removeMenus(token);
         }
     }
 

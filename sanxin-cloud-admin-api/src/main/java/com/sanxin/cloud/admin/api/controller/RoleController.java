@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @author arno
  * @version 1.0
@@ -70,12 +72,12 @@ public class RoleController extends  BaseController{
      * @return
      */
     @RequestMapping("/role/queryMenus")
-    public RestResult queryMenums(String roleid){
-        if(StringUtils.isEmpty(roleid)){
-            return RestResult.fail("角色不存在");
+    public RestResult queryMenus(String roleid){
+        Integer role=null;
+        if(!StringUtils.isEmpty(roleid)){
+            role=Integer.parseInt(roleid);
         }
-        Integer role=Integer.parseInt(roleid);
-        RestResult result=roleService.queryMenums(role,getLanguage());
+        RestResult result=roleService.queryMenus(role,getLanguage());
         return result;
     }
 
@@ -91,7 +93,26 @@ public class RoleController extends  BaseController{
             return RestResult.fail("角色不存在");
         }
         Integer role=Integer.parseInt(roleid);
-        RestResult result=roleService.queryMyroleMenus(role,getLanguage());
+        String token=getToken();
+        RestResult result=roleService.queryMyroleMenus(token,role,getLanguage());
+        return result;
+    }
+
+    /**
+     * 修改角色状态
+     * @param id
+     * @param status
+     * @return
+     */
+    @RequestMapping("/role/updateRoleStatus")
+    public RestResult updateRoleStatus(Integer id,Integer status){
+        RestResult result=roleService.updateRoleStatus(id,status);
+        return result;
+    }
+
+    @RequestMapping("/role/updateRoles")
+    public RestResult updateRoles(Integer id,String name,String menuids){
+        RestResult result=roleService.updateRoles(id,name,menuids);
         return result;
     }
 }
