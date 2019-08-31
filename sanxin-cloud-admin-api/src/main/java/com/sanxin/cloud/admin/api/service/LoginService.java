@@ -1,6 +1,5 @@
 package com.sanxin.cloud.admin.api.service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.common.FunctionUtils;
@@ -12,6 +11,7 @@ import com.sanxin.cloud.config.redis.RedisUtilsService;
 import com.sanxin.cloud.entity.SysRoles;
 import com.sanxin.cloud.entity.SysUser;
 import com.sanxin.cloud.enums.RandNumType;
+import com.sanxin.cloud.exception.LoginOutException;
 import com.sanxin.cloud.service.SysConfigService;
 import com.sanxin.cloud.service.SysRolesService;
 import com.sanxin.cloud.service.SysUserService;
@@ -111,24 +111,24 @@ public class LoginService {
      */
     public RestResult getUserInfo(String token){
         if(StringUtils.isBlank(token)){
-            return RestResult.fail("1001","token is empty",null);
+            throw new LoginOutException("token is empty");
         }
         String key=redisUtilsService.getKey(token);
         if(StringUtils.isEmpty(key)){
-            return RestResult.fail("1001","token is timeout",null);
+            throw new LoginOutException("token is timeout");
         }
         QueryWrapper<SysUser> wrapper=new QueryWrapper<>();
         wrapper.eq("login",key);
         SysUser sysUser=sysUserService.getOne(wrapper);
         if(sysUser==null){
-            return RestResult.fail("1001","账户不存在",null);
+            throw new LoginOutException("账户不存在");
         }
         if(FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysUser.getStatus())){
-            return RestResult.fail("1001","账户被冻结",null);
+            throw new LoginOutException("账户被冻结");
         }
         SysRoles sysRoles=sysRolesService.getById(sysUser.getRoleid());
         if(sysRoles==null || FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysRoles.getStatus())){
-            return RestResult.fail("1001","角色不存在或被冻结",null);
+            throw new LoginOutException("角色不存在或被冻结");
         }
         JSONObject jsonObject=new JSONObject();
         jsonObject.put("roleid",String.valueOf(sysUser.getRoleid()));
