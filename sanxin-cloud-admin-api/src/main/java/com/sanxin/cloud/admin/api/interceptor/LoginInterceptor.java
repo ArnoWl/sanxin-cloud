@@ -1,7 +1,10 @@
 package com.sanxin.cloud.admin.api.interceptor;
 
 import com.sanxin.cloud.admin.api.service.LoginService;
+import com.sanxin.cloud.admin.api.service.UtilService;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.entity.SysMenus;
+import com.sanxin.cloud.exception.LoginOutException;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +14,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author arno
@@ -25,6 +29,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private UtilService utilService;
     /**
      * 在业务处理器处理请求之前被调用
      * 如果返回false
@@ -43,21 +49,31 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         if(StringUtils.isEmpty(token)){
             throw new ThrowJsonException("Your landing has expired. Please re-login.");
         }else {
-            RestResult result=loginService.getUserInfo(token);
-            if(!result.status){
-                throw new ThrowJsonException("You cannot operate without this function permission");
-            }
-            if("1001".equals(result.code)){
-                throw new ThrowJsonException("You cannot operate without this function permission");
-            }
+            //检验token
+            loginService.getUserInfo(token);
+
             //获取请求路径
-//            String returnUrl = String.valueOf(request.getServletPath());
-//            List<String> strs=PlatSession.getMenuUrlList(request);
-//
-//            boolean bool = strs.contains(returnUrl);
-//            if(!bool) {
-//                throw new ThrowJsonException("You cannot operate without this function permission");
-//            }
+            String returnUrl = String.valueOf(request.getServletPath());
+            List<SysMenus> list=utilService.getMenus(token);
+            if(list!=null && list.size()>0){
+                List<String> strs=new ArrayList<>();
+                for(SysMenus l:list){
+                    for (SysMenus c:l.getChildList()){
+                        strs.add(c.getUrl());
+                    }
+                }
+                System.out.println("str：：：："+strs);
+                strs.add("/user/getInfo");
+                strs.add("/role/queryMyroleMenus");
+                strs.add("/role/querySysUserList");
+                strs.add("/role/queryRoleList");
+                strs.add("/role/queryMenus");
+                System.out.println("returnUrl：："+returnUrl);
+                boolean bool = strs.contains(returnUrl);
+                if(!bool) {
+                    throw new ThrowJsonException("You do not have this permission");
+                }
+            }
         }
         return true;
     }

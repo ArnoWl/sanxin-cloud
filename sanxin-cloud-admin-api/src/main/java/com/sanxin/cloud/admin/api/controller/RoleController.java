@@ -110,6 +110,13 @@ public class RoleController extends  BaseController{
         return result;
     }
 
+    /**
+     * 编辑/添加角色
+     * @param id
+     * @param name
+     * @param menuids
+     * @return
+     */
     @RequestMapping("/role/updateRoles")
     public RestResult updateRoles(Integer id,String name,String menuids){
         RestResult result=roleService.updateRoles(id,name,menuids);

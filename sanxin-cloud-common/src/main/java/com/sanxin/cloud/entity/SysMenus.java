@@ -66,9 +66,6 @@ public class SysMenus implements Serializable {
     @TableField(exist = false)
     private String menuname;
 
-    @TableField(exist = false)
-    private String checked;
-
     public Integer getId() {
         return id;
     }
@@ -156,11 +153,4 @@ public class SysMenus implements Serializable {
         this.menuname = menuname;
     }
 
-    public String getChecked() {
-        return checked;
-    }
-
-    public void setChecked(String checked) {
-        this.checked = checked;
-    }
 }

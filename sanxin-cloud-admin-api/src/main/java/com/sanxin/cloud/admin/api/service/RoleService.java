@@ -85,6 +85,8 @@ public class RoleService {
                     return RestResult.fail("密码长度在6~20位");
                 }
                 user.setPassword(PwdEncode.encodePwd(user.getPassword()));
+            }else{
+                user.setPassword(null);
             }
             QueryWrapper<SysUser> wrapper=new QueryWrapper<>();
             wrapper.eq("login",user.getLogin()).ne("id",user.getId());
@@ -134,7 +136,7 @@ public class RoleService {
         wrapper.eq("parent_id",0);
         wrapper.orderByAsc("sort");
         List<SysMenus> list=sysMenusService.list(wrapper);
-
+        List<Integer> checkList=new ArrayList<>();
         JSONArray array =new JSONArray();
         for (SysMenus l:list){
             if(StringUtils.isEmpty(l.getName())){
@@ -152,6 +154,11 @@ public class RoleService {
             List<SysMenus> childList=sysMenusService.list(childwrapper);
             JSONArray childArr=new JSONArray();
             for(SysMenus c:childList){
+                if(menuids!=null ){
+                    if(menuids.contains(c.getId())){
+                        checkList.add(c.getId());
+                    }
+                }
                 if(StringUtils.isEmpty(c.getName())){
                     continue;
                 }
@@ -171,7 +178,7 @@ public class RoleService {
         }
         JSONObject result=new JSONObject();
         result.put("menusList",array);
-        result.put("checkData",JSONArray.toJSON(menuids));
+        result.put("checkData",checkList);
         return RestResult.success("SUCCESS",result);
     }
 
@@ -196,6 +203,8 @@ public class RoleService {
             wrapper.eq("parent_id",0).in("id",menuids);
             wrapper.orderByAsc("sort");
             list=sysMenusService.list(wrapper);
+
+
             for(SysMenus l:list){
                 if(StringUtils.isEmpty(l.getName())){
                     continue;
@@ -204,10 +213,11 @@ public class RoleService {
                 l.setMenuname(object.getString(language));
 
                 QueryWrapper<SysMenus> childwrapper=new QueryWrapper<>();
-                childwrapper.eq("parent_id",l.getId()).in("id",menuids).eq("type","1");
+                childwrapper.eq("parent_id",l.getId()).in("id",menuids);
                 childwrapper.orderByAsc("sort");
                 List<SysMenus> childList=sysMenusService.list(childwrapper);
                 for(SysMenus c:childList){
+
                     if(StringUtils.isEmpty(c.getName())){
                         continue;
                     }
