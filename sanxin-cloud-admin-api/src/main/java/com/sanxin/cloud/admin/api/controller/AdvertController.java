@@ -60,7 +60,7 @@ public class AdvertController {
         if (result) {
             return RestResult.success("操作成功");
         }
-        return RestResult.success("操作失败");
+        return RestResult.fail("操作失败");
     }
 
     /**

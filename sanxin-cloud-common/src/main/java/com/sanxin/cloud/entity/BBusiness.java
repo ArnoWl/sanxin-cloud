@@ -105,7 +105,14 @@ public class BBusiness implements Serializable {
      * 公司照片-上传地址
      */
     private String companyImg;
-
+    /**
+     * 店铺地址的经度
+     */
+    private String lonVal;
+    /**
+     * 店铺地址的纬度
+     */
+    private String latVal;
     /**
      * 申请状态
      */
@@ -283,6 +290,22 @@ public class BBusiness implements Serializable {
 
     public void setPassPort(String passPort) {
         this.passPort = passPort;
+    }
+
+    public String getLonVal() {
+        return lonVal;
+    }
+
+    public void setLonVal(String lonVal) {
+        this.lonVal = lonVal;
+    }
+
+    public String getLatVal() {
+        return latVal;
+    }
+
+    public void setLatVal(String latVal) {
+        this.latVal = latVal;
     }
 
     @Override

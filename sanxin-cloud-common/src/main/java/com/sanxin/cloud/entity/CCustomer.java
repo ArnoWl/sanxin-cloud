@@ -1,6 +1,7 @@
 package com.sanxin.cloud.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -83,6 +84,12 @@ public class CCustomer implements Serializable {
      * 注册时间
      */
     private Date createTime;
+
+    /**
+     *
+     */
+    @TableField(exist = false)
+    private CAccount account;
 
     public Integer getId() {
         return id;
@@ -174,6 +181,14 @@ public class CCustomer implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public CAccount getAccount() {
+        return account;
+    }
+
+    public void setAccount(CAccount account) {
+        this.account = account;
     }
 
     @Override

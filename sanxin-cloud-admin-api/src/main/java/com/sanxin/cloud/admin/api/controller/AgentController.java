@@ -1,12 +1,12 @@
 package com.sanxin.cloud.admin.api.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
-import com.sanxin.cloud.entity.AAdvert;
 import com.sanxin.cloud.entity.AgAgent;
 import com.sanxin.cloud.service.AgAgentService;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +34,7 @@ public class AgentController {
      * @return 分页数据
      */
     @GetMapping(value = "/list")
-    public RestResult queryAdvertList(SPage<AgAgent> page, AgAgent agent) {
+    public RestResult queryAgentList(SPage<AgAgent> page, AgAgent agent) {
         QueryWrapper<AgAgent> wrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(agent.getNickName())) {
             wrapper.eq("nick_name", agent.getNickName());
@@ -68,15 +68,19 @@ public class AgentController {
      * @return 操作结果
      */
     @PostMapping(value = "/handleStatus")
-    public RestResult handleStatus(Integer status, Integer id) {
+    public RestResult handleStatus(Integer status, Integer id, String passWord) {
+        if (StringUtils.isBlank(passWord)) {
+            return RestResult.fail("请输入密码");
+        }
         AgAgent agent = new AgAgent();
         agent.setStatus(status);
         agent.setId(id);
+        agent.setPassWord(PwdEncode.encodePwd(passWord));
         agent.setCheckTime(new Date());
         boolean result = agentService.updateById(agent);
         if (result) {
             return RestResult.success("操作成功");
         }
-        return RestResult.success("操作失败");
+        return RestResult.fail("操作失败");
     }
 }

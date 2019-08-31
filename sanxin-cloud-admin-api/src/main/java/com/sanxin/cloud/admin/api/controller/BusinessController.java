@@ -10,6 +10,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 /**
  * 加盟商Controller
  * @author xiaoky
@@ -28,7 +30,7 @@ public class BusinessController {
      * @return com.sanxin.cloud.common.rest.RestResult
      */
     @GetMapping(value = "/list")
-    public RestResult queryAdvertList(SPage<BBusiness> page, BBusiness business) {
+    public RestResult queryBusinessList(SPage<BBusiness> page, BBusiness business) {
         QueryWrapper<BBusiness> wrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(business.getNickName())) {
             wrapper.eq("nick_name", business.getNickName());
@@ -67,10 +69,30 @@ public class BusinessController {
     @PostMapping(value = "/handleEditBusiness")
     public RestResult handleEditBusiness(BBusiness business) {
         business.setPassWord(null);
+        business.setStatus(null);
         Boolean result = businessService.updateById(business);
         if (!result) {
             return RestResult.fail("保存失败");
         }
         return RestResult.success("成功");
+    }
+
+    /**
+     * 加盟商审核
+     * @param id 加盟商id
+     * @param status 审核状态
+     * @return com.sanxin.cloud.common.rest.RestResult
+     */
+    @PostMapping(value = "/handleStatus")
+    public RestResult handleStatus(Integer id, Integer status){
+        BBusiness business = new BBusiness();
+        business.setId(id);
+        business.setStatus(status);
+        business.setCheckTime(new Date());
+        boolean result = businessService.updateById(business);
+        if (result) {
+            return RestResult.success("操作成功");
+        }
+        return RestResult.fail("操作失败");
     }
 }
