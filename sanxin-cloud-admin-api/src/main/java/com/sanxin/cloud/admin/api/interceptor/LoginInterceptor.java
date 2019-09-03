@@ -68,6 +68,13 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 strs.add("/role/querySysUserList");
                 strs.add("/role/queryRoleList");
                 strs.add("/role/queryMenus");
+                strs.add("/advert/list");
+                strs.add("/business/list");
+                strs.add("/agent/list");
+                strs.add("/system/queryAgreementList");
+                strs.add("/uploadOne");
+                strs.add("/system/queryGuideList");
+                strs.add("/system/getAboutUs");
                 System.out.println("returnUrl：："+returnUrl);
                 boolean bool = strs.contains(returnUrl);
                 if(!bool) {
