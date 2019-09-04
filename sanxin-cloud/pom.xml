@@ -35,7 +35,6 @@
         <freemarker.version>2.3.28</freemarker.version>
         <ali.fastjson.varsion>1.2.47</ali.fastjson.varsion>
         <netty.version>4.1.29.Final</netty.version>
-        <protostuff.version>1.6.0</protostuff.version>
 
     </properties>
 
@@ -121,22 +120,6 @@
                 <version>${netty.version}</version>
             </dependency>
 
-            <!--反序列划-->
-            <dependency>
-                <groupId>io.protostuff</groupId>
-                <artifactId>protostuff-api</artifactId>
-                <version>${protostuff.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.protostuff</groupId>
-                <artifactId>protostuff-core</artifactId>
-                <version>${protostuff.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.protostuff</groupId>
-                <artifactId>protostuff-runtime</artifactId>
-                <version>${protostuff.version}</version>
-            </dependency>
 
         </dependencies>
     </dependencyManagement>
