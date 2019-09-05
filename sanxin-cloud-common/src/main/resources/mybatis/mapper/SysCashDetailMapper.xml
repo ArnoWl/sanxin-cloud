@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanxin.cloud.mapper.SysCashDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sanxin.cloud.entity.SysCashDetail">
+        <id column="id" property="id" />
+        <result column="pay_code" property="payCode" />
+        <result column="target_id" property="targetId" />
+        <result column="real_name" property="realName" />
+        <result column="id_card" property="idCard" />
+        <result column="bank_name" property="bankName" />
+        <result column="bank_code" property="bankCode" />
+        <result column="phone" property="phone" />
+        <result column="bank_addr" property="bankAddr" />
+        <result column="cash_money" property="cashMoney" />
+        <result column="real_money" property="realMoney" />
+        <result column="create_time" property="createTime" />
+        <result column="end_time" property="endTime" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+        <result column="type" property="type" />
+        <result column="bank_id" property="bankId" />
+    </resultMap>
+
+</mapper>

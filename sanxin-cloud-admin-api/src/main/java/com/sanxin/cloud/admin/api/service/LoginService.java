@@ -61,7 +61,7 @@ public class LoginService {
         if(sysUser==null){
             return RestResult.fail("账户不存在");
         }
-        if(FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysUser.getStatus())){
+        if(FunctionUtils.isEquals(StaticUtils.STATUS_NO,sysUser.getStatus())){
             return RestResult.fail("账户被冻结");
         }
         String pwd= PwdEncode.encodePwd(password);
@@ -123,11 +123,11 @@ public class LoginService {
         if(sysUser==null){
             throw new LoginOutException("账户不存在");
         }
-        if(FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysUser.getStatus())){
+        if(FunctionUtils.isEquals(StaticUtils.STATUS_NO,sysUser.getStatus())){
             throw new LoginOutException("账户被冻结");
         }
         SysRoles sysRoles=sysRolesService.getById(sysUser.getRoleid());
-        if(sysRoles==null || FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysRoles.getStatus())){
+        if(sysRoles==null || FunctionUtils.isEquals(StaticUtils.STATUS_NO,sysRoles.getStatus())){
             throw new LoginOutException("角色不存在或被冻结");
         }
         JSONObject jsonObject=new JSONObject();

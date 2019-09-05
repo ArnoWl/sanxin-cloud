@@ -1,5 +1,7 @@
 package com.sanxin.cloud.enums;
 
+import com.sanxin.cloud.common.FunctionUtils;
+
 /**
  * 证件类型枚举类
  * @author xiaoky
@@ -59,7 +61,7 @@ public enum CardTypeEnums {
 
     public static String getName(int id) {
         for(CardTypeEnums e:CardTypeEnums.values()) {
-            if(id==e.getType()) {
+            if (FunctionUtils.isEquals(id, e.getType())) {
                 return e.getName();
             }
         }

@@ -75,6 +75,13 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 strs.add("/uploadOne");
                 strs.add("/system/queryGuideList");
                 strs.add("/system/getAboutUs");
+                strs.add("/cash/getCustomerCashRule");
+                strs.add("/cash/getBusinessCashRule");
+                strs.add("/cash/queryCashList");
+                strs.add("/cash/queryBankTypeList");
+                strs.add("/advert/queryAdvertContentList");
+                strs.add("/advert/getAdvertContentDetail");
+                strs.add("/queryEventType");
                 System.out.println("returnUrl：："+returnUrl);
                 boolean bool = strs.contains(returnUrl);
                 if(!bool) {

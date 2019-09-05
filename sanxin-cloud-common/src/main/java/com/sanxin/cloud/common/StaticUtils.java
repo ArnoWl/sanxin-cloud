@@ -10,8 +10,8 @@ public class StaticUtils {
     /**
      * 是否有效 1有效 0无效
      */
-    public static final Integer SATUS_YES=1;
-    public static final Integer SATUS_NO=0;
+    public static final Integer STATUS_YES=1;
+    public static final Integer STATUS_NO=0;
 
     /**
      * 申请状态，申请中(val=1)

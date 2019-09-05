@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanxin.cloud.mapper.SysCashRuleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sanxin.cloud.entity.SysCashRule">
+        <id column="id" property="id" />
+        <result column="min_val" property="minVal" />
+        <result column="max_val" property="maxVal" />
+        <result column="scale" property="scale" />
+        <result column="num" property="num" />
+        <result column="type" property="type" />
+        <result column="is_open" property="isOpen" />
+        <result column="multiple" property="multiple" />
+        <result column="role_type" property="roleType" />
+    </resultMap>
+
+</mapper>

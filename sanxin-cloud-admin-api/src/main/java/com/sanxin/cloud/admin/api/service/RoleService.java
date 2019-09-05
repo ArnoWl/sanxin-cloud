@@ -124,7 +124,7 @@ public class RoleService {
         List<Integer> menuids=null;
         if(roleid!=null){
             SysRoles sysRoles=sysRolesService.getById(roleid);
-            if(sysRoles==null || FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysRoles.getStatus())){
+            if(sysRoles==null || FunctionUtils.isEquals(StaticUtils.STATUS_NO,sysRoles.getStatus())){
                 return RestResult.fail("角色不存在,或被关闭");
             }
             if(StringUtils.isEmpty(sysRoles.getMenuIds())){
@@ -190,7 +190,7 @@ public class RoleService {
      */
     public RestResult queryMyroleMenus(String token,Integer roleid, String language) {
         SysRoles sysRoles=sysRolesService.getById(roleid);
-        if(sysRoles==null || FunctionUtils.isEquals(StaticUtils.SATUS_NO,sysRoles.getStatus())){
+        if(sysRoles==null || FunctionUtils.isEquals(StaticUtils.STATUS_NO,sysRoles.getStatus())){
             return RestResult.fail("角色不存在,或被关闭");
         }
         if(StringUtils.isEmpty(sysRoles.getMenuIds())){
