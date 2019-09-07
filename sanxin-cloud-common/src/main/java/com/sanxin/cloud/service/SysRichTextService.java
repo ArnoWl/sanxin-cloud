@@ -23,10 +23,9 @@ public interface SysRichTextService extends IService<SysRichText> {
     SysRichText getByType(Integer type);
 
     /**
-     * 通过id修改信息
-     * @param type
-     * @param content 内容
+     * 通过type修改信息
+     * @param richText 内容
      * @return
      */
-    RestResult updateRichTextByType(Integer type, String content);
+    RestResult updateRichTextByType(SysRichText richText);
 }

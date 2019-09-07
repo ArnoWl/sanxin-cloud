@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 加盟商Controller
@@ -44,6 +45,19 @@ public class BusinessController {
             b.setPassWord(null);
         }
         return RestResult.success("", page);
+    }
+
+    /**
+     * 查询加盟商数据——不分页
+     * @return
+     */
+    @GetMapping(value = "/queryAllList")
+    public RestResult queryAllList() {
+        List<BBusiness> list = businessService.list();
+        for (BBusiness b : list) {
+            b.setPassWord(null);
+        }
+        return RestResult.success("", list);
     }
 
     /**

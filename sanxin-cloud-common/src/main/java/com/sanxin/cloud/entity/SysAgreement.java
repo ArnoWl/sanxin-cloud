@@ -2,6 +2,8 @@ package com.sanxin.cloud.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
@@ -31,11 +33,36 @@ public class SysAgreement implements Serializable {
     private String title;
 
     /**
-     * 协议内容
+     * 中文协议内容
      */
-    private String content;
+    private String cnContent;
+
+    /**
+     * 英文协议内容
+     */
+    private String enContent;
+
+    /**
+     * 泰文协议内容
+     */
+    private String thaiContent;
 
     private Date createTime;
+    /**
+     * 中文标题
+     */
+    @TableField(exist = false)
+    private String cnTitle;
+    /**
+     * 英文标题
+     */
+    @TableField(exist = false)
+    private String enTitle;
+    /**
+     * 泰文标题
+     */
+    @TableField(exist = false)
+    private String thaiTitle;
 
     public Integer getId() {
         return id;
@@ -58,13 +85,31 @@ public class SysAgreement implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
-    public String getContent() {
-        return content;
+
+    public String getCnContent() {
+        return cnContent;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setCnContent(String cnContent) {
+        this.cnContent = cnContent;
     }
+
+    public String getEnContent() {
+        return enContent;
+    }
+
+    public void setEnContent(String enContent) {
+        this.enContent = enContent;
+    }
+
+    public String getThaiContent() {
+        return thaiContent;
+    }
+
+    public void setThaiContent(String thaiContent) {
+        this.thaiContent = thaiContent;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -73,13 +118,39 @@ public class SysAgreement implements Serializable {
         this.createTime = createTime;
     }
 
+    public String getCnTitle() {
+        return cnTitle;
+    }
+
+    public void setCnTitle(String cnTitle) {
+        this.cnTitle = cnTitle;
+    }
+
+    public String getEnTitle() {
+        return enTitle;
+    }
+
+    public void setEnTitle(String enTitle) {
+        this.enTitle = enTitle;
+    }
+
+    public String getThaiTitle() {
+        return thaiTitle;
+    }
+
+    public void setThaiTitle(String thaiTitle) {
+        this.thaiTitle = thaiTitle;
+    }
+
     @Override
     public String toString() {
         return "SysAgreement{" +
         "id=" + id +
         ", type=" + type +
         ", title=" + title +
-        ", content=" + content +
+        ", cnContent=" + cnContent +
+        ", enContent=" + enContent +
+        ", thaiContent=" + thaiContent +
         ", createTime=" + createTime +
         "}";
     }

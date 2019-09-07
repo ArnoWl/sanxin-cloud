@@ -70,6 +70,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 strs.add("/role/queryMenus");
                 strs.add("/advert/list");
                 strs.add("/business/list");
+                strs.add("/business/queryAllList");
                 strs.add("/agent/list");
                 strs.add("/system/queryAgreementList");
                 strs.add("/uploadOne");
@@ -82,6 +83,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 strs.add("/advert/queryAdvertContentList");
                 strs.add("/advert/getAdvertContentDetail");
                 strs.add("/queryEventType");
+                strs.add("/system/queryGiftHourList");
+                strs.add("/device/queryDeviceList");
+                strs.add("/device/getDeviceDetail");
                 System.out.println("returnUrl：："+returnUrl);
                 boolean bool = strs.contains(returnUrl);
                 if(!bool) {

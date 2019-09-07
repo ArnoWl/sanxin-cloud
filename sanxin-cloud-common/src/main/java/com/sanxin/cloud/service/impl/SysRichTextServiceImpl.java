@@ -30,14 +30,13 @@ public class SysRichTextServiceImpl extends ServiceImpl<SysRichTextMapper, SysRi
     }
 
     @Override
-    public RestResult updateRichTextByType(Integer type, String content) {
-        if (StringUtils.isBlank(content)) {
+    public RestResult updateRichTextByType(SysRichText richText) {
+        if (StringUtils.isBlank(richText.getCnContent()) || StringUtils.isBlank(richText.getEnContent())
+                || StringUtils.isBlank(richText.getThaiContent())) {
             return RestResult.fail("The content cannot empty");
         }
-        SysRichText richText = new SysRichText();
-        richText.setContent(content);
         UpdateWrapper<SysRichText> wrapper = new UpdateWrapper<>();
-        wrapper.eq("type", type);
+        wrapper.eq("type", richText.getType());
         boolean result = super.update(richText, wrapper);
         if (!result) {
             return RestResult.fail("fail");

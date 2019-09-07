@@ -31,9 +31,17 @@ public class SysRichText implements Serializable {
     private String title;
 
     /**
-     * 协议内容
+     * 中文协议内容
      */
-    private String content;
+    private String cnContent;
+    /**
+     * 英文协议内容
+     */
+    private String enContent;
+    /**
+     * 泰文协议内容
+     */
+    private String thaiContent;
 
     private Date createTime;
 
@@ -58,13 +66,31 @@ public class SysRichText implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
-    public String getContent() {
-        return content;
+
+    public String getCnContent() {
+        return cnContent;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setCnContent(String cnContent) {
+        this.cnContent = cnContent;
     }
+
+    public String getEnContent() {
+        return enContent;
+    }
+
+    public void setEnContent(String enContent) {
+        this.enContent = enContent;
+    }
+
+    public String getThaiContent() {
+        return thaiContent;
+    }
+
+    public void setThaiContent(String thaiContent) {
+        this.thaiContent = thaiContent;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -79,7 +105,9 @@ public class SysRichText implements Serializable {
         "id=" + id +
         ", type=" + type +
         ", title=" + title +
-        ", content=" + content +
+        ", cnContent=" + cnContent +
+        ", enContent=" + enContent +
+        ", thaiContent=" + thaiContent +
         ", createTime=" + createTime +
         "}";
     }
