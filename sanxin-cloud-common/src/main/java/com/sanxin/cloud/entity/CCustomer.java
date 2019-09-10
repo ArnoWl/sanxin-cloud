@@ -91,6 +91,12 @@ public class CCustomer implements Serializable {
     @TableField(exist = false)
     private CAccount account;
 
+    /**
+     * 验证码
+     */
+    @TableField(exist = false)
+    private String verCode;
+
     public Integer getId() {
         return id;
     }
@@ -191,22 +197,32 @@ public class CCustomer implements Serializable {
         this.account = account;
     }
 
+    public String getVerCode() {
+        return verCode;
+    }
+
+    public void setVerCode(String verCode) {
+        this.verCode = verCode;
+    }
+
     @Override
     public String toString() {
         return "CCustomer{" +
-        "id=" + id +
-        ", inviteCode=" + inviteCode +
-        ", phone=" + phone +
-        ", email=" + email +
-        ", passWord=" + passWord +
-        ", payWord=" + payWord +
-        ", nickName=" + nickName +
-        ", headUrl=" + headUrl +
-        ", areaCode=" + areaCode +
-        ", countryCode=" + countryCode +
-        ", isReal=" + isReal +
-        ", status=" + status +
-        ", createTime=" + createTime +
-        "}";
+                "id=" + id +
+                ", inviteCode='" + inviteCode + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", passWord='" + passWord + '\'' +
+                ", payWord='" + payWord + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", headUrl='" + headUrl + '\'' +
+                ", areaCode='" + areaCode + '\'' +
+                ", countryCode='" + countryCode + '\'' +
+                ", isReal=" + isReal +
+                ", status=" + status +
+                ", createTime=" + createTime +
+                ", account=" + account +
+                ", verCode=" + verCode +
+                '}';
     }
 }

@@ -83,7 +83,6 @@
         </dependency>
 
         <!-- mybatisplus 代码生成器 -->
-        <!-- mybatisplus 代码生成器 -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
@@ -110,6 +109,17 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
+        <!--第三方授权登录的工具类库-->
+        <dependency>
+            <groupId>me.zhyd.oauth</groupId>
+            <artifactId>JustAuth</artifactId>
+            <version>1.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.xkcoding</groupId>
+            <artifactId>justauth-spring-boot-starter</artifactId>
+            <version>1.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -133,5 +143,4 @@
             </resource>
         </resources>
     </build>
-
 </project>

@@ -1,5 +1,6 @@
 package com.sanxin.cloud.service;
 
+import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.CCustomer;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -21,4 +22,19 @@ public interface CCustomerService extends IService<CCustomer> {
      * @author xiaoky
      */
     void queryCustomerList(SPage<CCustomer> page, CCustomer customer);
+
+    /**
+     * 发送短信验证码
+     * @param phone
+     * @return
+     */
+    RestResult sendVerCode(String phone, String region);
+
+
+    /**
+     * 注册
+     * @param customer
+     */
+    void doRegister(CCustomer customer) throws Exception;
+
 }
