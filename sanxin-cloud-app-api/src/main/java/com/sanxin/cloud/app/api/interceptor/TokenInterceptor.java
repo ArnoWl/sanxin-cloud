@@ -34,26 +34,20 @@ public class TokenInterceptor implements HandlerInterceptor {
         if (request.getMethod().equals("OPTIONS")) {
             return true;
         }
-        String regId = request.getHeader("regId");
         String token = request.getHeader("token");
-        log.info("regId:" + regId);
         log.info("token:" + token);
-        if (StringUtils.isEmpty(regId)) {
-            this.setHead(response);
-            throw new ThrowJsonException("登录过期，请重新登录");
-        }
         if (StringUtils.isEmpty(token)) {
             this.setHead(response);
             throw new ThrowJsonException("登录过期，请重新登录");
         }
 
-        String redisToken = (String) redisCacheManage.get(Constant.APP_USER_TOKEN + regId);
+        String redisToken = (String) redisCacheManage.get(Constant.APP_USER_TOKEN + token);
         if (StringUtils.isEmpty(redisToken)) {
             this.setHead(response);
             throw new ThrowJsonException("登录过期，请重新登录");
         } else {
             if (redisToken.equals(token)) {
-                redisCacheManage.expire(Constant.APP_USER_TOKEN + regId, redisTokenTime);
+                redisCacheManage.expire(Constant.APP_USER_TOKEN + token, redisTokenTime);
                 return true;
             } else {
                 this.setHead(response);
