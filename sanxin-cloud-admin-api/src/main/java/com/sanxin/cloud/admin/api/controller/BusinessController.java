@@ -1,17 +1,22 @@
 package com.sanxin.cloud.admin.api.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.common.language.AdminLanguageStatic;
+import com.sanxin.cloud.common.language.LanguageUtils;
+import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.enums.CardTypeEnums;
 import com.sanxin.cloud.service.BBusinessService;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 加盟商Controller
@@ -53,7 +58,9 @@ public class BusinessController {
      */
     @GetMapping(value = "/queryAllList")
     public RestResult queryAllList() {
-        List<BBusiness> list = businessService.list();
+        QueryWrapper<BBusiness> wrapper = new QueryWrapper<>();
+        wrapper.eq("status", StaticUtils.STATUS_SUCCESS);
+        List<BBusiness> list = businessService.list(wrapper);
         for (BBusiness b : list) {
             b.setPassWord(null);
         }
@@ -67,11 +74,7 @@ public class BusinessController {
      */
     @GetMapping(value = "/getBusinessDetail")
     public RestResult getBusinessDetail(Integer id) {
-        BBusiness business = businessService.getById(id);
-        if (business == null) {
-            return RestResult.fail("fail");
-        }
-        business.setPassWord(null);
+        BBusiness business = businessService.selectById(id);
         return RestResult.success("", business);
     }
 
@@ -84,11 +87,22 @@ public class BusinessController {
     public RestResult handleEditBusiness(BBusiness business) {
         business.setPassWord(null);
         business.setStatus(null);
+        if (business.getCoverUrlList() == null || business.getCoverUrlList().size() <= 0) {
+        } else {
+            // 将图片重新封装一次
+            List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
+            for(String coverUrl : business.getCoverUrlList()) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("url", coverUrl);
+                mapList.add(map);
+            }
+            business.setCoverUrl(JSON.toJSONString(mapList));
+        }
         Boolean result = businessService.updateById(business);
         if (!result) {
-            return RestResult.fail("保存失败");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
-        return RestResult.success("成功");
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 
     /**
@@ -105,8 +119,8 @@ public class BusinessController {
         business.setCheckTime(new Date());
         boolean result = businessService.updateById(business);
         if (result) {
-            return RestResult.success("操作成功");
+            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
         }
-        return RestResult.fail("操作失败");
+        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
     }
 }

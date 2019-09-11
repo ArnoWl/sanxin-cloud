@@ -2,6 +2,8 @@ package com.sanxin.cloud.admin.api.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.admin.api.service.RoleService;
+import com.sanxin.cloud.common.language.AdminLanguageStatic;
+import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.SysRoles;
@@ -90,7 +92,7 @@ public class RoleController extends  BaseController{
     @RequestMapping("/role/queryMyroleMenus")
     public RestResult queryMyroleMenus(String roleid){
         if(StringUtils.isEmpty(roleid)){
-            return RestResult.fail("角色不存在");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ROLE_EMPTY));
         }
         Integer role=Integer.parseInt(roleid);
         String token=getToken();

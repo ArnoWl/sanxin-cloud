@@ -1,13 +1,12 @@
 package com.sanxin.cloud.admin.api.controller;
 
+import com.sanxin.cloud.common.language.AdminLanguageStatic;
 import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
-import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.entity.BDevice;
-import com.sanxin.cloud.entity.BankType;
 import com.sanxin.cloud.service.BDeviceService;
-import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = "/device")
-public class DeviceController {
+public class DeviceController extends BaseController{
     @Autowired
     private BDeviceService bDeviceService;
 
@@ -46,14 +45,14 @@ public class DeviceController {
     public RestResult handleDeviceStatus(Integer id, Integer status) {
         BDevice device = bDeviceService.getById(id);
         if (status != null && FunctionUtils.isEquals(device.getStatus(), status)) {
-            return RestResult.fail("请勿重复提交");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_REPEAT_SUBMIT));
         }
         device.setStatus(status);
         boolean result = bDeviceService.updateById(device);
         if (!result) {
-            return RestResult.fail("操作失败");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
-        return RestResult.success("成功");
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 
     /**
@@ -65,7 +64,7 @@ public class DeviceController {
     public RestResult getDeviceDetail(Integer id) {
         BDevice device = bDeviceService.getDeviceDetail(id);
         if (device == null) {
-            return RestResult.fail("fail");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
         return RestResult.success("", device);
     }
@@ -94,8 +93,8 @@ public class DeviceController {
         }
         boolean result = bDeviceService.saveOrUpdate(device);
         if (!result) {
-            return RestResult.fail("失败");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
-        return RestResult.success("成功");
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 }

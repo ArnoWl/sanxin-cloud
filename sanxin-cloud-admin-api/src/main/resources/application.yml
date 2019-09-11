@@ -32,6 +32,8 @@ spring:
       pool:
         max-wait: 1000ms
         max-active: 8
+  messages:
+    basename: language
 
 mybatis-plus:
   mapper-locations:  classpath:mybatis/mapper/*.xml
@@ -49,6 +51,7 @@ mybatis-plus:
     use-column-label: true
     default-executor-type: reuse
     default-statement-timeout: 25000
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #配置打印sql
 
 # 客户端注册进eureka服务列表里
 eureka:

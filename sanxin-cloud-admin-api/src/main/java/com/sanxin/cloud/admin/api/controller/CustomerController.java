@@ -1,6 +1,8 @@
 package com.sanxin.cloud.admin.api.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.common.language.AdminLanguageStatic;
+import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
@@ -48,9 +50,9 @@ public class CustomerController {
         customer.setStatus(status);
         boolean result = customerService.updateById(customer);
         if (!result) {
-            return RestResult.fail("fail");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
-        return RestResult.success("success");
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 
     /**
@@ -66,9 +68,9 @@ public class CustomerController {
         customer.setPayWord(PwdEncode.encodePwd(payWord));
         boolean result = customerService.updateById(customer);
         if (!result) {
-            return RestResult.fail("fail");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
-        return RestResult.success("success");
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 
     /**
@@ -84,8 +86,8 @@ public class CustomerController {
         customer.setPassWord(PwdEncode.encodePwd(passWord));
         boolean result = customerService.updateById(customer);
         if (!result) {
-            return RestResult.fail("fail");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
-        return RestResult.success("success");
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 }

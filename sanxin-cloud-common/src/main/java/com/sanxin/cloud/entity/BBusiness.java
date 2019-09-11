@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -31,6 +33,11 @@ public class BBusiness implements Serializable {
      * 联系方式
      */
     private String phone;
+
+    /**
+     * 头像
+     */
+    private String headUrl;
 
     /**
      * 登录密码
@@ -114,6 +121,10 @@ public class BBusiness implements Serializable {
      */
     private String latVal;
     /**
+     * 门店banner图
+     */
+    private String coverUrl;
+    /**
      * 申请状态
      */
     private Integer status;
@@ -132,6 +143,11 @@ public class BBusiness implements Serializable {
      */
     @TableField(exist = false)
     private String cardTypeName;
+    /**
+     * banner图集合
+     */
+    @TableField(exist = false)
+    private List<String> coverUrlList;
 
     public Integer getId() {
         return id;
@@ -153,6 +169,14 @@ public class BBusiness implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getHeadUrl() {
+        return headUrl;
+    }
+
+    public void setHeadUrl(String headUrl) {
+        this.headUrl = headUrl;
     }
 
     public String getPassWord() {
@@ -306,6 +330,22 @@ public class BBusiness implements Serializable {
 
     public void setLatVal(String latVal) {
         this.latVal = latVal;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
+    }
+
+    public List<String> getCoverUrlList() {
+        return coverUrlList;
+    }
+
+    public void setCoverUrlList(List<String> coverUrlList) {
+        this.coverUrlList = coverUrlList;
     }
 
     @Override

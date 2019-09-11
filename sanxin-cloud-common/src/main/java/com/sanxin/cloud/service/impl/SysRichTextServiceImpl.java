@@ -2,8 +2,11 @@ package com.sanxin.cloud.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.sanxin.cloud.common.language.AdminLanguageStatic;
+import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.SysRichText;
+import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.mapper.SysRichTextMapper;
 import com.sanxin.cloud.service.SysRichTextService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -33,14 +36,14 @@ public class SysRichTextServiceImpl extends ServiceImpl<SysRichTextMapper, SysRi
     public RestResult updateRichTextByType(SysRichText richText) {
         if (StringUtils.isBlank(richText.getCnContent()) || StringUtils.isBlank(richText.getEnContent())
                 || StringUtils.isBlank(richText.getThaiContent())) {
-            return RestResult.fail("The content cannot empty");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.SYSTEM_AGREE_CONTENT));
         }
         UpdateWrapper<SysRichText> wrapper = new UpdateWrapper<>();
         wrapper.eq("type", richText.getType());
         boolean result = super.update(richText, wrapper);
         if (!result) {
-            return RestResult.fail("fail");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
-        return RestResult.success("success");
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
     }
 }

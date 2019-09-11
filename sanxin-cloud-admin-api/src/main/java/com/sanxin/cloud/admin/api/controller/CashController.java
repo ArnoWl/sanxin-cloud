@@ -1,11 +1,11 @@
 package com.sanxin.cloud.admin.api.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.common.language.AdminLanguageStatic;
 import com.sanxin.cloud.common.FunctionUtils;
-import com.sanxin.cloud.common.StaticUtils;
+import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
-import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.entity.BankType;
 import com.sanxin.cloud.entity.SysCashDetail;
 import com.sanxin.cloud.entity.SysCashRule;
@@ -15,7 +15,6 @@ import com.sanxin.cloud.service.SysCashDetailService;
 import com.sanxin.cloud.service.SysCashRuleService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,7 +54,7 @@ public class CashController {
     @GetMapping("/getBusinessCashRule")
     public RestResult getBusinessCashRule() {
         SysCashRule cashRule = sysCashRuleService.getRuleByType(CashTypeEnums.BUSINESS.getId());
-    return RestResult.success("", cashRule);
+        return RestResult.success("", cashRule);
     }
 
     /**
@@ -66,22 +65,22 @@ public class CashController {
     @PostMapping("/updateCashRule")
     public RestResult updateCashRule(SysCashRule sysCashRule) {
         if (sysCashRule == null || sysCashRule.getType() == null || sysCashRule.getIsOpen() == null) {
-            return RestResult.fail("保存失败");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
         if (sysCashRule.getNum() == null) {
-            return RestResult.fail("请输入提现次数");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.CASH_NUM));
         }
         if (sysCashRule.getScale() == null) {
-            return RestResult.fail("请输入提现手续费");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.CASH_SCALE));
         }
         if (sysCashRule.getMinVal() == null) {
-            return RestResult.fail("请输入最低提现金额");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.CASH_MINVAL));
         }
         if (sysCashRule.getMaxVal() == null) {
-            return RestResult.fail("请输入最高提现金额");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.CASH_MAXVAL));
         }
         if (sysCashRule.getMultiple() == null) {
-            return RestResult.fail("请输入提现金额整数倍");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.CASH_MULTIPLE));
         }
         if (!FunctionUtils.isEquals(sysCashRule.getType(), CashTypeEnums.BUSINESS.getId())) {
             sysCashRule.setTaxOne(BigDecimal.ZERO);
@@ -89,9 +88,9 @@ public class CashController {
         }
         boolean result = sysCashRuleService.updateById(sysCashRule);
         if (result) {
-            return RestResult.success("保存成功");
+            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
         }
-        return RestResult.fail("保存失败");
+        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
     }
 
     /**
@@ -150,14 +149,14 @@ public class CashController {
     public RestResult handleBankTypeStatus(Integer id, Integer status) {
         BankType bankType = bankTypeService.getById(id);
         if (status != null && FunctionUtils.isEquals(bankType.getStatus(), status)) {
-            return RestResult.fail("请勿重复提交");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_REPEAT_SUBMIT));
         }
         bankType.setStatus(status);
         boolean result = bankTypeService.updateById(bankType);
         if (!result) {
-            return RestResult.fail("操作失败");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
-        return RestResult.success("成功");
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 
     /**
@@ -168,15 +167,15 @@ public class CashController {
     @PostMapping(value = "/handleBankType")
     public RestResult handleBankType(BankType bankType) {
         if (StringUtils.isBlank(bankType.getBankName())) {
-            return RestResult.fail("失败");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
         if (bankType.getId() == null && bankType.getLogo() == null) {
-            return RestResult.fail("logo上传失败");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.CASH_LOGO));
         }
         boolean result = bankTypeService.saveOrUpdate(bankType);
         if (!result) {
-            return RestResult.fail("失败");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
-        return RestResult.success("成功");
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 }

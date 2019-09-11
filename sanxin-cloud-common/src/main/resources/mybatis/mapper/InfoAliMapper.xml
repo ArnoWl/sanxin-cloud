@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanxin.cloud.mapper.InfoAliMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sanxin.cloud.entity.InfoAli">
+        <id column="ali_id" property="aliId" />
+        <result column="ali_name" property="aliName" />
+        <result column="partner" property="partner" />
+        <result column="private_key" property="privateKey" />
+        <result column="partner_account" property="partnerAccount" />
+        <result column="ali_public_key" property="aliPublicKey" />
+        <result column="ali_private_key" property="aliPrivateKey" />
+        <result column="body" property="body" />
+        <result column="subject" property="subject" />
+        <result column="cert" property="cert" />
+        <result column="return_url" property="returnUrl" />
+        <result column="refund_web" property="refundWeb" />
+        <result column="refund_app" property="refundApp" />
+        <result column="refund_public_key" property="refundPublicKey" />
+        <result column="refund_private_key" property="refundPrivateKey" />
+    </resultMap>
+
+</mapper>

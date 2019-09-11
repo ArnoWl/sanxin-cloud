@@ -2,6 +2,8 @@ package com.sanxin.cloud.admin.api.controller;
 
 import com.netflix.discovery.converters.Auto;
 import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.language.AdminLanguageStatic;
+import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.GiftHour;
 import com.sanxin.cloud.entity.SysAgreement;
@@ -62,17 +64,17 @@ public class SysController {
     @PostMapping(value = "/updateAgreementDetail")
     public RestResult updateAgreementDetail(SysAgreement agreement) {
         if (StringUtils.isBlank(agreement.getTitle())) {
-            return RestResult.fail("The title cannot empty");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.SYSTEM_AGREE_TITLE));
         }
         if (StringUtils.isBlank(agreement.getCnContent()) || StringUtils.isBlank(agreement.getEnContent())
                 || StringUtils.isBlank(agreement.getThaiContent())) {
-            return RestResult.fail("The content cannot empty");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.SYSTEM_AGREE_CONTENT));
         }
         boolean result = sysAgreementService.updateById(agreement);
         if (!result) {
-            return RestResult.fail("fail");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
-        return RestResult.success("success");
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 
     /**
@@ -161,28 +163,28 @@ public class SysController {
     public RestResult deleteGiftHour(Integer id) {
         boolean result = giftHourService.removeById(id);
         if (!result) {
-            return RestResult.fail("删除失败");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
-        return RestResult.success("删除成功");
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 
     @PostMapping("/updateGiftHour")
     public RestResult updateGiftHour(GiftHour hour) {
         if (hour.getMoney() == null) {
-            return RestResult.fail("请输入金额");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.SYSTEM_GIFT_MONEY));
         }
         if (hour.getHour() == null) {
-            return RestResult.fail("请输入时长");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.SYSTEM_GIFT_HOUR));
         }
         if (BigDecimal.ZERO.compareTo(hour.getMoney())>=0 || BigDecimal.ZERO.compareTo(hour.getHour())>=0) {
-            return RestResult.fail("请输入正整数");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.SYSTEM_GIFT_NUM));
         }
         BigDecimal discountMoney = FunctionUtils.sub(hour.getHour(), hour.getMoney(), 2);
         hour.setDiscountMoney(discountMoney);
         boolean result = giftHourService.updateById(hour);
         if (!result) {
-            return RestResult.fail("编辑失败");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
-        return RestResult.success("编辑成功");
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 }

@@ -120,6 +120,21 @@
             <artifactId>justauth-spring-boot-starter</artifactId>
             <version>1.1.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>alipay</groupId>
+            <artifactId>alipay-sdk-java20170829142630</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

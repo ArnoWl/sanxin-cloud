@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface BBusinessService extends IService<BBusiness> {
 
+    BBusiness selectById(Integer id);
 }

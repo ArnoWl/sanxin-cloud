@@ -2,21 +2,22 @@ package com.sanxin.cloud.admin.api.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.sanxin.cloud.common.language.AdminLanguageStatic;
 import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.LanguageVo;
 import com.sanxin.cloud.entity.AAdvert;
 import com.sanxin.cloud.entity.AAdvertContent;
-import com.sanxin.cloud.entity.BankType;
 import com.sanxin.cloud.enums.EventEnums;
+import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.service.AAdvertContentService;
 import com.sanxin.cloud.service.AAdvertService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,9 +71,9 @@ public class AdvertController {
         advert.setCheckTime(new Date());
         boolean result = advertService.updateById(advert);
         if (result) {
-            return RestResult.success("操作成功");
+            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
         }
-        return RestResult.fail("操作失败");
+        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
     }
 
     /**
@@ -127,38 +128,38 @@ public class AdvertController {
     @PostMapping(value = "/handleEditAdvertContent")
     public RestResult handleEditAdvertContent(AAdvertContent advertContent) {
         if (StringUtils.isBlank(advertContent.getCnTitle())) {
-            return RestResult.fail("请输入中文标题");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_CN_TITLE));
         }
         if (StringUtils.isBlank(advertContent.getEnTitle())) {
-            return RestResult.fail("请输入英文标题");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_EN_TITLE));
         }
         if (StringUtils.isBlank(advertContent.getThaiTitle())) {
-            return RestResult.fail("请输入泰文标题");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_THAI_TITLE));
         }
         if (StringUtils.isBlank(advertContent.getCnContent())) {
-            return RestResult.fail("请输入中文内容");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_CN_CONTENT));
         }
         if (StringUtils.isBlank(advertContent.getEnContent())) {
-            return RestResult.fail("请输入英文内容");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_EN_CONTENT));
         }
         if (StringUtils.isBlank(advertContent.getThaiContent())) {
-            return RestResult.fail("请输入泰文内容");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_THAI_CONTENT));
         }
         if (StringUtils.isBlank(advertContent.getEvent())) {
-            return RestResult.fail("请选择跳转类型");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_EVENT_TYPE));
         }
         if (EventEnums.EXTERNAL_LINK.getUrl().equals(advertContent.getEvent())
                 && StringUtils.isBlank(advertContent.getUrl())) {
-            return RestResult.fail("请输入外部链接");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_EXTERNAL_LINK));
         }
         if (advertContent.getId() == null && StringUtils.isBlank(advertContent.getFrameImg())) {
-            return RestResult.fail("请上传弹窗图");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_FRAME_IMG));
         }
         if (advertContent.getId() == null && StringUtils.isBlank(advertContent.getImg())) {
-            return RestResult.fail("请上传广告图");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_IMG));
         }
         if (advertContent.getSort() == null) {
-            return RestResult.fail("请输入排序");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_SORT));
         }
         LanguageVo titleVo = new LanguageVo(advertContent.getCnTitle(), advertContent.getEnTitle(), advertContent.getThaiTitle());
         String titleObj = JSONObject.toJSONString(titleVo);
@@ -168,9 +169,9 @@ public class AdvertController {
         advertContent.setContent(contentObj);
         boolean result = advertContentService.saveOrUpdate(advertContent);
         if (!result) {
-            return RestResult.fail("保存失败");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
-        return RestResult.success("保存成功");
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 
     /**
@@ -183,14 +184,14 @@ public class AdvertController {
     public RestResult handleAdvertContentStatus(Integer id, Integer status) {
         AAdvertContent advert = advertContentService.getById(id);
         if (status != null && FunctionUtils.isEquals(advert.getStatus(), status)) {
-            return RestResult.fail("请勿重复提交");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_REPEAT_SUBMIT));
         }
         advert.setStatus(status);
         boolean result = advertContentService.updateById(advert);
         if (!result) {
-            return RestResult.fail("操作失败");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
-        return RestResult.success("成功");
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 
     /**
@@ -202,10 +203,10 @@ public class AdvertController {
     public RestResult handleAdvertContentHomeShow(Integer id) {
         AAdvertContent advertContent = advertContentService.getById(id);
         if (FunctionUtils.isEquals(advertContent.getStatus(), StaticUtils.STATUS_NO)) {
-            return RestResult.fail("失败");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
         if (FunctionUtils.isEquals(advertContent.getHomeShow(), StaticUtils.STATUS_YES)) {
-            return RestResult.fail("请勿重复提交");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_REPEAT_SUBMIT));
         }
         RestResult result = advertContentService.updateHomeShow(id);
         return result;

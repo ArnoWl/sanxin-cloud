@@ -1,6 +1,8 @@
 package com.sanxin.cloud.admin.api.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.common.language.AdminLanguageStatic;
+import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
@@ -70,7 +72,7 @@ public class AgentController {
     @PostMapping(value = "/handleStatus")
     public RestResult handleStatus(Integer status, Integer id, String passWord) {
         if (StringUtils.isBlank(passWord)) {
-            return RestResult.fail("请输入密码");
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.AGENT_PASSWORD));
         }
         AgAgent agent = new AgAgent();
         agent.setStatus(status);
@@ -79,8 +81,8 @@ public class AgentController {
         agent.setCheckTime(new Date());
         boolean result = agentService.updateById(agent);
         if (result) {
-            return RestResult.success("操作成功");
+            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
         }
-        return RestResult.fail("操作失败");
+        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
     }
 }

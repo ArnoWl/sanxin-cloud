@@ -3,6 +3,8 @@ package com.sanxin.cloud.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.sanxin.cloud.common.language.AdminLanguageStatic;
+import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
@@ -67,8 +69,8 @@ public class AAdvertContentServiceImpl extends ServiceImpl<AAdvertContentMapper,
         update.setHomeShow(StaticUtils.STATUS_YES);
         boolean result = super.updateById(update);
         if (result) {
-            return RestResult.success("成功");
+            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
         }
-        return RestResult.fail("失败");
+        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 }

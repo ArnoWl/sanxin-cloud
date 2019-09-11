@@ -37,7 +37,9 @@
         <freemarker.version>2.3.28</freemarker.version>
         <ali.fastjson.varsion>1.2.47</ali.fastjson.varsion>
         <netty.version>4.1.29.Final</netty.version>
-
+        <alipay.version>1.0</alipay.version>
+        <commons-httpclient.version>3.1</commons-httpclient.version>
+        <dom4j.version>1.6.1</dom4j.version>
     </properties>
 
 
@@ -122,7 +124,23 @@
                 <version>${netty.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>alipay</groupId>
+                <artifactId>alipay-sdk-java20170829142630</artifactId>
+                <version>${alipay.version}</version>
+            </dependency>
 
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>${commons-httpclient.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>${dom4j.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
