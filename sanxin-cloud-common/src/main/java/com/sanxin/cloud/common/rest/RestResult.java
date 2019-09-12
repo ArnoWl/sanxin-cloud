@@ -1,7 +1,9 @@
 package com.sanxin.cloud.common.rest;
 
+import com.sanxin.cloud.common.language.LanguageUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 
@@ -36,6 +38,14 @@ public class RestResult implements Serializable {
      */
     public Object data;
 
+    private static String getLanguageMsg(String msg) {
+        String languageMsg = LanguageUtils.getMessage(msg);
+        if (StringUtils.isNotBlank(languageMsg)) {
+            return languageMsg;
+        } else {
+            return msg;
+        }
+    }
 
     /**
      * 成功返回
@@ -48,7 +58,7 @@ public class RestResult implements Serializable {
         RestResult restResult=new RestResult();
         restResult.status=true;
         restResult.code=code;
-        restResult.msg=msg;
+        restResult.msg=getLanguageMsg(msg);
         restResult.data=data;
         return restResult;
     }
@@ -63,7 +73,7 @@ public class RestResult implements Serializable {
         RestResult restResult=new RestResult();
         restResult.status=true;
         restResult.code="00";
-        restResult.msg=msg;
+        restResult.msg=getLanguageMsg(msg);
         restResult.data=data;
         return restResult;
     }
@@ -77,7 +87,7 @@ public class RestResult implements Serializable {
         RestResult restResult=new RestResult();
         restResult.status=true;
         restResult.code="00";
-        restResult.msg=msg;
+        restResult.msg=getLanguageMsg(msg);
         restResult.data=null;
         return restResult;
     }
@@ -91,7 +101,7 @@ public class RestResult implements Serializable {
         RestResult restResult=new RestResult();
         restResult.status=true;
         restResult.code="00";
-        restResult.msg="Success";
+        restResult.msg=getLanguageMsg("success");
         restResult.data=data;
         return restResult;
     }
@@ -107,7 +117,7 @@ public class RestResult implements Serializable {
         RestResult restResult=new RestResult();
         restResult.status=false;
         restResult.code=code;
-        restResult.msg=msg;
+        restResult.msg=getLanguageMsg(msg);
         restResult.data=data;
         return restResult;
     }
@@ -122,7 +132,7 @@ public class RestResult implements Serializable {
         RestResult restResult=new RestResult();
         restResult.status=false;
         restResult.code="-1";
-        restResult.msg=msg;
+        restResult.msg=getLanguageMsg(msg);
         restResult.data=data;
         return restResult;
     }
@@ -136,7 +146,7 @@ public class RestResult implements Serializable {
         RestResult restResult=new RestResult();
         restResult.status=false;
         restResult.code="-1";
-        restResult.msg=msg;
+        restResult.msg=getLanguageMsg(msg);
         restResult.data=null;
         return restResult;
     }
@@ -150,24 +160,24 @@ public class RestResult implements Serializable {
         RestResult restResult=new RestResult();
         restResult.status=false;
         restResult.code="-1";
-        restResult.msg="Fail";
+        restResult.msg=getLanguageMsg("fail");
         restResult.data=data;
         return restResult;
     }
 
     public static RestResult result(boolean status){
         if(status){
-            return RestResult.success("SUCCESS");
+            return RestResult.success("success");
         }else {
-            return RestResult.fail("FAIL");
+            return RestResult.fail("fail");
         }
     }
 
     public static RestResult result(boolean status,String msg){
         if(status){
-            return RestResult.success("SUCCESS");
+            return RestResult.success("success");
         }else {
-            return RestResult.fail(msg);
+            return RestResult.fail(getLanguageMsg(msg));
         }
     }
 
