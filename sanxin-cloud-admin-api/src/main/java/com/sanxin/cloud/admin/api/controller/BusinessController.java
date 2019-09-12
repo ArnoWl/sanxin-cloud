@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.language.AdminLanguageStatic;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.StaticUtils;
+import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.BBusiness;
@@ -117,6 +119,44 @@ public class BusinessController {
         business.setId(id);
         business.setStatus(status);
         business.setCheckTime(new Date());
+        boolean result = businessService.updateById(business);
+        if (result) {
+            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        }
+        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+    }
+
+    /**
+     * 重置登录密码
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/resetLoginPass")
+    public RestResult resetLoginPass(Integer id) {
+        BBusiness business = businessService.getById(id);
+        if (business == null || !FunctionUtils.isEquals(StaticUtils.STATUS_SUCCESS, business.getStatus())) {
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+        }
+        business.setPassWord(PwdEncode.encodePwd(StaticUtils.DEFAULT_PWD));
+        boolean result = businessService.updateById(business);
+        if (result) {
+            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        }
+        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+    }
+
+    /**
+     * 重置支付密码
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/resetPayPass")
+    public RestResult resetPayPass(Integer id) {
+        BBusiness business = businessService.getById(id);
+        if (business == null || !FunctionUtils.isEquals(StaticUtils.STATUS_SUCCESS, business.getStatus())) {
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+        }
+        business.setPayWord(PwdEncode.encodePwd(StaticUtils.DEFAULT_PWD));
         boolean result = businessService.updateById(business);
         if (result) {
             return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));

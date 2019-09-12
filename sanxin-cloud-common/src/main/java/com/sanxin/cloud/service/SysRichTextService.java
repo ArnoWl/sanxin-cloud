@@ -18,9 +18,10 @@ public interface SysRichTextService extends IService<SysRichText> {
     /**
      * 通过类型查询数据
      * @param type 类型
+     * @param languageToken 语言
      * @return
      */
-    SysRichText getByType(Integer type);
+    SysRichText getByType(Integer type, String languageToken);
 
     /**
      * 通过type修改信息

@@ -4,6 +4,8 @@ import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.SysCashDetail;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.Map;
+
 /**
  * <p>
  * 余额提现记录表 服务类
@@ -21,4 +23,14 @@ public interface SysCashDetailService extends IService<SysCashDetail> {
      * @return
      */
     RestResult handleCashStatus(Integer id, Integer status);
+
+    /**
+     * 处理提现申请
+     * @param cashDetail
+     * @param payWord 支付密码
+     * @param validCode 验证码
+     * @return
+     */
+    RestResult handleCashApply(SysCashDetail cashDetail, String payWord, String validCode);
+
 }

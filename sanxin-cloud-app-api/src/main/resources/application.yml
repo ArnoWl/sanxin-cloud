@@ -35,6 +35,10 @@ spring:
         max-wait: 1000ms
         max-active: 600
         max-idle: 300
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
 
 mybatis-plus:
   mapper-locations:  classpath:mybatis/mapper/*.xml

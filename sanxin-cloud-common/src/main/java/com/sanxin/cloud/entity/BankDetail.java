@@ -2,6 +2,8 @@ package com.sanxin.cloud.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
@@ -86,6 +88,11 @@ public class BankDetail implements Serializable {
     private Integer thaiCard;
 
     private Date createTime;
+    /**
+     * 银行卡后四位
+     */
+    @TableField(exist = false)
+    private String lastCode;
 
     public Integer getId() {
         return id;
@@ -191,6 +198,14 @@ public class BankDetail implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getLastCode() {
+        return lastCode;
+    }
+
+    public void setLastCode(String lastCode) {
+        this.lastCode = lastCode;
     }
 
     @Override

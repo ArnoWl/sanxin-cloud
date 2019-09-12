@@ -63,6 +63,11 @@ public class SysAgreement implements Serializable {
      */
     @TableField(exist = false)
     private String thaiTitle;
+    /**
+     * 接口方返回数据
+     */
+    @TableField(exist = false)
+    private String content;
 
     public Integer getId() {
         return id;
@@ -140,6 +145,14 @@ public class SysAgreement implements Serializable {
 
     public void setThaiTitle(String thaiTitle) {
         this.thaiTitle = thaiTitle;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     @Override

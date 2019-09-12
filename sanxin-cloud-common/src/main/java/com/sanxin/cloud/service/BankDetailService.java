@@ -1,5 +1,6 @@
 package com.sanxin.cloud.service;
 
+import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.BankDetail;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,17 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface BankDetailService extends IService<BankDetail> {
 
+    /**
+     * 添加银行卡
+     * @param bankDetail
+     * @return
+     */
+    RestResult addBankDetail(BankDetail bankDetail);
+
+    /**
+     * 修改银行卡
+     * @param bankDetail
+     * @return
+     */
+    RestResult updateBankDetail(BankDetail bankDetail);
 }

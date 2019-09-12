@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysAgreementService extends IService<SysAgreement> {
 
+    SysAgreement getByTypeAndLanguage(Integer type, String language);
 }

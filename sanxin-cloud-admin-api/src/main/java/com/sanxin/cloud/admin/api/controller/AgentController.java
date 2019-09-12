@@ -1,12 +1,15 @@
 package com.sanxin.cloud.admin.api.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.language.AdminLanguageStatic;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.AgAgent;
+import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.service.AgAgentService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +82,25 @@ public class AgentController {
         agent.setId(id);
         agent.setPassWord(PwdEncode.encodePwd(passWord));
         agent.setCheckTime(new Date());
+        boolean result = agentService.updateById(agent);
+        if (result) {
+            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        }
+        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+    }
+
+    /**
+     * 重置代理登录密码
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/resetLoginPass")
+    public RestResult resetLoginPass(Integer id) {
+        AgAgent agent = agentService.getById(id);
+        if (agent == null || !FunctionUtils.isEquals(StaticUtils.STATUS_SUCCESS, agent.getStatus())) {
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+        }
+        agent.setPassWord(PwdEncode.encodePwd(StaticUtils.DEFAULT_PWD));
         boolean result = agentService.updateById(agent);
         if (result) {
             return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));

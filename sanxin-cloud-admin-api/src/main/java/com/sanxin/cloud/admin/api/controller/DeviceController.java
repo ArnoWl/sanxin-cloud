@@ -85,12 +85,6 @@ public class DeviceController extends BaseController{
         if (device.getBid() == null) {
             return RestResult.fail("请选择所在门店");
         }
-        if (device.getStartDay() == null || device.getEndDay() == null) {
-            return RestResult.fail("请选择营业时间");
-        }
-        if (StringUtils.isBlank(device.getAddressDetail())) {
-            return RestResult.fail("请输入投放地址");
-        }
         boolean result = bDeviceService.saveOrUpdate(device);
         if (!result) {
             return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));

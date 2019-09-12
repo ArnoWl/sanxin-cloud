@@ -7,6 +7,9 @@ import com.sanxin.cloud.service.SysCashRuleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * <p>
  *  服务实现类
@@ -23,5 +26,20 @@ public class SysCashRuleServiceImpl extends ServiceImpl<SysCashRuleMapper, SysCa
         QueryWrapper<SysCashRule> wrapper = new QueryWrapper<>();
         wrapper.eq("role_type", type);
         return super.getOne(wrapper);
+    }
+
+    @Override
+    public Map<String, Object> getCashRule(Integer type) {
+        Map<String, Object> map = new HashMap<>();
+        SysCashRule cashRule = getRuleByType(type);
+        if (cashRule != null) {
+            map.put("scale", cashRule.getScale());
+            map.put("minVal", cashRule.getMinVal());
+            map.put("maxVal", cashRule.getMaxVal());
+            map.put("multiple", cashRule.getMultiple());
+            map.put("taxOne", cashRule.getTaxOne());
+            map.put("taxTwo", cashRule.getTaxTwo());
+        }
+        return map;
     }
 }

@@ -97,6 +97,10 @@ public class SysCashDetail implements Serializable {
      * 对应银行卡列表id
      */
     private Integer bankId;
+    /**
+     * 如果是加盟商提现——选择的税率
+     */
+    private BigDecimal tax;
 
     public Integer getId() {
         return id;
@@ -216,6 +220,14 @@ public class SysCashDetail implements Serializable {
 
     public void setBankId(Integer bankId) {
         this.bankId = bankId;
+    }
+
+    public BigDecimal getTax() {
+        return tax;
+    }
+
+    public void setTax(BigDecimal tax) {
+        this.tax = tax;
     }
 
     @Override

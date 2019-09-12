@@ -2,6 +2,8 @@ package com.sanxin.cloud.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
@@ -44,6 +46,21 @@ public class SysRichText implements Serializable {
     private String thaiContent;
 
     private Date createTime;
+    /**
+     * 中文标题
+     */
+    @TableField(exist = false)
+    private String cnTitle;
+    /**
+     * 英文标题
+     */
+    @TableField(exist = false)
+    private String enTitle;
+    /**
+     * 泰文标题
+     */
+    @TableField(exist = false)
+    private String thaiTitle;
 
     public Integer getId() {
         return id;
@@ -97,6 +114,30 @@ public class SysRichText implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getCnTitle() {
+        return cnTitle;
+    }
+
+    public void setCnTitle(String cnTitle) {
+        this.cnTitle = cnTitle;
+    }
+
+    public String getEnTitle() {
+        return enTitle;
+    }
+
+    public void setEnTitle(String enTitle) {
+        this.enTitle = enTitle;
+    }
+
+    public String getThaiTitle() {
+        return thaiTitle;
+    }
+
+    public void setThaiTitle(String thaiTitle) {
+        this.thaiTitle = thaiTitle;
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.sanxin.cloud.common;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sanxin.cloud.common.pwd.Encode;
 import com.sanxin.cloud.common.random.RandNumUtils;
+import com.sanxin.cloud.enums.LanguageEnums;
 import com.sanxin.cloud.enums.RandNumType;
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,13 +12,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FunctionUtils {
-	
+
 	/*
 	 * 获取唯一编号
-	 * 
+	 *
 	 * @param a  数据来源平台 表示业务类型前缀
 	 * @param b  操作对象   1.生成账号资金明细流水号
 	 * @return
@@ -34,7 +37,7 @@ public class FunctionUtils {
 	 */
 	/**
 	 * 加
-	 * 
+	 *
 	 * @param a1
 	 *            加数
 	 * @param a2
@@ -49,7 +52,7 @@ public class FunctionUtils {
 
 	/**
 	 * 减
-	 * 
+	 *
 	 * @param a1
 	 *            减数
 	 * @param a2
@@ -64,7 +67,7 @@ public class FunctionUtils {
 
 	/**
 	 * 乘
-	 * 
+	 *
 	 * @param a1  乘数
 	 * @param a2  被乘数
 	 * @param index
@@ -77,7 +80,7 @@ public class FunctionUtils {
 
 	/**
 	 * 除
-	 * 
+	 *
 	 * @param d1 除数
 	 * @param d2
 	 *            被除数
@@ -91,10 +94,10 @@ public class FunctionUtils {
 		}
 		return d1.divide(d2, index, BigDecimal.ROUND_HALF_UP);
 	}
-	
+
 	/**
 	 * 判断两个int类型的是否相等
-	 * 
+	 *
 	 * @param a
 	 * @param b
 	 * @return
@@ -111,17 +114,17 @@ public class FunctionUtils {
 		}
 		return false;
 	}
-	
+
 	public static String getUUid() {
 		String uuid=UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
 		uuid= Encode.encode(uuid);
 		return uuid;
 	}
-	
-	
+
+
 	/**
 	 * 字符串数组转list int对象
-	 * 
+	 *
 	 * @param arr
 	 * @return
 	 */
@@ -135,10 +138,10 @@ public class FunctionUtils {
 		}
 		return list;
 	}
-	
+
 	/**
 	 * 字符串数组转list int对象 倒叙
-	 * 
+	 *
 	 * @param arr
 	 * @return
 	 */
@@ -153,10 +156,10 @@ public class FunctionUtils {
 		}
 		return list;
 	}
-	
+
 	/**
 	 * 字符串数组转list int对象 倒叙
-	 * 
+	 *
 	 * @param arr
 	 * @return
 	 */
@@ -182,11 +185,11 @@ public class FunctionUtils {
 	 * @return
 	 */
 	public static BigDecimal getScale(BigDecimal minscale, BigDecimal maxmoney) {
-		  BigDecimal db = new BigDecimal(Math.random() * (maxmoney.doubleValue() - minscale.doubleValue()) + minscale.doubleValue());  
+		  BigDecimal db = new BigDecimal(Math.random() * (maxmoney.doubleValue() - minscale.doubleValue()) + minscale.doubleValue());
 	      db=db.setScale(2, BigDecimal.ROUND_HALF_UP);
 		return db;
 	}
-	
+
 	public static String getCodes(String paycode,Integer num) {
 		String str="";
 		for(int i=0;i<num;i++) {
@@ -196,8 +199,41 @@ public class FunctionUtils {
 		str=str.substring(1, str.length()-1);
 		return str;
 	}
-	
+
+	/**
+	 * 截取后几位字符串
+	 * @param data
+	 * @param num
+	 * @return
+	 */
+	public static String getLastValue(String data, int num) {
+		if (data == null || data.length() <= num) {
+			return data;
+		} else {
+			return data.substring(data.length() - num, data.length());
+		}
+	}
+
+	/**
+	 * 校验邮箱是否正确
+	 * @param email
+	 * @return
+	 */
+	public static boolean validEmail(String email){
+		if (null==email || "".equals(email)){
+			return false;
+		}
+		String regEx1 = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+		Pattern p = Pattern.compile(regEx1);
+		Matcher m = p.matcher(email);
+		if(m.matches()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 	public static void main(String[] args) {
-		System.out.println(getCodes("190806", 10));
+		System.out.println(validEmail("12312@qq.com"));
 	}
 }

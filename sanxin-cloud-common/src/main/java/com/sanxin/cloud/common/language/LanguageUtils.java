@@ -59,11 +59,23 @@ public class LanguageUtils {
      */
     private static String getFileName () {
         String fileName = file;
-        String languageToken = request.getHeader("languageToken");
+        String languageToken = getLanguage();
         if (StringUtils.isNotBlank(languageToken)) {
             fileName += "_" + languageToken;
+        } else {
+            // 默认中文
+            fileName += "_CN";
         }
         return fileName;
+    }
+
+    /**
+     * 获取languageToken
+     * @return
+     */
+    public static String getLanguage() {
+        String languageToken = request.getHeader("languageToken");
+        return languageToken;
     }
 
 }

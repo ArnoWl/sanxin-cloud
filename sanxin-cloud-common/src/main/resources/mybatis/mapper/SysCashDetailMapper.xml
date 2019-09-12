@@ -23,4 +23,20 @@
         <result column="bank_id" property="bankId" />
     </resultMap>
 
+    <select id="getRuleNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from sys_cash_detail
+        where target_id = #{targetId,jdbcType=INTEGER}
+        <if test="type != null">
+            and type = #{type,jdbcType=INTEGER}
+        </if>
+        <if test="cashType==1">
+            and date_format(create_time,'%Y-%m-%d') =date_format(now(),'%Y-%m-%d')
+        </if>
+        <if test="cashType==2">
+            and YEARWEEK(date_format(create_time,'%Y-%m-%d')) = YEARWEEK(now())
+        </if>
+        <if test="cashType==3">
+            and date_format(create_time, '%Y-%m') = date_format(curdate() , '%Y-%m')
+        </if>
+    </select>
 </mapper>
