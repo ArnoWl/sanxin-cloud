@@ -36,41 +36,30 @@ public class BDevice implements Serializable {
      * 设备类型  见DeviceEnums
      */
     private Integer type;
-
-    /**
-     * 投放地址
-     */
-    private String addressDetail;
-
-    /**
-     * 经度
-     */
-    private String lonVal;
-
-    /**
-     * 纬度
-     */
-    private String latVal;
-
-    /**
-     * 营业时间-开始(星期)
-     */
-    private Integer startDay;
-    /**
-     * 营业时间-结束(星期)
-     */
-    private Integer endDay;
-
-    /**
-     * 营业时间-小时
-     */
-    private String hourTime;
-
     /**
      * 状态 0 暂停  1 设备运行中
      */
     private Integer status;
-
+    /**
+     * 该设备一共多少个口(充电宝)
+     */
+    private Integer allPort;
+    /**
+     * 可以借出的口(充电宝)
+     */
+    private Integer lendPort;
+    /**
+     * 可以归还的口(充电宝)
+     */
+    private Integer repayPort;
+    /**
+     * 最后开启时间
+     */
+    private Date lastOpenTime;
+    /**
+     * 最后关闭时间
+     */
+    private Date lastClostTime;
     /**
      * 设备添加时间
      */
@@ -109,51 +98,6 @@ public class BDevice implements Serializable {
     public void setType(Integer type) {
         this.type = type;
     }
-    public String getAddressDetail() {
-        return addressDetail;
-    }
-
-    public void setAddressDetail(String addressDetail) {
-        this.addressDetail = addressDetail;
-    }
-    public String getLonVal() {
-        return lonVal;
-    }
-
-    public void setLonVal(String lonVal) {
-        this.lonVal = lonVal;
-    }
-    public String getLatVal() {
-        return latVal;
-    }
-
-    public void setLatVal(String latVal) {
-        this.latVal = latVal;
-    }
-
-    public Integer getStartDay() {
-        return startDay;
-    }
-
-    public void setStartDay(Integer startDay) {
-        this.startDay = startDay;
-    }
-
-    public Integer getEndDay() {
-        return endDay;
-    }
-
-    public void setEndDay(Integer endDay) {
-        this.endDay = endDay;
-    }
-
-    public String getHourTime() {
-        return hourTime;
-    }
-
-    public void setHourTime(String hourTime) {
-        this.hourTime = hourTime;
-    }
 
     public Integer getStatus() {
         return status;
@@ -162,6 +106,47 @@ public class BDevice implements Serializable {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+    public Integer getAllPort() {
+        return allPort;
+    }
+
+    public void setAllPort(Integer allPort) {
+        this.allPort = allPort;
+    }
+
+    public Integer getLendPort() {
+        return lendPort;
+    }
+
+    public void setLendPort(Integer lendPort) {
+        this.lendPort = lendPort;
+    }
+
+    public Integer getRepayPort() {
+        return repayPort;
+    }
+
+    public void setRepayPort(Integer repayPort) {
+        this.repayPort = repayPort;
+    }
+
+    public Date getLastOpenTime() {
+        return lastOpenTime;
+    }
+
+    public void setLastOpenTime(Date lastOpenTime) {
+        this.lastOpenTime = lastOpenTime;
+    }
+
+    public Date getLastClostTime() {
+        return lastClostTime;
+    }
+
+    public void setLastClostTime(Date lastClostTime) {
+        this.lastClostTime = lastClostTime;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -185,12 +170,6 @@ public class BDevice implements Serializable {
         ", bid=" + bid +
         ", code=" + code +
         ", type=" + type +
-        ", addressDetail=" + addressDetail +
-        ", lonVal=" + lonVal +
-        ", latVal=" + latVal +
-        ", startDay=" + startDay +
-        ", endDay=" + endDay +
-        ", hourTime=" + hourTime +
         ", status=" + status +
         ", createTime=" + createTime +
         "}";

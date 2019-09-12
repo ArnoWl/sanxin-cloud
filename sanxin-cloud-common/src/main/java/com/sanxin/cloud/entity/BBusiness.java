@@ -25,6 +25,11 @@ public class BBusiness implements Serializable {
     private Integer id;
 
     /**
+     * 店铺编号
+     */
+    private String code;
+
+    /**
      * 姓名
      */
     private String nickName;
@@ -43,6 +48,11 @@ public class BBusiness implements Serializable {
      * 登录密码
      */
     private String passWord;
+
+    /**
+     * 支付密码
+     */
+    private String payWord;
 
     /**
      * 地区-国家
@@ -156,6 +166,15 @@ public class BBusiness implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public String getNickName() {
         return nickName;
     }
@@ -346,6 +365,14 @@ public class BBusiness implements Serializable {
 
     public void setCoverUrlList(List<String> coverUrlList) {
         this.coverUrlList = coverUrlList;
+    }
+
+    public String getPayWord() {
+        return payWord;
+    }
+
+    public void setPayWord(String payWord) {
+        this.payWord = payWord;
     }
 
     @Override
