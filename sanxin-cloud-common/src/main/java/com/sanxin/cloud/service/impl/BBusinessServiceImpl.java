@@ -3,6 +3,8 @@ package com.sanxin.cloud.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.common.language.AdminLanguageStatic;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
@@ -12,6 +14,7 @@ import com.sanxin.cloud.mapper.BBusinessMapper;
 import com.sanxin.cloud.service.BBusinessService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,6 +32,9 @@ import java.util.Map;
  */
 @Service
 public class BBusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness> implements BBusinessService {
+
+    @Value("${spring.radius}")
+    private Integer radius;
 
     @Override
     public BBusiness selectById(Integer id) {
@@ -48,5 +54,16 @@ public class BBusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness
             business.setCoverUrlList(coverUrlList);
         }
         return business;
+    }
+
+
+    @Override
+    public IPage<BBusiness> findByShops(Integer current, Integer size, String latVal, String longitude,String province, String city, String district) {
+        IPage<BBusiness> page = new Page<>();
+        page.setCurrent(current);
+        page.setSize(size);
+
+        List<BBusiness> byShops = baseMapper.findByShops(page, latVal, longitude, radius , province,city,district);
+        return page.setRecords(byShops);
     }
 }

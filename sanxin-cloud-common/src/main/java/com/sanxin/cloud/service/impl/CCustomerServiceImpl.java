@@ -1,13 +1,17 @@
 package com.sanxin.cloud.service.impl;
 
+import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.common.Constant;
+import com.sanxin.cloud.common.pwd.PwdEncode;
+import com.sanxin.cloud.common.random.RandNumUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.config.redis.RedisCacheManage;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
 import com.sanxin.cloud.entity.CAccount;
 import com.sanxin.cloud.entity.CCustomer;
+import com.sanxin.cloud.enums.RandNumType;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.mapper.CCustomerMapper;
 import com.sanxin.cloud.service.CAccountService;
@@ -15,6 +19,7 @@ import com.sanxin.cloud.service.CCustomerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -30,6 +35,8 @@ import java.util.Date;
 @Service
 public class CCustomerServiceImpl extends ServiceImpl<CCustomerMapper, CCustomer> implements CCustomerService {
 
+    @Value("${spring.redis.token.time}")
+    private long redisTokenTime;
     @Autowired
     private CAccountService cAccountService;
     @Autowired
@@ -76,8 +83,53 @@ public class CCustomerServiceImpl extends ServiceImpl<CCustomerMapper, CCustomer
         if (!customer.getVerCode().equals(verCode)) {
             throw new ThrowJsonException("验证码不匹配");
         }
+        //加密密码
+        String pass = PwdEncode.encodePwd(customer.getPassWord());
+        customer.setPassWord(pass);
         baseMapper.insert(customer);
 
+    }
+
+    /**
+     * 登录
+     * @param phone
+     * @param passWorld
+     * @param ext
+     * @return
+     */
+    @Override
+    public RestResult doLogin(String phone, String passWord, String ext) {
+
+        if (StringUtils.isEmpty(phone)) {
+            throw new ThrowJsonException("手机号不能为空");
+        }
+        if (StringUtils.isEmpty(passWord)) {
+            throw new ThrowJsonException("密码不能为空");
+        }
+
+        // 查询用户
+        CCustomer customer = baseMapper.selectOne(new QueryWrapper<CCustomer>().eq("phone", phone));
+        if (customer == null) {
+            throw new ThrowJsonException("用户不存在");
+        }
+        //加密密码
+        String pass = PwdEncode.encodePwd(passWord);
+        if (!customer.getPassWord().equals(pass)) {
+            throw new ThrowJsonException("密码错误");
+        }
+
+        //判断账号是否被冻结
+        if(customer.getStatus() == 0) {
+            throw new ThrowJsonException("账号已被冻结，请联系管理员");
+        }
+
+        // 生成token
+        String token= PwdEncode.encodePwd(RandNumUtils.get(RandNumType.NUMBER_LETTER_SYMBOL,16));
+        customer.setToken(token);
+        redisUtilsService.setKey(Constant.APP_USER_TOKEN + customer.getId(), token, redisTokenTime);
+
+        customer.setPassWord(null);
+        return RestResult.success("成功",customer);
     }
 
     /**

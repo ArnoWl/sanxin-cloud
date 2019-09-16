@@ -1,5 +1,6 @@
 package com.sanxin.cloud.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.sanxin.cloud.entity.BBusiness;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -14,4 +15,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface BBusinessService extends IService<BBusiness> {
 
     BBusiness selectById(Integer id);
+
+
+    IPage<BBusiness> findByShops(Integer current, Integer size, String latVal, String longitude,String province, String city, String district);
+
 }

@@ -37,4 +37,12 @@ public interface CCustomerService extends IService<CCustomer> {
      */
     void doRegister(CCustomer customer) throws Exception;
 
+    /**
+     * 登录
+     * @param phone
+     * @param passWord
+     * @param ext
+     * @return
+     */
+    RestResult doLogin(String phone, String passWord, String ext);
 }

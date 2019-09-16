@@ -2,6 +2,8 @@ package com.sanxin.cloud.app.api.controller;
 
 
 import com.sanxin.cloud.app.api.common.MappingUtils;
+import com.sanxin.cloud.common.language.LanguageUtils;
+import com.sanxin.cloud.common.properties.PropertiesUtil;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.CCustomer;
 import com.sanxin.cloud.service.CCustomerService;
@@ -49,20 +51,18 @@ public class LoginController extends BaseController {
         return RestResult.success("注册成功");
     }
 
+
     /**
      * 登录
-     * @param loginVo
+     * @param phone
+     * @param passWord
      * @return
      */
-
-    /*@PostMapping(value = MappingUtils.LOGIN)
-    public RestResult doLogin(LoginRegisterVo loginVo) {
+    @PostMapping(value = MappingUtils.LOGIN)
+    public RestResult doLogin(String phone,String passWord) {
         String ext = getLanguage();
-        if (loginVo.getChannel() == null) {
-            return RestResult.fail(PropertiesUtil.getVal("login_channel_not_exist",ext));
-        }
-        return loginService.doLogin(loginVo,ext);
-    }*/
+        return customerService.doLogin(phone,passWord,ext);
+    }
 
     /**
      * 忘记密码

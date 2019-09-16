@@ -3,6 +3,8 @@ package com.sanxin.cloud.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.Date;
@@ -15,6 +17,7 @@ import java.util.Date;
  * @author Arno
  * @since 2019-08-27
  */
+@Data
 public class CCustomer implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -96,6 +99,20 @@ public class CCustomer implements Serializable {
      */
     @TableField(exist = false)
     private String verCode;
+
+    /**
+     * token
+     */
+    @TableField(exist = false)
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public Integer getId() {
         return id;
