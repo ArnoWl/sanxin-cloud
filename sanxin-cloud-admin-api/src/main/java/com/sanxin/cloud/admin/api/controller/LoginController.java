@@ -1,6 +1,7 @@
 package com.sanxin.cloud.admin.api.controller;
 
 import com.sanxin.cloud.admin.api.service.LoginService;
+import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
 import org.slf4j.Logger;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2019-08-22
  */
 @RestController
-public class LoginController extends  BaseController{
+public class LoginController {
     protected final static Logger logger = LoggerFactory.getLogger(RedisUtilsService.class);
 
     @Autowired
@@ -31,7 +32,7 @@ public class LoginController extends  BaseController{
 
     @RequestMapping("/user/getInfo")
     public RestResult getInfo(){
-        String token=getToken();
+        String token= BaseUtil.getToken();
         RestResult result=loginService.getUserInfo(token);
         return result;
     }
@@ -39,7 +40,7 @@ public class LoginController extends  BaseController{
 
     @PostMapping("/loginOut")
     public RestResult loginOut(){
-        String token=getToken();
+        String token=BaseUtil.getToken();
         loginService.loginOutByToken(token);
         return  RestResult.success("退出成功");
     }

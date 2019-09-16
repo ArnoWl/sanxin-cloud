@@ -1,5 +1,6 @@
 package com.sanxin.cloud.app.api.controller;
 
+import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.SysAgreement;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/agree")
-public class AgreeController extends BaseController{
+public class AgreeController {
     @Autowired
     private SysAgreementService sysAgreementService;
 
@@ -27,7 +28,7 @@ public class AgreeController extends BaseController{
     @GetMapping(value = "/registerAgree")
     public RestResult registerAgree() {
         Integer type = 1;
-        String language = getLanguage();
+        String language = BaseUtil.getLanguage();
         SysAgreement agreement = sysAgreementService.getByTypeAndLanguage(type, language);
         return RestResult.success(LanguageUtils.getMessage("password_empty"), agreement);
     }

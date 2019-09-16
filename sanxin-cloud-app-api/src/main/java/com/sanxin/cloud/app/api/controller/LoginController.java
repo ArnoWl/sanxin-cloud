@@ -2,6 +2,7 @@ package com.sanxin.cloud.app.api.controller;
 
 
 import com.sanxin.cloud.app.api.common.MappingUtils;
+import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.properties.PropertiesUtil;
 import com.sanxin.cloud.common.rest.RestResult;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping("/register")
-public class LoginController extends BaseController {
+public class LoginController {
     @Autowired
     private CCustomerService customerService;
     @Autowired
@@ -29,7 +30,7 @@ public class LoginController extends BaseController {
      * 发送手机验证码
      *
      * @param phone
-     * @param flag 1、注册。2、修改密码
+     * @param region 1、注册。2、修改密码
      * @return
      * @throws Exception
      */
@@ -60,7 +61,7 @@ public class LoginController extends BaseController {
      */
     @PostMapping(value = MappingUtils.LOGIN)
     public RestResult doLogin(String phone,String passWord) {
-        String ext = getLanguage();
+        String ext = BaseUtil.getLanguage();
         return customerService.doLogin(phone,passWord,ext);
     }
 

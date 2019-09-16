@@ -33,9 +33,6 @@ import java.util.Map;
 @Service
 public class BBusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness> implements BBusinessService {
 
-    @Value("${spring.radius}")
-    private Integer radius;
-
     @Override
     public BBusiness selectById(Integer id) {
         BBusiness business = super.getById(id);
@@ -58,7 +55,7 @@ public class BBusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness
 
 
     @Override
-    public IPage<BBusiness> findByShops(Integer current, Integer size, String latVal, String longitude,String province, String city, String district) {
+    public IPage<BBusiness> findByShops(Integer current, Integer size, String latVal, String longitude, Integer radius,String province, String city, String district) {
         IPage<BBusiness> page = new Page<>();
         page.setCurrent(current);
         page.setSize(size);

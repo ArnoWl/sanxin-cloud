@@ -2,6 +2,7 @@ package com.sanxin.cloud.admin.api.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.admin.api.service.RoleService;
+import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.language.AdminLanguageStatic;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
@@ -21,7 +22,7 @@ import java.util.List;
  * @date 2019-08-26
  */
 @RestController
-public class RoleController extends  BaseController{
+public class RoleController {
 
     @Autowired
     private RoleService roleService;
@@ -79,7 +80,7 @@ public class RoleController extends  BaseController{
         if(!StringUtils.isEmpty(roleid)){
             role=Integer.parseInt(roleid);
         }
-        RestResult result=roleService.queryMenus(role,getLanguage());
+        RestResult result=roleService.queryMenus(role, BaseUtil.getLanguage());
         return result;
     }
 
@@ -95,8 +96,8 @@ public class RoleController extends  BaseController{
             return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ROLE_EMPTY));
         }
         Integer role=Integer.parseInt(roleid);
-        String token=getToken();
-        RestResult result=roleService.queryMyroleMenus(token,role,getLanguage());
+        String token=BaseUtil.getToken();
+        RestResult result=roleService.queryMyroleMenus(token,role,BaseUtil.getLanguage());
         return result;
     }
 

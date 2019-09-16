@@ -3,6 +3,7 @@ package com.sanxin.cloud.admin.api.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.netflix.discovery.converters.Auto;
+import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.language.AdminLanguageStatic;
 import com.sanxin.cloud.common.language.LanguageUtils;
@@ -31,7 +32,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/system")
-public class SysController extends BaseController {
+public class SysController {
     @Autowired
     private SysAgreementService sysAgreementService;
     @Autowired
@@ -104,8 +105,8 @@ public class SysController extends BaseController {
      */
     @GetMapping(value = "/queryGuideList")
     public RestResult queryGuideList() {
-        SysRichText use = sysRichTextService.getByType(RichTextEnums.USE_BATTERY.getType(), getLanguage());
-        SysRichText returnBat = sysRichTextService.getByType(RichTextEnums.RETURN_BATTERY.getType(), getLanguage());
+        SysRichText use = sysRichTextService.getByType(RichTextEnums.USE_BATTERY.getType(), BaseUtil.getLanguage());
+        SysRichText returnBat = sysRichTextService.getByType(RichTextEnums.RETURN_BATTERY.getType(), BaseUtil.getLanguage());
         List<SysRichText> list = new ArrayList<>();
         list.add(use);
         list.add(returnBat);
@@ -119,7 +120,7 @@ public class SysController extends BaseController {
      */
     @GetMapping(value = "/getGuideDetail")
     public RestResult getGuideDetail(Integer type) {
-        SysRichText richText = sysRichTextService.getByType(type, getLanguage());
+        SysRichText richText = sysRichTextService.getByType(type, BaseUtil.getLanguage());
         return RestResult.success("", richText);
     }
 
@@ -148,7 +149,7 @@ public class SysController extends BaseController {
      */
     @GetMapping(value = "/getAboutUs")
     public RestResult getAboutUs() {
-        SysRichText aboutUs = sysRichTextService.getByType(RichTextEnums.ABOUT_US.getType(), getLanguage());
+        SysRichText aboutUs = sysRichTextService.getByType(RichTextEnums.ABOUT_US.getType(), BaseUtil.getLanguage());
         return RestResult.success("", aboutUs);
     }
 

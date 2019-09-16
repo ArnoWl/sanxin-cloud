@@ -5,13 +5,17 @@ import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.service.BBusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/business")
-public class BusinessController extends BaseController{
+public class BusinessController {
+    @Value("${spring.radius}")
+    private Integer radius;
+
     @Autowired
     private BBusinessService bBusinessService;
 
@@ -28,7 +32,7 @@ public class BusinessController extends BaseController{
      * @throws Exception
      */
     public RestResult pageByShops(@RequestParam Integer current, @RequestParam Integer size, @RequestParam String latVal, @RequestParam String longitude, @RequestParam(required = false) String province, @RequestParam(required = false) String city, @RequestParam(required = false) String district) throws Exception {
-        IPage<BBusiness> byShops = bBusinessService.findByShops(current, size, latVal, longitude, province, city, district);
+        IPage<BBusiness> byShops = bBusinessService.findByShops(current, size, latVal, longitude, radius, province, city, district);
         return RestResult.success("成功",byShops);
     }
 }
