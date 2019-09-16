@@ -3,6 +3,7 @@ package com.sanxin.cloud.mapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.sanxin.cloud.entity.BBusiness;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,5 +17,13 @@ import java.util.List;
  */
 public interface BBusinessMapper extends BaseMapper<BBusiness> {
 
-    List<BBusiness> findByShops(IPage<BBusiness> page, String latVal, String longitude, Integer radius, String province, String city, String district);
+    /**
+     * 根据经纬度分页查询周边商铺
+     * @param page
+     * @param latVal
+     * @param longitude
+     * @param radius
+     * @return
+     */
+    List<BBusiness> findByShops(IPage<BBusiness> page, @Param(value = "latVal") String latVal, @Param(value = "longitude") String longitude,@Param(value = "radius") Integer radius);
 }

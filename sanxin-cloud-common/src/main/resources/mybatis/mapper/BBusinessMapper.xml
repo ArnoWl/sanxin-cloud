@@ -4,50 +4,39 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.sanxin.cloud.entity.BBusiness">
-        <id column="id" property="id" />
-        <result column="nick_name" property="nickName" />
-        <result column="phone" property="phone" />
-        <result column="country_id" property="countryId" />
-        <result column="pro_id" property="proId" />
-        <result column="city_id" property="cityId" />
-        <result column="area_id" property="areaId" />
-        <result column="address_detail" property="addressDetail" />
-        <result column="card_type" property="cardType" />
-        <result column="card_no" property="cardNo" />
-        <result column="card_front" property="cardFront" />
-        <result column="card_back" property="cardBack" />
-        <result column="company_name" property="companyName" />
-        <result column="license_code" property="licenseCode" />
-        <result column="license_img" property="licenseImg" />
-        <result column="company_img" property="companyImg" />
-        <result column="status" property="status" />
-        <result column="create_time" property="createTime" />
-        <result column="check_time" property="checkTime" />
+        <id column="id" property="id"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="phone" property="phone"/>
+        <result column="country_id" property="countryId"/>
+        <result column="pro_id" property="proId"/>
+        <result column="city_id" property="cityId"/>
+        <result column="area_id" property="areaId"/>
+        <result column="address_detail" property="addressDetail"/>
+        <result column="card_type" property="cardType"/>
+        <result column="card_no" property="cardNo"/>
+        <result column="card_front" property="cardFront"/>
+        <result column="card_back" property="cardBack"/>
+        <result column="company_name" property="companyName"/>
+        <result column="license_code" property="licenseCode"/>
+        <result column="license_img" property="licenseImg"/>
+        <result column="company_img" property="companyImg"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="check_time" property="checkTime"/>
     </resultMap>
 
+    <!-- 根据经纬度分页查询周边商铺 -->
     <select id="findByShops" resultType="com.sanxin.cloud.entity.BBusiness">
-        select * from
-        (SELECT
-        tb.*,
-        (select picture_urll from t_issue_album where deleted = 0 and issue_id = tb.id limit 1) as estateUrl,
-        (select format(round(avg(sale_money/area),3),3) from t_house_issue_info where deleted = 0 and estate_id = tb.id) as avgEstateMoney
-        FROM
-        (
-        SELECT *, fun_distance_km ( #{nowLatVal}, #{nowLonVal}, latitude, longitude ) dism FROM t_house_estate
-        <where>
-            <if test=" province != null and province != ''">
-                AND province = #{province}
-            </if>
-            <if test=" city != null and city != ''">
-                AND city = #{city}
-            </if>
-            <if test=" district != null and district != ''">
-                AND district = #{district}
-            </if>
-        </where>
-        ) tb
-        where tb.id &lt;&gt; #{estateId} and tb.dism &lt; #{radius}
-        ORDER BY tb.dism asc) a
+    SELECT * ,
+	    round(
+	    	6378.138 * 2 * asin(
+		    	sqrt(
+		    		pow( sin( ( #{latVal} * pi( ) / 180 - lat_val * pi( ) / 180 ) / 2 ), 2 ) + cos( lat_val * pi( ) / 180 ) * cos( lat_val * pi( ) / 180 ) * pow( sin( ( #{longitude} * pi( ) / 180 - lon_val * pi( ) / 180 ) / 2 ), 2 )
+		    	)
+	    	) * 1
+	    ) AS distance
+    FROM
+	    b_business
     </select>
 
 </mapper>

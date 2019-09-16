@@ -158,6 +158,19 @@ public class BBusiness implements Serializable {
      */
     @TableField(exist = false)
     private List<String> coverUrlList;
+    /**
+     * 距离
+     */
+    @TableField(exist = false)
+    private Integer distance;
+
+    public Integer getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Integer distance) {
+        this.distance = distance;
+    }
 
     public Integer getId() {
         return id;

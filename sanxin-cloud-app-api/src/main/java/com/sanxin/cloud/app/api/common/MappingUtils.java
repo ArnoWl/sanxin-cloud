@@ -21,5 +21,5 @@ public class MappingUtils {
     public static final String HANDLE_REGISTER="/handleRegister";
 
     /**获取附近门店*/
-    public static final String OBTAIN_NRARBY_STORE="/home/obtainNearbyStore";
+    public static final String NRARBY_BUSINESS="/nearbyBusiness";
 }
