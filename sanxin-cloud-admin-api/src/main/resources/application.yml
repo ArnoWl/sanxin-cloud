@@ -50,7 +50,7 @@ mybatis-plus:
     cache-enabled: true
     lazy-loading-enabled: true
     multiple-result-sets-enabled: true
-    use-column-label: true
+    use-column-labe l: true
     default-executor-type: reuse
     default-statement-timeout: 25000
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #配置打印sql
