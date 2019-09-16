@@ -39,8 +39,8 @@ spring:
     restart:
       enabled: true
       additional-paths: src/main/java
-  # 周边小区半径距离
-  radius: 2000
+  # 周边半径距离
+  radius: 1000
 
 mybatis-plus:
   mapper-locations:  classpath:mybatis/mapper/*.xml

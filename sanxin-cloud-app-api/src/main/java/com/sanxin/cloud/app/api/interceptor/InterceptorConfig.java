@@ -39,6 +39,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 // 拦截所有请求
                 .addPathPatterns("/**")
                 .excludePathPatterns("/user-protocol/**")
+                .excludePathPatterns("/business/**")
                 // 排除swagger相关请求
                 .excludePathPatterns("/webjars/**", "/v2/**");
     }
