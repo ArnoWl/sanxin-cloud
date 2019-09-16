@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * <p>
- *
+ * 店铺申请表
  * </p>
  *
  * @author Arno
@@ -30,9 +30,14 @@ public class BBusiness implements Serializable {
     private String code;
 
     /**
-     * 姓名
+     * 加盟商店铺昵称
      */
     private String nickName;
+
+    /**
+     * 姓名
+     */
+    private String realName;
 
     /**
      * 联系方式
@@ -131,6 +136,22 @@ public class BBusiness implements Serializable {
      */
     private String latVal;
     /**
+     * 营业时间——开始日期(星期)
+     */
+    private Integer startDay;
+    /**
+     * 营业时间——结束日期(星期)
+     */
+    private Integer endDay;
+    /**
+     * 营业时间——开始时间(小时)
+     */
+    private String startTime;
+    /**
+     * 营业时间——结束时间(小时)
+     */
+    private String endTime;
+    /**
      * 门店banner图
      */
     private String coverUrl;
@@ -182,6 +203,15 @@ public class BBusiness implements Serializable {
     public void setNickName(String nickName) {
         this.nickName = nickName;
     }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -349,6 +379,38 @@ public class BBusiness implements Serializable {
 
     public void setLatVal(String latVal) {
         this.latVal = latVal;
+    }
+
+    public Integer getStartDay() {
+        return startDay;
+    }
+
+    public void setStartDay(Integer startDay) {
+        this.startDay = startDay;
+    }
+
+    public Integer getEndDay() {
+        return endDay;
+    }
+
+    public void setEndDay(Integer endDay) {
+        this.endDay = endDay;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
     public String getCoverUrl() {
