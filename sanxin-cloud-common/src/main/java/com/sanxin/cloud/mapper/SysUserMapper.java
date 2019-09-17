@@ -1,13 +1,9 @@
 package com.sanxin.cloud.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.SysUser;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
  * <p>
