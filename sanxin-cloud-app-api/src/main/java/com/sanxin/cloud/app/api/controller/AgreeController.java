@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 系统协议、使用指南、关于我们Controller
+ * 系统协议
  * @author xiaoky
  * @date 2019-09-11
  */

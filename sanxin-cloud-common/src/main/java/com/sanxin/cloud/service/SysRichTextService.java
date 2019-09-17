@@ -29,4 +29,12 @@ public interface SysRichTextService extends IService<SysRichText> {
      * @return
      */
     RestResult updateRichTextByType(SysRichText richText);
+
+    /**
+     * 通过type获取
+     * @param type
+     * @param language
+     * @return
+     */
+    SysRichText getByTypeAndLanguage(Integer type, String language);
 }

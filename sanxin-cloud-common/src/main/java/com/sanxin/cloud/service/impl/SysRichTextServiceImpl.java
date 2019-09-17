@@ -55,4 +55,25 @@ public class SysRichTextServiceImpl extends ServiceImpl<SysRichTextMapper, SysRi
         return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 
+    @Override
+    public SysRichText getByTypeAndLanguage(Integer type, String language) {
+        QueryWrapper<SysRichText> wrapper = new QueryWrapper<>();
+        wrapper.eq("type", type);
+        SysRichText richText = super.getOne(wrapper);
+        if (richText == null) {
+            throw new ThrowJsonException("Error");
+        }
+        // 返回对应语言的内容
+        JSONObject object = JSONObject.parseObject(richText.getTitle());
+        richText.setTitle(object.getString(language));
+        if (LanguageEnums.CN.name().equals(language)) {
+            richText.setCnContent(richText.getCnContent());
+        } else if (LanguageEnums.EN.name().equals(language)) {
+            richText.setEnContent(richText.getEnContent());
+        } else if (LanguageEnums.THAI.name().equals(language)) {
+            richText.setThaiContent(richText.getThaiContent());
+        }
+        return richText;
+    }
+
 }

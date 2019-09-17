@@ -2,7 +2,7 @@ package com.sanxin.cloud.app.api.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.sanxin.cloud.app.api.common.MappingUtils;
-import com.sanxin.cloud.app.api.service.BBusinessService;
+import com.sanxin.cloud.app.api.service.BusinessService;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.BBusiness;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class BusinessController {
     private Integer radius;
 
     @Autowired
-    private BBusinessService bBusinessService;
+    private BusinessService bBusinessService;
 
     /**
      * 根据经纬度分页查询周边商铺

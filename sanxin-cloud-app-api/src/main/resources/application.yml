@@ -63,7 +63,7 @@ mybatis-plus:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:7002/eureka/
+      defaultZone: http://localhost:7001/eureka/
     healthcheck:
       enabled: true
   instance:
