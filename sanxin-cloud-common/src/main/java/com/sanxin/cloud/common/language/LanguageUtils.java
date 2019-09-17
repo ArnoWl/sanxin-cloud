@@ -1,6 +1,5 @@
 package com.sanxin.cloud.common.language;
 
-import com.sanxin.cloud.common.BaseUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

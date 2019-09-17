@@ -37,7 +37,7 @@ public class BDevice implements Serializable {
      */
     private Integer type;
     /**
-     * 状态 0 暂停  1 设备运行中
+     * 状态 1 连接中  2 连接成功(运行中)  3 关闭(暂停)
      */
     private Integer status;
     /**
@@ -59,7 +59,7 @@ public class BDevice implements Serializable {
     /**
      * 最后关闭时间
      */
-    private Date lastClostTime;
+    private Date lastCloseTime;
     /**
      * 设备添加时间
      */
@@ -139,12 +139,12 @@ public class BDevice implements Serializable {
         this.lastOpenTime = lastOpenTime;
     }
 
-    public Date getLastClostTime() {
-        return lastClostTime;
+    public Date getLastCloseTime() {
+        return lastCloseTime;
     }
 
-    public void setLastClostTime(Date lastClostTime) {
-        this.lastClostTime = lastClostTime;
+    public void setLastCloseTime(Date lastCloseTime) {
+        this.lastCloseTime = lastCloseTime;
     }
 
     public Date getCreateTime() {
