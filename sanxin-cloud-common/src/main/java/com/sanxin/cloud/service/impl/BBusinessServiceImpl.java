@@ -54,6 +54,11 @@ public class BBusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness
         return business;
     }
 
+    /**
+     * 通过用户id查询数据
+     * @param cid
+     * @return
+     */
     @Override
     public BBusiness getByCid(Integer cid) {
         QueryWrapper<BBusiness> wrapper = new QueryWrapper<>();
