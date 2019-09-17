@@ -22,7 +22,7 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
 @Configuration
 public class TransactionAdviceConfig {
     // 配置切面
-    private static final String AOP_POINTCUT_EXPRESSION = "execution(* com.sanxin.cloud.service..*.*(..))";
+    private static final String AOP_POINTCUT_EXPRESSION = "(execution(* com.sanxin.cloud.app.api.service..*.*(..)) or execution(* com.sanxin.cloud.service..*.*(..)))";
 
     @Autowired
     private PlatformTransactionManager transactionManager;

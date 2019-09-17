@@ -19,7 +19,7 @@ public class BaseUtil {
      * 获取token
      * @return
      */
-    public String getUserToken(){
+    public static String getUserToken(){
         String token=request.getHeader("userToken");
         return token;
     }

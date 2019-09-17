@@ -27,4 +27,10 @@ public interface BBusinessService extends IService<BBusiness> {
      */
     IPage<BBusiness> findByShops(Integer current, Integer size, String latVal, String longitude, Integer radius);
 
+    /**
+     * 通过用户id查询数据
+     * @param cid
+     * @return
+     */
+    BBusiness getByCid(Integer cid);
 }

@@ -1,8 +1,12 @@
 package com.sanxin.cloud.app.api.interceptor;
 
 
+import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.Constant;
+import com.sanxin.cloud.config.login.LoginDto;
+import com.sanxin.cloud.config.login.LoginTokenService;
 import com.sanxin.cloud.config.redis.RedisCacheManage;
+import com.sanxin.cloud.config.redis.RedisUtilsService;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,38 +31,24 @@ public class TokenInterceptor implements HandlerInterceptor {
     private long redisTokenTime;
 
     @Autowired
-    private RedisCacheManage redisCacheManage;
+    private LoginTokenService loginTokenService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (request.getMethod().equals("OPTIONS")) {
             return true;
         }
-        String regId = request.getHeader("userId");
-        String token = request.getHeader("token");
-        log.info("userId:" + regId);
-        log.info("token:" + token);
-        if (StringUtils.isEmpty(regId)) {
-            this.setHead(response);
-            throw new ThrowJsonException("登录过期，请重新登录");
-        }
+        String token = BaseUtil.getUserToken();
         if (StringUtils.isEmpty(token)) {
             this.setHead(response);
             throw new ThrowJsonException("登录过期，请重新登录");
         }
 
-        String redisToken = (String) redisCacheManage.get(Constant.APP_USER_TOKEN + regId);
-        if (StringUtils.isEmpty(redisToken)) {
-            this.setHead(response);
-            throw new ThrowJsonException("登录过期，请重新登录");
+        Integer tid = loginTokenService.validLoginTid(token);
+        if (tid != null) {
+            return true;
         } else {
-            if (redisToken.equals(token)) {
-                redisCacheManage.expire(Constant.APP_USER_TOKEN + regId, redisTokenTime);
-                return true;
-            } else {
-                this.setHead(response);
-                throw new ThrowJsonException("登录过期，请重新登录");
-            }
+            return false;
         }
     }
 

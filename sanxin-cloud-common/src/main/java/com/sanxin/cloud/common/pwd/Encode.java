@@ -14,7 +14,7 @@ public class Encode{
     private static char hexDigits_wl[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
     private final static String[] hexDigits = { "0", "1", "2", "3", "4", "5",
 		"6", "7", "8", "9", "a", "b", "c", "d", "e", "f" };
-    
+
     private static String mapString[] = { "ZE", "ON", "TW", "TH", "FO", "FI", "SI", "SE", "EI",
 			"NI", "BA", "BB", "BC", "BD", "BE", "BF", "B1", "B2", "B3", "B4",
 			"B5", "B6", "B7", "B8", "B9", "B0", "Q1", "R1", "SK", "3T", "YU",
@@ -36,7 +36,7 @@ public class Encode{
     public static String xString[]={"1","2","3","4","5","6","7","8","9","10","11","12"};
     public static String xStringName[]={"1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"};
 	/**
-	 * 
+	 *
 	 */
 	private static final String byteArrayToHexString(byte[] byteArray){
 		StringBuffer sb = new StringBuffer();
@@ -54,22 +54,22 @@ public class Encode{
 		return hexDigits[n/16] + hexDigits[n%16];
 	}
 
-	
-    /**  
-	 */  
-	private static final String Encode(String code,String message){   
-	    MessageDigest md;   
-	    String encode = null;   
-	    try {   
-	        md = MessageDigest.getInstance(code);   
-	        encode = byteArrayToHexString(md.digest(message   
-	                .getBytes()));   
-	    } catch (Exception e) {   
-	        e.printStackTrace();   
-	    } 
-	    return encode;   
-	}  
-	
+
+    /**
+	 */
+	private static final String Encode(String code,String message){
+	    MessageDigest md;
+	    String encode = null;
+	    try {
+	        md = MessageDigest.getInstance(code);
+	        encode = byteArrayToHexString(md.digest(message
+	                .getBytes()));
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return encode;
+	}
+
 	public static final String md5Encode(String message){
 		return Encode("MD5",message);
 	}
@@ -86,7 +86,7 @@ public class Encode{
 	public static final String sha512Encode(String message){
 		return Encode("SHA-512",message);
 	}
-		
+
     public static String PHEncodeNum(String strNum)
     {
         if (strNum == null || strNum.trim().length() == 0 || strNum.trim().equals("0"))
@@ -97,7 +97,7 @@ public class Encode{
         StringBuilder strResultCode = new StringBuilder();
 
         Double dPreCode = Double.valueOf(strNum);
-        Double keyNum = 23333351.00; 
+        Double keyNum = 23333351.00;
         Double tempNum = keyNum / dPreCode;
         String tempStr = String.valueOf(tempNum);
         int len = 18;
@@ -136,7 +136,7 @@ public class Encode{
 
         return strResultCode.toString();
     }
-    
+
     /**
      * 对数据进行解密
      * @param strCode 需要解密的支付
@@ -176,16 +176,16 @@ public class Encode{
 
         Double iNum = Double.valueOf(midStr);
 
-        iNum = 1 / (iNum / 23333351.00);        
-        
+        iNum = 1 / (iNum / 23333351.00);
+
         DecimalFormat df = new DecimalFormat("0.00");
         String lastNum = String.valueOf(df.format(iNum));
-        
+
         if(itype == 1) //表示返回整数
         {
         	lastNum = lastNum.substring(0,lastNum.length() - 3);
         }
-        	
+
         return lastNum;
 
     }
@@ -228,7 +228,7 @@ public class Encode{
     /**
      * 获取随机随机数
      * @param howNum 几位数
-     * @param type 1表示纯数字  2数字字母混合 3纯字母 
+     * @param type 1表示纯数字  2数字字母混合 3纯字母
      * @return
      */
     public static final String getRandomNum(int howNum, int type){
@@ -302,7 +302,7 @@ public class Encode{
 	}
 
     public static void main(String[] args) {
-	
+
 		System.out.println(	Encode.getRandomNum(5, 3));
 	}
 }

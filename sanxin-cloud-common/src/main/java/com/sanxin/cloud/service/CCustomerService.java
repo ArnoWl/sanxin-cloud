@@ -23,26 +23,4 @@ public interface CCustomerService extends IService<CCustomer> {
      */
     void queryCustomerList(SPage<CCustomer> page, CCustomer customer);
 
-    /**
-     * 发送短信验证码
-     * @param phone
-     * @return
-     */
-    RestResult sendVerCode(String phone, String region);
-
-
-    /**
-     * 注册
-     * @param customer
-     */
-    void doRegister(CCustomer customer) throws Exception;
-
-    /**
-     * 登录
-     * @param phone
-     * @param passWord
-     * @param ext
-     * @return
-     */
-    RestResult doLogin(String phone, String passWord, String ext);
 }

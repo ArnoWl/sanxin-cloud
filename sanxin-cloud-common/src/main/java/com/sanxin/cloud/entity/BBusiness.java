@@ -24,6 +24,8 @@ public class BBusiness implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
+    private Integer cid;
+
     /**
      * 店铺编号
      */
@@ -199,6 +201,14 @@ public class BBusiness implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getCid() {
+        return cid;
+    }
+
+    public void setCid(Integer cid) {
+        this.cid = cid;
     }
 
     public String getCode() {

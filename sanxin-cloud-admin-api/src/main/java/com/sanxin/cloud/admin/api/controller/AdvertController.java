@@ -47,8 +47,8 @@ public class AdvertController {
     @GetMapping(value = "/list")
     public RestResult queryAdvertList(SPage<AAdvert> page, AAdvert advert) {
         QueryWrapper<AAdvert> wrapper = new QueryWrapper<>();
-        if (StringUtils.isNotBlank(advert.getNickName())) {
-            wrapper.eq("nick_name", advert.getNickName());
+        if (StringUtils.isNotBlank(advert.getRealName())) {
+            wrapper.eq("nick_name", advert.getRealName());
         }
         if (advert.getStatus() != null) {
             wrapper.eq("status", advert.getStatus());

@@ -1,5 +1,6 @@
 package com.sanxin.cloud.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sanxin.cloud.entity.AAdvert;
 import com.sanxin.cloud.mapper.AAdvertMapper;
@@ -17,4 +18,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class AAdvertServiceImpl extends ServiceImpl<AAdvertMapper, AAdvert> implements AAdvertService {
 
+    @Override
+    public AAdvert getByCid(Integer cid) {
+        QueryWrapper<AAdvert> wrapper = new QueryWrapper<>();
+        wrapper.eq("cid", cid);
+        return super.getOne(wrapper);
+    }
 }

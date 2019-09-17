@@ -21,11 +21,11 @@ public class AAdvert implements Serializable {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-
+    private Integer cid;
     /**
      * 姓名
      */
-    private String nickName;
+    private String realName;
 
     /**
      * 联系方式
@@ -105,13 +105,23 @@ public class AAdvert implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getNickName() {
-        return nickName;
+
+    public Integer getCid() {
+        return cid;
     }
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public void setCid(Integer cid) {
+        this.cid = cid;
     }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -226,7 +236,7 @@ public class AAdvert implements Serializable {
     public String toString() {
         return "AAdvert{" +
         "id=" + id +
-        ", nickName=" + nickName +
+        ", realName=" + realName +
         ", phone=" + phone +
         ", countryId=" + countryId +
         ", proId=" + proId +

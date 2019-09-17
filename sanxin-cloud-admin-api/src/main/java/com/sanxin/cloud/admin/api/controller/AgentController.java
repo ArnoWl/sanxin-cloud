@@ -41,8 +41,8 @@ public class AgentController {
     @GetMapping(value = "/list")
     public RestResult queryAgentList(SPage<AgAgent> page, AgAgent agent) {
         QueryWrapper<AgAgent> wrapper = new QueryWrapper<>();
-        if (StringUtils.isNotBlank(agent.getNickName())) {
-            wrapper.eq("nick_name", agent.getNickName());
+        if (StringUtils.isNotBlank(agent.getRealName())) {
+            wrapper.eq("nick_name", agent.getRealName());
         }
         if (agent.getStatus() != null) {
             wrapper.eq("status", agent.getStatus());

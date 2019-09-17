@@ -2,10 +2,13 @@ package com.sanxin.cloud.app.api.controller;
 
 
 import com.sanxin.cloud.app.api.common.MappingUtils;
+import com.sanxin.cloud.app.api.service.LoginService;
+import com.sanxin.cloud.app.api.service.RegistService;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.properties.PropertiesUtil;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.dto.LoginRegisterVo;
 import com.sanxin.cloud.entity.CCustomer;
 import com.sanxin.cloud.service.CCustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +24,9 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/register")
 public class LoginController {
     @Autowired
-    private CCustomerService customerService;
+    private LoginService loginService;
+    @Autowired
+    private RegistService registService;
     @Autowired
     private HttpServletRequest request;
 
@@ -36,7 +41,7 @@ public class LoginController {
      */
     @GetMapping(value = MappingUtils.SEND_REGISTER_CODE)
     public RestResult sendVerCode(@RequestParam String phone,String region) throws Exception {
-        return customerService.sendVerCode(phone,region);
+        return registService.sendVerCode(phone,region);
     }
 
 
@@ -48,21 +53,19 @@ public class LoginController {
      */
     @PostMapping(value = MappingUtils.REGISTER)
     public RestResult doRegister(@RequestBody CCustomer customer) throws Exception {
-        customerService.doRegister(customer);
+        registService.doRegister(customer);
         return RestResult.success("注册成功");
     }
 
 
     /**
      * 登录
-     * @param phone
-     * @param passWord
+     * @param loginRegisterVo 登录信息
      * @return
      */
     @PostMapping(value = MappingUtils.LOGIN)
-    public RestResult doLogin(String phone,String passWord) {
-        String ext = BaseUtil.getLanguage();
-        return customerService.doLogin(phone,passWord,ext);
+    public RestResult doLogin(LoginRegisterVo loginRegisterVo) {
+        return loginService.doLogin(loginRegisterVo);
     }
 
     /**

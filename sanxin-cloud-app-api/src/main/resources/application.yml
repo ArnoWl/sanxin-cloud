@@ -25,11 +25,11 @@ spring:
     testOnReturn: false
     poolPreparedStatements: true
   redis:
-    host: 47.244.167.166
-    port: 39182
+    host: 183.60.136.220
+    port: 6388
     token:
       time: 36000
-    password: N5Y6NZ7MO5WzBNI2
+    password:
     jedis:
       pool:
         max-wait: 1000ms

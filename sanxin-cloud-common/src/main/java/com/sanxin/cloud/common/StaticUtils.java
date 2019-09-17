@@ -53,4 +53,12 @@ public class StaticUtils {
      * 限制月提现次数(val=3)
      */
     public static final Integer CASH_MOUTH_TYPE = 3;
+    /**
+     * 登录类型——用户(val=1)
+     */
+    public static final Integer LOGIN_CUSTOMER = 1;
+    /**
+     * 登录类型——加盟商(val=2)
+     */
+    public static final Integer LOGIN_BUSINESS = 2;
 }

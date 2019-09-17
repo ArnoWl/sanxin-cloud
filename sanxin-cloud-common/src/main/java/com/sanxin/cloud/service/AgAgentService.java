@@ -1,5 +1,6 @@
 package com.sanxin.cloud.service;
 
+import com.sanxin.cloud.entity.AAdvert;
 import com.sanxin.cloud.entity.AgAgent;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface AgAgentService extends IService<AgAgent> {
 
+    /**
+     * 通过用户id查询数据
+     * @param cid
+     * @return
+     */
+    AgAgent getByCid(Integer cid);
 }

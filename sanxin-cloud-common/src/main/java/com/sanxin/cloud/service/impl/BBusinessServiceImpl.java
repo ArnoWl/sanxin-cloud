@@ -3,6 +3,7 @@ package com.sanxin.cloud.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.common.language.AdminLanguageStatic;
@@ -70,5 +71,12 @@ public class BBusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness
         page.setSize(size);
         List<BBusiness> byShops = baseMapper.findByShops(page, latVal, longitude, radius);
         return page.setRecords(byShops);
+    }
+
+    @Override
+    public BBusiness getByCid(Integer cid) {
+        QueryWrapper<BBusiness> wrapper = new QueryWrapper<>();
+        wrapper.eq("cid", cid);
+        return super.getOne(wrapper);
     }
 }

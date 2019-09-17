@@ -13,4 +13,10 @@ import com.sanxin.cloud.entity.AAdvert;
  */
 public interface AAdvertService extends IService<AAdvert> {
 
+    /**
+     * 通过用户id查询数据
+     * @param cid
+     * @return
+     */
+    AAdvert getByCid(Integer cid);
 }
