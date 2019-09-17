@@ -2,9 +2,9 @@ package com.sanxin.cloud.app.api.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.sanxin.cloud.app.api.common.MappingUtils;
+import com.sanxin.cloud.app.api.service.BBusinessService;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.BBusiness;
-import com.sanxin.cloud.service.BBusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
