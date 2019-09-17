@@ -15,10 +15,8 @@
         <module>../sanxin-cloud-gateway</module>
         <module>../sanxin-cloud-admin-api</module>
         <module>../sanxin-cloud-app-api</module>
-        <!--
-         <module>../sanxin-cloud-netty</module>
+        <module>../sanxin-cloud-netty</module>
         <module>../sanxin-cloud-quartz</module>
-        -->
     </modules>
     <packaging>pom</packaging>
 
@@ -37,9 +35,7 @@
         <freemarker.version>2.3.28</freemarker.version>
         <ali.fastjson.varsion>1.2.47</ali.fastjson.varsion>
         <netty.version>4.1.29.Final</netty.version>
-        <alipay.version>1.0</alipay.version>
-        <commons-httpclient.version>3.1</commons-httpclient.version>
-        <dom4j.version>1.6.1</dom4j.version>
+
     </properties>
 
 
@@ -124,23 +120,7 @@
                 <version>${netty.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.alipay.sdk</groupId>
-                <artifactId>alipay-sdk-java</artifactId>
-                <version>3.7.110.ALL</version>
-            </dependency>
 
-            <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>${commons-httpclient.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>dom4j</groupId>
-                <artifactId>dom4j</artifactId>
-                <version>${dom4j.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
