@@ -1,5 +1,6 @@
 package com.sanxin.cloud.common.language;
 
+import com.sanxin.cloud.common.BaseUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -17,7 +18,20 @@ public class LanguageUtils {
 
     private static String file = "language";
 
-    private static HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+    private HttpServletRequest request = null;
+
+    private static LanguageUtils languageUtils = null;
+    public static LanguageUtils getInstance(){
+        if(languageUtils == null){
+            synchronized(LanguageUtils.class){
+                if(languageUtils == null){
+                    languageUtils = new LanguageUtils();
+                }
+            }
+            return languageUtils;
+        }
+        return languageUtils;
+    }
 
     /**
      * 获取国际化信息
@@ -74,8 +88,15 @@ public class LanguageUtils {
      * @return
      */
     public static String getLanguage() {
-        String languageToken = request.getHeader("languageToken");
+        String languageToken = getInstance().getRequest().getHeader("languageToken");
         return languageToken;
     }
 
+    public HttpServletRequest getRequest() {
+        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+    }
+
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
+    }
 }

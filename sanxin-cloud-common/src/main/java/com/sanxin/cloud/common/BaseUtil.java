@@ -13,14 +13,28 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2019-09-16
  */
 public class BaseUtil {
-    private static HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+
+    private HttpServletRequest request = null;
+
+    private static BaseUtil baseUtil = null;
+    public static BaseUtil getInstance(){
+        if(baseUtil == null){
+            synchronized(BaseUtil.class){
+                if(baseUtil == null){
+                    baseUtil = new BaseUtil();
+                }
+            }
+            return baseUtil;
+        }
+        return baseUtil;
+    }
 
     /**
      * 获取token
      * @return
      */
-    public static String getUserToken(){
-        String token=request.getHeader("userToken");
+    public static String getUserToken() {
+        String token = getInstance().getRequest().getHeader("userToken");
         return token;
     }
 
@@ -28,8 +42,8 @@ public class BaseUtil {
      * 获取token
      * @return
      */
-    public static String getToken(){
-        String token=request.getHeader("sanxinToken");
+    public static String getToken() {
+        String token = getInstance().getRequest().getHeader("sanxinToken");
         return token;
     }
 
@@ -37,10 +51,10 @@ public class BaseUtil {
      * 获取 语言
      * @return
      */
-    public static String getLanguage(){
-        String language=request.getHeader("languageToken");
-        if(StringUtils.isEmpty(language) || "undefined".equals(language) ){
-            language= LanguageEnums.CN.name();
+    public static String getLanguage() {
+        String language = getInstance().getRequest().getHeader("languageToken");
+        if (StringUtils.isEmpty(language) || "undefined".equals(language)) {
+            language = LanguageEnums.CN.name();
         }
         return language;
     }
@@ -49,8 +63,16 @@ public class BaseUtil {
      * 获取regId
      * @return
      */
-    public String getRegId(){
-        String token=request.getHeader("userId");
+    public String getRegId() {
+        String token = request.getHeader("userId");
         return token;
+    }
+
+    public HttpServletRequest getRequest() {
+        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+    }
+
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
     }
 }
