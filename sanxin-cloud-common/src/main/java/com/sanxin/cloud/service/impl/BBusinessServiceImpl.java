@@ -66,22 +66,4 @@ public class BBusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness
         return super.getOne(wrapper);
     }
 
-    /**
-     * 根据经纬度分页查询周边商铺
-     * @param current
-     * @param size
-     * @param latVal
-     * @param longitude
-     * @param radius
-     * @return
-     */
-    @Override
-    public IPage<BBusiness> findByShops(Integer current, Integer size, String latVal, String longitude, Integer radius) {
-        IPage<BBusiness> page = new Page<>();
-        page.setCurrent(current);
-        page.setSize(size);
-        List<BBusiness> byShops = baseMapper.findByShops(page, latVal, longitude, radius);
-        return page.setRecords(byShops);
-    }
-
 }
