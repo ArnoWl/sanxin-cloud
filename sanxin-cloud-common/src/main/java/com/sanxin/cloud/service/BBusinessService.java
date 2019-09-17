@@ -17,6 +17,13 @@ public interface BBusinessService extends IService<BBusiness> {
     BBusiness selectById(Integer id);
 
     /**
+     * 通过用户id查询数据
+     * @param cid
+     * @return
+     */
+    BBusiness getByCid(Integer cid);
+
+    /**
      * 根据经纬度分页查询周边商铺
      * @param current
      * @param size

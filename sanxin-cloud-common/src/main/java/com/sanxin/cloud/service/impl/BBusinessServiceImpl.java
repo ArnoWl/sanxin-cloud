@@ -54,6 +54,12 @@ public class BBusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness
         return business;
     }
 
+    @Override
+    public BBusiness getByCid(Integer cid) {
+        QueryWrapper<BBusiness> wrapper = new QueryWrapper<>();
+        wrapper.eq("cid", cid);
+        return super.getOne(wrapper);
+    }
 
     /**
      * 根据经纬度分页查询周边商铺
