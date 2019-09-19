@@ -21,9 +21,9 @@ public class CPushLog implements Serializable {
     private Integer id;
 
     /**
-     * 用户id
+     * 消息对应者Id
      */
-    private Integer cid;
+    private Integer targetId;
 
     /**
      * 交易单号
@@ -74,13 +74,15 @@ public class CPushLog implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getCid() {
-        return cid;
+
+    public Integer getTargetId() {
+        return targetId;
     }
 
-    public void setCid(Integer cid) {
-        this.cid = cid;
+    public void setTargetId(Integer targetId) {
+        this.targetId = targetId;
     }
+
     public String getPayCode() {
         return payCode;
     }
@@ -149,7 +151,7 @@ public class CPushLog implements Serializable {
     public String toString() {
         return "CPushLog{" +
         "id=" + id +
-        ", cid=" + cid +
+        ", targetId=" + targetId +
         ", payCode=" + payCode +
         ", msgType=" + msgType +
         ", content=" + content +

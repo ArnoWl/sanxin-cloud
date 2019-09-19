@@ -1,4 +1,4 @@
-package com.sanxin.cloud.app.api.service;
+package com.sanxin.cloud.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sanxin.cloud.common.rest.RestResult;

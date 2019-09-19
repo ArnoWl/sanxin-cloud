@@ -9,6 +9,10 @@ import java.util.List;
  */
 public class BusinessDetailVo {
     /**
+     * 头像
+     */
+    private String headUrl;
+    /**
      * 昵称
      */
     private String nickName;
@@ -45,6 +49,26 @@ public class BusinessDetailVo {
      * 营业时间(小时)
      */
     private String businessTime;
+
+    /**
+     * Gets the value of headUrl.
+     *
+     * @return the value of headUrl
+     */
+    public String getHeadUrl() {
+        return headUrl;
+    }
+
+    /**
+     * Sets the headUrl.
+     *
+     * <p>You can use getHeadUrl() to get the value of headUrl</p>
+     *
+     * @param headUrl headUrl
+     */
+    public void setHeadUrl(String headUrl) {
+        this.headUrl = headUrl;
+    }
 
     /**
      * Gets the value of nickName.

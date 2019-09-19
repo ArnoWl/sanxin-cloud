@@ -1,8 +1,10 @@
-package com.sanxin.cloud.app.api.service.impl;
+package com.sanxin.cloud.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.sanxin.cloud.app.api.service.CPushLogService;
+import com.sanxin.cloud.entity.CFeedbackLog;
+import com.sanxin.cloud.mapper.CFeedbackLogMapper;
+import com.sanxin.cloud.service.CPushLogService;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.CPushLog;
@@ -21,14 +23,11 @@ import java.util.List;
  * @since 2019-09-17
  */
 @Service
-public class CPushLogServiceImpl implements CPushLogService{
-
-    @Autowired
-    private CPushLogMapper pushLogMapper;
+public class CPushLogServiceImpl extends ServiceImpl<CPushLogMapper, CPushLog> implements CPushLogService{
 
     @Override
     public RestResult queryMyMessage(SPage<CPushLog> page, Integer cid) {
-        List<CPushLog> logList = pushLogMapper.selectList(new QueryWrapper<CPushLog>().eq("cid", cid));
+        List<CPushLog> logList = baseMapper.selectList(new QueryWrapper<CPushLog>().eq("cid", cid));
         return RestResult.success(logList);
     }
 }

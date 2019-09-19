@@ -10,12 +10,18 @@ import com.sanxin.cloud.config.login.LoginTokenService;
 import com.sanxin.cloud.dto.BusinessBaseVo;
 import com.sanxin.cloud.dto.BusinessDetailVo;
 import com.sanxin.cloud.dto.PowerBankListVo;
+import com.sanxin.cloud.dto.BusinessHomeVo;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.service.BBusinessService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/business")
@@ -68,16 +74,16 @@ public class BusinessController {
         BBusiness business = bBusinessService.validById(bid);
         // 校验参数
         if (StringUtils.isBlank(vo.getHeadUrl())) {
-            return RestResult.fail("请上传头像");
+            return RestResult.fail("business_headurl_empty");
         }
         if (StringUtils.isBlank(vo.getNickName())) {
-            return RestResult.fail("请输入昵称");
+            return RestResult.fail("business_nickname_empty");
         }
         if (vo.getCardType() == null) {
-            return RestResult.fail("请选择证件类型");
+            return RestResult.fail("business_cardtype_empty");
         }
         if (StringUtils.isBlank(vo.getCardNo())) {
-            return RestResult.fail("请输入证件号码");
+            return RestResult.fail("business_cardno_empty");
         }
         // 赋值修改
         business.setHeadUrl(vo.getHeadUrl());
@@ -110,12 +116,21 @@ public class BusinessController {
      */
     @PutMapping(value = BusinessMapping.EDIT_BUSINESS_CENTER)
     public RestResult editBusinessCenter(BusinessDetailVo vo) {
-        if (StringUtils.isBlank(vo.getNickName())) {
-            return RestResult.fail("请输入门店");
-        }
-        if (vo.getStartDay() == null || vo.getEndDay() == null) {
-            return RestResult.fail("请选择");
-        }
+        String token = BaseUtil.getUserToken();
+        Integer bid = loginTokenService.validLoginTid(token);
+        RestResult result = businessService.editBusinessCenter(bid, vo);
+        return result;
+    }
+
+    /**
+     * 查询加盟商首页数据
+     * @return
+     */
+    @GetMapping(value = BusinessMapping.GET_BUSINESS_HOME)
+    public RestResult getBusinessHome() {
+        String token = BaseUtil.getUserToken();
+        Integer bid = loginTokenService.validLoginTid(token);
+        BusinessHomeVo vo = businessService.getBusinessHome(bid);
         return null;
     }
 }

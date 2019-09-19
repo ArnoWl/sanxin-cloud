@@ -11,6 +11,7 @@ import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.dto.BusinessBaseVo;
 import com.sanxin.cloud.dto.BusinessDetailVo;
 import com.sanxin.cloud.dto.PowerBankListVo;
+import com.sanxin.cloud.dto.BusinessHomeVo;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.enums.CardTypeEnums;
 import com.sanxin.cloud.enums.WeekEnums;
@@ -22,7 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness> implements BusinessService {
@@ -104,6 +107,66 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
             }
             vo.setCoverUrlList(coverUrlList);
         }
+        return vo;
+    }
+
+    @Override
+    public RestResult editBusinessCenter(Integer bid, BusinessDetailVo vo) {
+        BBusiness business = businessService.validById(bid);
+        if (StringUtils.isBlank(vo.getNickName())) {
+            return RestResult.fail("business_name_empty");
+        }
+        if (vo.getStartDay() == null || vo.getEndDay() == null) {
+            return RestResult.fail("business_hour_empty");
+        }
+        if (vo.getStartDay() >= vo.getEndDay()) {
+            return RestResult.fail("business_hour_error");
+        }
+        if (StringUtils.isBlank(vo.getStartTime()) || StringUtils.isBlank(vo.getEndTime())) {
+            return RestResult.fail("business_hour_time_empty");
+        }
+        if (StringUtils.isBlank(vo.getAddressDetail())) {
+            return RestResult.fail("business_addr_detail_empty");
+        }
+        if (StringUtils.isBlank(vo.getHeadUrl())) {
+            return RestResult.fail("business_headurl_empty");
+        }
+        if (vo.getCoverUrlList() == null || vo.getCoverUrlList().size() <= 0) {
+            return RestResult.fail("business_cover_empty");
+        }
+        if (vo.getCoverUrlList().size()>5) {
+            return RestResult.fail("business_cover_size");
+        }
+        // 将图片重新封装一次
+        List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
+        for(String coverUrl : vo.getCoverUrlList()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("url", coverUrl);
+            mapList.add(map);
+        }
+        business.setHeadUrl(vo.getHeadUrl());
+        business.setNickName(vo.getNickName());
+        business.setStartDay(vo.getStartDay());
+        business.setEndDay(vo.getEndDay());
+        business.setStartTime(vo.getStartTime());
+        business.setEndTime(vo.getEndTime());
+        business.setAddressDetail(vo.getAddressDetail());
+        business.setCoverUrl(JSON.toJSONString(mapList));
+        boolean result = businessService.updateById(business);
+        if (result) {
+            return RestResult.success("success");
+        }
+        return RestResult.fail("fail");
+    }
+
+    @Override
+    public BusinessHomeVo getBusinessHome(Integer bid) {
+        BBusiness business = businessService.validById(bid);
+        BusinessHomeVo vo = new BusinessHomeVo();
+        vo.setHeadUrl(business.getHeadUrl());
+        vo.setNickName(business.getNickName());
+        // 查询是否有未读消息
+
         return vo;
     }
 }

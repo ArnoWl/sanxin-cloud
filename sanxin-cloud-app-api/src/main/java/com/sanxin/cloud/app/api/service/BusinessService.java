@@ -1,8 +1,10 @@
 package com.sanxin.cloud.app.api.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.dto.BusinessBaseVo;
 import com.sanxin.cloud.dto.BusinessDetailVo;
+import com.sanxin.cloud.dto.BusinessHomeVo;
 import com.sanxin.cloud.dto.PowerBankListVo;
 import com.sanxin.cloud.entity.BBusiness;
 
@@ -33,4 +35,19 @@ public interface BusinessService {
      * @return
      */
     BusinessDetailVo getBusinessCenter(Integer bid);
+
+    /**
+     * 编辑商家中心
+     * @param bid
+     * @param vo
+     * @return
+     */
+    RestResult editBusinessCenter(Integer bid, BusinessDetailVo vo);
+
+    /**
+     * 查询商家首页数据
+     * @param bid
+     * @return
+     */
+    BusinessHomeVo getBusinessHome(Integer bid);
 }
