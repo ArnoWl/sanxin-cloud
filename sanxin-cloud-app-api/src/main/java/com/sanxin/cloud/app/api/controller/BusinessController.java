@@ -5,14 +5,18 @@ import com.sanxin.cloud.app.api.common.BusinessMapping;
 import com.sanxin.cloud.app.api.common.MappingUtils;
 import com.sanxin.cloud.app.api.service.BusinessService;
 import com.sanxin.cloud.common.BaseUtil;
+import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.login.LoginTokenService;
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.BusinessBaseVo;
 import com.sanxin.cloud.dto.BusinessDetailVo;
 import com.sanxin.cloud.dto.PowerBankListVo;
 import com.sanxin.cloud.dto.BusinessHomeVo;
 import com.sanxin.cloud.entity.BBusiness;
+import com.sanxin.cloud.entity.BMoneyDetail;
 import com.sanxin.cloud.service.BBusinessService;
+import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -131,6 +135,34 @@ public class BusinessController {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginTid(token);
         BusinessHomeVo vo = businessService.getBusinessHome(bid);
-        return null;
+        return RestResult.success("", vo);
+    }
+
+    /**
+     * 查询店铺余额明细
+     * @param page
+     * @return
+     */
+    @GetMapping(value = BusinessMapping.QUERY_MONEY_DETAIL_LIST)
+    public RestResult queryMoneyDetailList(SPage<BMoneyDetail> page) {
+        String token = BaseUtil.getUserToken();
+        Integer bid = loginTokenService.validLoginTid(token);
+        BMoneyDetail detail = new BMoneyDetail();
+        detail.setBid(bid);
+        businessService.queryMoneyDetailList(page, detail);
+        return RestResult.success("", page);
+    }
+
+    @GetMapping(value = BusinessMapping.QUERY_INCOME_DETAIL_LIST)
+    public RestResult queryIncomeDetailList(SPage<BMoneyDetail> page, String startTime, String endTime) {
+        String token = BaseUtil.getUserToken();
+        Integer bid = loginTokenService.validLoginTid(token);
+        BMoneyDetail detail = new BMoneyDetail();
+        detail.setBid(bid);
+        detail.setIsout(StaticUtils.PAY_IN);
+        detail.setStartTime(startTime);
+        detail.setEndTime(endTime);
+        businessService.queryMoneyDetailList(page, detail);
+        return RestResult.success("", page);
     }
 }

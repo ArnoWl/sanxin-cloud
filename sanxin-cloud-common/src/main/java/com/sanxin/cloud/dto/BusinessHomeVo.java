@@ -16,7 +16,9 @@ public class BusinessHomeVo {
      * 昵称
      */
     private String nickName;
-    /** 是否有未读消息提示*/
+    /**
+     * 是否有未读消息提示
+     */
     private Boolean tips;
     /**
      * 余额

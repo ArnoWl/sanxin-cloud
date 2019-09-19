@@ -1,12 +1,15 @@
 package com.sanxin.cloud.app.api.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.BusinessBaseVo;
 import com.sanxin.cloud.dto.BusinessDetailVo;
 import com.sanxin.cloud.dto.BusinessHomeVo;
 import com.sanxin.cloud.dto.PowerBankListVo;
 import com.sanxin.cloud.entity.BBusiness;
+import com.sanxin.cloud.entity.BMoneyDetail;
 
 public interface BusinessService {
 
@@ -50,4 +53,12 @@ public interface BusinessService {
      * @return
      */
     BusinessHomeVo getBusinessHome(Integer bid);
+
+    /**
+     * 查询店铺余额明细
+     * @param page
+     * @detail 查询信息
+     * @return
+     */
+    void queryMoneyDetailList(SPage<BMoneyDetail> page, BMoneyDetail detail);
 }

@@ -61,4 +61,13 @@ public class StaticUtils {
      * 登录类型——加盟商(val=2)
      */
     public static final Integer LOGIN_BUSINESS = 2;
+
+    /**
+     * 支出收入类型 支出(val=0)
+     */
+    public static final Integer PAY_OUT = 0;
+    /**
+     * 支出收入类型 收入(val=1)
+     */
+    public static final Integer PAY_IN = 1;
 }

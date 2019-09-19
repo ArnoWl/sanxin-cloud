@@ -16,4 +16,8 @@ public class BusinessMapping {
     public static final String EDIT_BUSINESS_CENTER = "/editBusinessCenter";
     /** 查询商家首页数据*/
     public static final String GET_BUSINESS_HOME = "/getBusinessHome";
+    /** 查询余额明细*/
+    public static final String QUERY_MONEY_DETAIL_LIST = "/queryMoneyDetailList";
+    /** 查询收益明细*/
+    public static final String QUERY_INCOME_DETAIL_LIST = "/queryIncomeDetailList";
 }

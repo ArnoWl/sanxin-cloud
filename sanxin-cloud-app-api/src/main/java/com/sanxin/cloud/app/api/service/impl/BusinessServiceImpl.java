@@ -3,25 +3,38 @@ package com.sanxin.cloud.app.api.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sanxin.cloud.app.api.service.BusinessService;
+import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.BusinessBaseVo;
 import com.sanxin.cloud.dto.BusinessDetailVo;
 import com.sanxin.cloud.dto.PowerBankListVo;
 import com.sanxin.cloud.dto.BusinessHomeVo;
+import com.sanxin.cloud.entity.BAccount;
 import com.sanxin.cloud.entity.BBusiness;
+import com.sanxin.cloud.entity.BMoneyDetail;
+import com.sanxin.cloud.entity.CPushLog;
 import com.sanxin.cloud.enums.CardTypeEnums;
+import com.sanxin.cloud.enums.CashTypeEnums;
+import com.sanxin.cloud.enums.HandleTypeEnums;
 import com.sanxin.cloud.enums.WeekEnums;
+import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.mapper.BBusinessMapper;
+import com.sanxin.cloud.mapper.BMoneyDetailMapper;
+import com.sanxin.cloud.service.BAccountService;
 import com.sanxin.cloud.service.BBusinessService;
+import com.sanxin.cloud.service.CPushLogService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +44,12 @@ import java.util.Map;
 public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness> implements BusinessService {
     @Autowired
     private BBusinessService businessService;
+    @Autowired
+    private CPushLogService pushLogService;
+    @Autowired
+    private BAccountService bAccountService;
+    @Autowired
+    private BMoneyDetailMapper bMoneyDetailMapper;
 
     /**
      * 根据经纬度分页查询周边商铺
@@ -165,8 +184,34 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
         BusinessHomeVo vo = new BusinessHomeVo();
         vo.setHeadUrl(business.getHeadUrl());
         vo.setNickName(business.getNickName());
+        boolean tips = false;
         // 查询是否有未读消息
-
+        QueryWrapper<CPushLog> pushLogWrapper = new QueryWrapper<>();
+        pushLogWrapper.eq("target_id", bid).eq("target_type", CashTypeEnums.BUSINESS.getId())
+                .eq("reading", StaticUtils.STATUS_NO);
+        int logNum = pushLogService.count(pushLogWrapper);
+        if (logNum>0) {
+            tips = true;
+        }
+        vo.setTips(tips);
+        // 余额、收益
+        BAccount bAccount = bAccountService.getByBid(bid);
+        vo.setMoney(bAccount.getMoney());
+        vo.setTotalIncome(bAccount.getTotalIncome());
+        BigDecimal todayIncome = bMoneyDetailMapper.getIncome(bid, 1);
+        BigDecimal weekIncome = bMoneyDetailMapper.getIncome(bid, 2);
+        BigDecimal monthIncome = bMoneyDetailMapper.getIncome(bid, 3);
+        vo.setTodayIncome(todayIncome);
+        vo.setWeekIncome(weekIncome);
+        vo.setMonthIncome(monthIncome);
         return vo;
+    }
+
+    @Override
+    public void queryMoneyDetailList(SPage<BMoneyDetail> page, BMoneyDetail detail) {
+        bMoneyDetailMapper.queryMoneyDetailList(page, detail);
+        for (BMoneyDetail d : page.getRecords()) {
+            d.setTypeName(HandleTypeEnums.getName(d.getTypeId()));
+        }
     }
 }

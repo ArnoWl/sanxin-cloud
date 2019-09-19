@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanxin.cloud.mapper.BAccountMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sanxin.cloud.entity.BAccount">
+        <id column="id" property="id" />
+        <result column="bid" property="bid" />
+        <result column="total_income" property="totalIncome" />
+        <result column="money" property="money" />
+        <result column="version" property="version" />
+    </resultMap>
+
+</mapper>

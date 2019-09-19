@@ -7,10 +7,12 @@ import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.AAdvert;
 import com.sanxin.cloud.entity.AgAgent;
+import com.sanxin.cloud.entity.BAccount;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.enums.CardTypeEnums;
 import com.sanxin.cloud.service.AAdvertService;
 import com.sanxin.cloud.service.AgAgentService;
+import com.sanxin.cloud.service.BAccountService;
 import com.sanxin.cloud.service.BBusinessService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,8 @@ public class ApplyServiceImpl implements ApplyService {
     private BBusinessService businessService;
     @Autowired
     private AgAgentService agAgentService;
+    @Autowired
+    private BAccountService bAccountService;
 
     /**
      * 处理广告申请
@@ -171,6 +175,11 @@ public class ApplyServiceImpl implements ApplyService {
         business.setStatus(StaticUtils.STATUS_APPLY);
         boolean result = businessService.saveOrUpdate(business);
         if (result) {
+            if (queryBusiness == null) {
+                BAccount bAccount = new BAccount();
+                bAccount.setBid(business.getId());
+                bAccountService.save(bAccount);
+            }
             return RestResult.success("success");
         }
         return RestResult.fail("fail");
