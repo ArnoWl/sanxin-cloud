@@ -10,6 +10,7 @@ import com.sanxin.cloud.app.api.service.BusinessService;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.dto.BusinessBaseVo;
 import com.sanxin.cloud.dto.BusinessDetailVo;
+import com.sanxin.cloud.dto.PowerBankListVo;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.enums.CardTypeEnums;
 import com.sanxin.cloud.enums.WeekEnums;
@@ -33,16 +34,17 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
      * @param current
      * @param size
      * @param latVal
-     * @param longitude
+     * @param lonVal
+     * @param search
      * @param radius
      * @return
      */
     @Override
-    public IPage<BBusiness> findByShops(Integer current, Integer size, String latVal, String longitude, Integer radius) {
-        IPage<BBusiness> page = new Page<>();
+    public IPage<PowerBankListVo> findByShops(Integer current, Integer size, String latVal, String lonVal, String search, Integer radius) {
+        IPage<PowerBankListVo> page = new Page<>();
         page.setCurrent(current);
         page.setSize(size);
-        List<BBusiness> byShops = baseMapper.findByShops(page, latVal, longitude, radius);
+        List<PowerBankListVo> byShops = baseMapper.findByShops(page, latVal, lonVal, search, radius);
         return page.setRecords(byShops);
     }
 

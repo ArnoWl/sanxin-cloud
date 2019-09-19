@@ -26,17 +26,22 @@
     </resultMap>
 
     <!-- 根据经纬度分页查询周边商铺 -->
-    <select id="findByShops" resultType="com.sanxin.cloud.entity.BBusiness">
-    SELECT * ,
-	    round(
-	    	6378.138 * 2 * asin(
-		    	sqrt(
-		    		pow( sin( ( #{latVal} * pi( ) / 180 - lat_val * pi( ) / 180 ) / 2 ), 2 ) + cos( lat_val * pi( ) / 180 ) * cos( lat_val * pi( ) / 180 ) * pow( sin( ( #{longitude} * pi( ) / 180 - lon_val * pi( ) / 180 ) / 2 ), 2 )
-		    	)
-	    	) * 1
-	    ) AS distance
+    <select id="findByShops" resultType="com.sanxin.cloud.dto.PowerBankListVo">
+    SELECT b.id,d.code, b.company_name,b.start_day,b.end_day,b.start_time,b.end_time,d.lend_port,d.repay_port,d.type,b.address_detail,d.status,
+    round(
+        6378.138 * 2 * asin(
+            sqrt(
+                pow( sin( (#{latVal} * pi( ) / 180 - lat_val * pi( ) / 180 ) / 2 ), 2 ) + cos( lat_val * pi( ) / 180 ) * cos( lat_val * pi( ) / 180 ) * pow( sin( ( #{lonVal} * pi( ) / 180 - lon_val * pi( ) / 180 ) / 2 ), 2 )
+                )
+                            ) * 1000
+        ) AS distance
     FROM
-	    b_business
+	    b_business b , b_device d
+	WHERE
+	    b.id=d.bid
+	    <if test="search != null">
+            AND b.company_name like concat('%',#{search},'%')
+        </if>
     </select>
 
 </mapper>

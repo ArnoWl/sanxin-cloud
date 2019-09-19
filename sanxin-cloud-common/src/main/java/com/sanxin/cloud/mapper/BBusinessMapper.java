@@ -1,6 +1,7 @@
 package com.sanxin.cloud.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.sanxin.cloud.dto.PowerBankListVo;
 import com.sanxin.cloud.entity.BBusiness;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
@@ -21,9 +22,10 @@ public interface BBusinessMapper extends BaseMapper<BBusiness> {
      * 根据经纬度分页查询周边商铺
      * @param page
      * @param latVal
-     * @param longitude
+     * @param lonVal
+     * @param search
      * @param radius
      * @return
      */
-    List<BBusiness> findByShops(IPage<BBusiness> page, @Param(value = "latVal") String latVal, @Param(value = "longitude") String longitude,@Param(value = "radius") Integer radius);
+    List<PowerBankListVo> findByShops(IPage<PowerBankListVo> page, @Param(value = "latVal") String latVal, @Param(value = "lonVal") String lonVal, @Param(value = "search") String search, @Param(value = "radius") Integer radius);
 }

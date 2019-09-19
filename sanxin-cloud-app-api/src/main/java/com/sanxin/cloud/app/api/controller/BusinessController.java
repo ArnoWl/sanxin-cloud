@@ -9,10 +9,9 @@ import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.login.LoginTokenService;
 import com.sanxin.cloud.dto.BusinessBaseVo;
 import com.sanxin.cloud.dto.BusinessDetailVo;
+import com.sanxin.cloud.dto.PowerBankListVo;
 import com.sanxin.cloud.entity.BBusiness;
-import com.sanxin.cloud.enums.CardTypeEnums;
 import com.sanxin.cloud.service.BBusinessService;
-import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,13 +34,13 @@ public class BusinessController {
      * @param current
      * @param size
      * @param latVal
-     * @param longitude
+     * @param lonVal
+     * @param search
      * @return
-     * @throws Exception
      */
     @GetMapping(value = MappingUtils.NRARBY_BUSINESS)
-    public RestResult pageByShops(@RequestParam Integer current, @RequestParam Integer size, String latVal, String longitude) throws Exception {
-        IPage<BBusiness> byShops = businessService.findByShops(current, size, latVal, longitude, radius);
+    public RestResult pageByShops(@RequestParam Integer current, @RequestParam Integer size, String latVal, String lonVal,String search){
+        IPage<PowerBankListVo> byShops = businessService.findByShops(current, size, latVal, lonVal, search, radius);
         return RestResult.success("成功",byShops);
     }
 
