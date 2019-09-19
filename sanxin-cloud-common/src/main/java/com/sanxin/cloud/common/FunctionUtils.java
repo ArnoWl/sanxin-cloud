@@ -1,10 +1,12 @@
 package com.sanxin.cloud.common;
 
+import cn.hutool.core.date.Week;
 import com.alibaba.fastjson.JSONObject;
 import com.sanxin.cloud.common.pwd.Encode;
 import com.sanxin.cloud.common.random.RandNumUtils;
 import com.sanxin.cloud.enums.LanguageEnums;
 import com.sanxin.cloud.enums.RandNumType;
+import com.sanxin.cloud.enums.WeekEnums;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -236,4 +238,19 @@ public class FunctionUtils {
 	public static void main(String[] args) {
 		System.out.println(validEmail("12312@qq.com"));
 	}
+
+	/**
+	 * 获取营业时间
+	 * @param startDay 星期——开始时间
+	 * @param endDay 星期——结束时间
+	 * @param startTime 小时——开始时间
+	 * @param endTime 小时——结束时间
+	 * @return
+	 */
+    public static String getHours(Integer startDay, Integer endDay, String startTime, String endTime) {
+    	StringBuffer sb = new StringBuffer();
+    	sb.append(WeekEnums.getName(startDay)).append("~").append(WeekEnums.getName(endDay))
+			.append(" ").append(startTime).append("-").append(endTime);
+    	return sb.toString();
+    }
 }

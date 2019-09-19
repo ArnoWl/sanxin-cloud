@@ -1,8 +1,10 @@
 package com.sanxin.cloud.app.api.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.config.login.LoginTokenService;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.BankDetail;
 import com.sanxin.cloud.entity.SysCashDetail;
@@ -29,15 +31,18 @@ public class CashController {
     private SysCashRuleService sysCashRuleService;
     @Autowired
     private SysCashDetailService sysCashDetailService;
+    @Autowired
+    private LoginTokenService loginTokenService;
 
     /**
      * 查询银行卡列表
-     * @param targetId 对应Id
-     * @param type 类型 会员/店铺
      * @return
      */
     @GetMapping(value = "/queryBankList")
-    public RestResult queryBankList(SPage<BankDetail> page, Integer targetId, Integer type) {
+    public RestResult queryBankList(SPage<BankDetail> page) {
+        String token = BaseUtil.getUserToken();
+        Integer targetId = loginTokenService.validLoginTid(token);
+        Integer type = loginTokenService.validLoginType(token);
         QueryWrapper<BankDetail> wrapper = new QueryWrapper<>();
         wrapper.eq("target_id", targetId).eq("type", type);
         bankDetailService.page(page, wrapper);
@@ -51,12 +56,13 @@ public class CashController {
     /**
      * 删除银行卡
      * @param bankId 银行卡id
-     * @param targetId 对应Id
-     * @param type 类型 会员/店铺
      * @return
      */
     @DeleteMapping("/deleteBank")
-    public RestResult deleteBank(Integer bankId, Integer targetId, Integer type) {
+    public RestResult deleteBank(Integer bankId) {
+        String token = BaseUtil.getUserToken();
+        Integer targetId = loginTokenService.validLoginTid(token);
+        Integer type = loginTokenService.validLoginType(token);
         QueryWrapper<BankDetail> wrapper = new QueryWrapper<>();
         wrapper.eq("id", bankId).eq("target_id", targetId).eq("type", type);
         BankDetail detail = bankDetailService.getOne(wrapper);
@@ -77,9 +83,9 @@ public class CashController {
      */
     @PostMapping(value = "/addBank")
     public RestResult addBankDetail(BankDetail bankDetail) {
-        // targetId和type先写死,记得删除
-        bankDetail.setTargetId(1);
-        bankDetail.setType(CashTypeEnums.CUSTOMER.getId());
+        String token = BaseUtil.getUserToken();
+        Integer targetId = loginTokenService.validLoginTid(token);
+        Integer type = loginTokenService.validLoginType(token);
         RestResult result = bankDetailService.addBankDetail(bankDetail);
         return result;
     }
@@ -91,12 +97,18 @@ public class CashController {
      */
     @GetMapping(value = "/getBank")
     public RestResult getBankDetail(Integer bankId) {
+        String token = BaseUtil.getUserToken();
+        Integer targetId = loginTokenService.validLoginTid(token);
+        Integer type = loginTokenService.validLoginType(token);
         BankDetail bankDetail = bankDetailService.getById(bankId);
         if (bankDetail == null) {
             return RestResult.fail("data_exception");
         }
-
-        // 获取token后对数据再进行一次判断(判断是否本人银行卡)
+        // 判断是否本人银行卡
+        if (!FunctionUtils.isEquals(bankDetail.getType(), type)
+                || !FunctionUtils.isEquals(bankDetail.getTargetId(), targetId)) {
+            return RestResult.fail("data_exception");
+        }
 
         bankDetail.setTargetId(null);
         return RestResult.success("success", bankDetail);

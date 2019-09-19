@@ -69,6 +69,11 @@ public class BDevice implements Serializable {
      */
     @TableField(exist = false)
     private String businessName;
+    /**
+     * 状态名称
+     */
+    @TableField(exist = false)
+    private String statusName;
 
     public Integer getId() {
         return id;
@@ -161,6 +166,14 @@ public class BDevice implements Serializable {
 
     public void setBusinessName(String businessName) {
         this.businessName = businessName;
+    }
+
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
     }
 
     @Override

@@ -8,7 +8,7 @@ package com.sanxin.cloud.common.language;
 public class AdminLanguageStatic {
     /**********基础**********/
     public static final String BASE_REQUEST_ERROR = "base.requestError";
-    public static final String BASE_REPEAT_SUBMIT = "base.repeatSubmit";
+    public static final String BASE_REPEAT_SUBMIT = "repeat_submit";
     public static final String BASE_SUCCESS = "base.success";
     public static final String BASE_FAIL = "base.fail";
     /*************广告*******/

@@ -21,4 +21,12 @@ public interface BBusinessService extends IService<BBusiness> {
      * @return
      */
     BBusiness getByCid(Integer cid);
+
+    /**
+     * 查询店铺信息并且校验店铺是否通过
+     * @param bid
+     * @return
+     */
+    BBusiness validById(Integer bid);
+
 }

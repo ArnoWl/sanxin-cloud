@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.language.AdminLanguageStatic;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
@@ -66,4 +68,12 @@ public class BBusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness
         return super.getOne(wrapper);
     }
 
+    @Override
+    public BBusiness validById(Integer bid) {
+        BBusiness business = super.getById(bid);
+        if (business == null || !FunctionUtils.isEquals(business.getStatus(), StaticUtils.STATUS_SUCCESS)) {
+            throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
+        }
+        return business;
+    }
 }

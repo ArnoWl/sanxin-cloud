@@ -47,12 +47,8 @@ public class DeviceController {
         if (status != null && FunctionUtils.isEquals(device.getStatus(), status)) {
             return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_REPEAT_SUBMIT));
         }
-        device.setStatus(status);
-        boolean result = bDeviceService.updateById(device);
-        if (!result) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
-        }
-        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        RestResult result = bDeviceService.handleDeviceStatus(id, status);
+        return result;
     }
 
     /**

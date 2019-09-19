@@ -61,23 +61,23 @@ public enum DeviceStatusEnums {
         this.name = name;
     }
 
-    public static String getName(int id) {
-        for(DeviceStatusEnums e: DeviceStatusEnums.values()) {
-            if (FunctionUtils.isEquals(id, e.getStatus())) {
-                return e.getName();
-            }
-        }
-        return "";
-    }
-
-    public static String getName(Integer id) {
+    public static String getName(Integer status) {
         String str = "";
         for (DeviceStatusEnums o : DeviceStatusEnums.values()) {
-            if (FunctionUtils.isEquals(id, o.getStatus())) {
+            if (FunctionUtils.isEquals(status, o.getStatus())) {
                 str = LanguageUtils.getMessage(o.getName());
                 break;
             }
         }
         return str;
+    }
+
+    public static Boolean validStatus(Integer status) {
+        for (DeviceStatusEnums o : DeviceStatusEnums.values()) {
+            if (FunctionUtils.isEquals(status, o.getStatus())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

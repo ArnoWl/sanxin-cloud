@@ -1,6 +1,7 @@
 package com.sanxin.cloud.enums;
 
 import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.language.LanguageUtils;
 
 /**
  * 证件类型枚举类
@@ -8,8 +9,8 @@ import com.sanxin.cloud.common.FunctionUtils;
  * @date 2019-08-28
  */
 public enum CardTypeEnums {
-    ID_CARD(1, "身份证"),
-    PASS_PORT(2, "护照");
+    ID_CARD(1, "card_type_id_card"),
+    PASS_PORT(2, "card_type_pass_port");
 
     private Integer type;
     private String name;
@@ -62,7 +63,7 @@ public enum CardTypeEnums {
     public static String getName(int id) {
         for(CardTypeEnums e:CardTypeEnums.values()) {
             if (FunctionUtils.isEquals(id, e.getType())) {
-                return e.getName();
+                return LanguageUtils.getMessage(e.getName());
             }
         }
         return "";

@@ -1,6 +1,7 @@
 package com.sanxin.cloud.enums;
 
 import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.language.LanguageUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,8 +14,8 @@ import java.util.Map;
  * @date 2019-09-06
  */
 public enum DeviceTypeEnums {
-    LARGE_CABINET(1, "大柜机"),
-    SMALL_CABINET(2, "小柜机");
+    LARGE_CABINET(1, "device_type_large"),
+    SMALL_CABINET(2, "device_type_small");
 
     private Integer type;
     private String name;
@@ -64,13 +65,15 @@ public enum DeviceTypeEnums {
         this.name = name;
     }
 
-    public static String getName(int id) {
-        for(DeviceTypeEnums e: DeviceTypeEnums.values()) {
-            if (FunctionUtils.isEquals(id, e.getType())) {
-                return e.getName();
+    public static String getName(Integer id) {
+        String str = "";
+        for (DeviceTypeEnums o : DeviceTypeEnums.values()) {
+            if (FunctionUtils.isEquals(id, o.getType())) {
+                str = LanguageUtils.getMessage(o.getName());
+                break;
             }
         }
-        return "";
+        return str;
     }
 
     public static List<Map<String, Object>> queryMap(){
@@ -82,5 +85,14 @@ public enum DeviceTypeEnums {
             list.add(map);
         }
         return list;
+    }
+
+    public static boolean validType(Integer type) {
+        for (DeviceTypeEnums o : DeviceTypeEnums.values()) {
+            if (FunctionUtils.isEquals(type, o.getType())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
