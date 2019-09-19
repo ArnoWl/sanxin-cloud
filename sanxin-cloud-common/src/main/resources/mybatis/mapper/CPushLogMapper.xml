@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanxin.cloud.mapper.CPushLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sanxin.cloud.entity.CPushLog">
+        <id column="id" property="id" />
+        <result column="cid" property="cid" />
+        <result column="pay_code" property="payCode" />
+        <result column="msg_type" property="msgType" />
+        <result column="content" property="content" />
+        <result column="target_code" property="targetCode" />
+        <result column="reading" property="reading" />
+        <result column="create_time" property="createTime" />
+        <result column="remark" property="remark" />
+        <result column="params" property="params" />
+        <result column="target_type" property="targetType" />
+    </resultMap>
+
+</mapper>
