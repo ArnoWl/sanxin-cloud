@@ -45,6 +45,28 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
         page.setCurrent(current);
         page.setSize(size);
         List<PowerBankListVo> byShops = baseMapper.findByShops(page, latVal, lonVal, search, radius);
+        for (PowerBankListVo byShop : byShops) {
+            if (byShop.getLendPort() == 0 && byShop.getRepayPort() != 0) {
+                byShop.setStrLendPort("不可租用");
+                byShop.setStrRepayPort("可归还");
+                byShop.setRemark("温馨提示：无法出借充电宝，请选择其他门店");
+            }
+            if (byShop.getLendPort() != 0 && byShop.getRepayPort() == 0) {
+                byShop.setStrLendPort("可租用");
+                byShop.setStrRepayPort("不可归还");
+                byShop.setRemark("温馨提示：无法归还充电宝，请选择其他门店");
+            }
+            if (byShop.getLendPort() == 0 && byShop.getRepayPort() == 0) {
+                byShop.setStrLendPort("不可租用");
+                byShop.setStrRepayPort("不可归还");
+                byShop.setRemark("温馨提示：无法出借和归还充电宝，请选择其他门店");
+            }
+            if (byShop.getLendPort() != 0 && byShop.getRepayPort() != 0) {
+                byShop.setStrLendPort("可租用");
+                byShop.setStrRepayPort("可归还");
+                byShop.setRemark("温馨提示：仓口即将还满，如要归还请尽快前往");
+            }
+        }
         return page.setRecords(byShops);
     }
 
