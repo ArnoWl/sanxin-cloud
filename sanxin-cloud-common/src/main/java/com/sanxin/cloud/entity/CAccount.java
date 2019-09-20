@@ -50,6 +50,8 @@ public class CAccount implements Serializable {
      */
     private Integer password;
 
+    private Integer card;
+
     public Integer getId() {
         return id;
     }
@@ -106,6 +108,14 @@ public class CAccount implements Serializable {
         this.password = password;
     }
 
+    public Integer getCard() {
+        return card;
+    }
+
+    public void setCard(Integer card) {
+        this.card = card;
+    }
+
     @Override
     public String toString() {
         return "CAccount{" +
@@ -116,6 +126,7 @@ public class CAccount implements Serializable {
                 ", deposit=" + deposit +
                 ", version=" + version +
                 ", password=" + password +
+                ", card=" + card +
                 '}';
     }
 }

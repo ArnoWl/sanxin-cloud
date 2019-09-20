@@ -20,4 +20,25 @@ public interface CAccountService extends IService<CAccount> {
      * @return
      */
     RestResult queryMyDeposit(Integer cid);
+
+    /**
+     * 我的钱包
+     * @param cid
+     * @return
+     */
+    RestResult queryMyPurse(Integer cid);
+
+    /**
+     * 余额明细
+     * @param cid
+     * @return
+     */
+    RestResult queryBalanceDetail(Integer cid);
+
+    /**
+     * 我要充值显示余额
+     * @param cid
+     * @return
+     */
+    RestResult getBalance(Integer cid);
 }

@@ -29,4 +29,37 @@ public class AccountController {
         Integer cid = loginTokenService.validLoginTid(token);
         return accountService.queryMyDeposit(cid);
     }
+
+    /**
+     * 我的押金明细
+     * @return
+     */
+    @GetMapping(value = MappingUtils.MY_PURSE)
+    public RestResult queryMyPurse() {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginTid(token);
+        return accountService.queryMyPurse(cid);
+    }
+
+    /**
+     * 余额明细
+     * @return
+     */
+    @GetMapping(value = MappingUtils.BALANCE_DETAIL)
+    public RestResult queryBalanceDetail() {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginTid(token);
+        return accountService.queryBalanceDetail(cid);
+    }
+
+    /**
+     * 我要充值显示余额
+     * @return
+     */
+    @GetMapping(value = MappingUtils.GET_BALANCE)
+    public RestResult getBalance() {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginTid(token);
+        return accountService.getBalance(cid);
+    }
 }

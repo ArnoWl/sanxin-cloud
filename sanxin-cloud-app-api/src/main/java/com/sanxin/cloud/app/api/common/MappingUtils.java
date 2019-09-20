@@ -38,5 +38,13 @@ public class MappingUtils {
     /**押金提现申请*/
     public static final String MARGIN_WITHDRAW="/marginWithdraw";
 
+    /**我的钱包*/
+    public static final String MY_PURSE="/myPurse";
+
+    /**我的钱包*/
+    public static final String BALANCE_DETAIL="/balanceDetail";
+
+    /**我要充值显示余额*/
+    public static final String GET_BALANCE="/getBalance";
 
 }
