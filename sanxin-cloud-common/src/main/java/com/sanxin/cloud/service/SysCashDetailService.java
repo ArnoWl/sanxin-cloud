@@ -4,6 +4,7 @@ import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.SysCashDetail;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -46,4 +47,10 @@ public interface SysCashDetailService extends IService<SysCashDetail> {
      * @return
      */
     RestResult marginWithdraw(Integer cid);
+
+    /**
+     * 查询提现总额
+     * @return
+     */
+    BigDecimal sumCashMoney();
 }

@@ -8,13 +8,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sanxin.cloud.app.api.service.BusinessService;
+import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.common.times.DateUtil;
 import com.sanxin.cloud.config.pages.SPage;
-import com.sanxin.cloud.dto.BusinessBaseVo;
-import com.sanxin.cloud.dto.BusinessDetailVo;
-import com.sanxin.cloud.dto.PowerBankListVo;
-import com.sanxin.cloud.dto.BusinessHomeVo;
+import com.sanxin.cloud.dto.*;
 import com.sanxin.cloud.entity.BAccount;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.entity.BMoneyDetail;
@@ -35,10 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness> implements BusinessService {
@@ -198,9 +194,9 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
         BAccount bAccount = bAccountService.getByBid(bid);
         vo.setMoney(bAccount.getMoney());
         vo.setTotalIncome(bAccount.getTotalIncome());
-        BigDecimal todayIncome = bMoneyDetailMapper.getIncome(bid, 1);
-        BigDecimal weekIncome = bMoneyDetailMapper.getIncome(bid, 2);
-        BigDecimal monthIncome = bMoneyDetailMapper.getIncome(bid, 3);
+        BigDecimal todayIncome = bMoneyDetailMapper.getIncome(bid, StaticUtils.TIME_DAY);
+        BigDecimal weekIncome = bMoneyDetailMapper.getIncome(bid, StaticUtils.TIME_WEEK);
+        BigDecimal monthIncome = bMoneyDetailMapper.getIncome(bid, StaticUtils.TIME_MONTH);
         vo.setTodayIncome(todayIncome);
         vo.setWeekIncome(weekIncome);
         vo.setMonthIncome(monthIncome);
@@ -213,5 +209,57 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
         for (BMoneyDetail d : page.getRecords()) {
             d.setTypeName(HandleTypeEnums.getName(d.getTypeId()));
         }
+    }
+
+    @Override
+    public Map<String, Object> queryIncomeStatistics(Integer bid, Integer type) {
+        JSONArray dateArray = new JSONArray();
+        // 营收额
+        JSONArray moneyArray = new JSONArray();
+        try {
+            // 当前时间
+            Date date = new Date();
+            List<String> dateList = getDateListByType(type, date);
+            QueryTimeDataVo vo = new QueryTimeDataVo();
+            vo.setType(type);
+            // 循环时间集
+            for (int i = 0; i< dateList.size(); i++) {
+                String data = dateList.get(i);
+                vo.setDate(data);
+                if (type == StaticUtils.TIME_WEEK) {
+                    if (i==dateList.size()-1) {
+                        vo.setEndDate(DateUtil.toDateString(DateUtil.getEndTimeOfMonth(date)));
+                    } else {
+                        vo.setEndDate(dateList.get(i+1));
+                    }
+                }
+                BigDecimal money = bMoneyDetailMapper.queryBusinessIncome(vo);
+                moneyArray.add(money);
+                dateArray.add(data);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("date", dateArray);
+        map.put("series", moneyArray);
+        return map;
+    }
+
+    /**
+     * 通过类型获得不同的时间集
+     * @param type 1 day, 2 week, 3 month
+     * @param time 时间
+     * @return List 时间集
+     */
+    public List<String> getDateListByType (Integer type, Date time) {
+        List<String> dateList = new ArrayList<>();
+        if (FunctionUtils.isEquals(type, StaticUtils.TIME_DAY)) {
+            dateList = DateUtil.getWeekDays(time);
+        } else if (FunctionUtils.isEquals(type, StaticUtils.TIME_WEEK)) {
+            dateList = DateUtil.getIntervalDay(time, 5);
+        }
+        return dateList;
     }
 }

@@ -13,4 +13,7 @@
         <result column="password" property="password" />
     </resultMap>
 
+    <select id="sumDepositMoney" resultType="java.math.BigDecimal">
+        SELECT IFNULL(sum(deposit), 0) from c_account
+    </select>
 </mapper>

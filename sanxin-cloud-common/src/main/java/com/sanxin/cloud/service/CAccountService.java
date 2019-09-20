@@ -4,6 +4,8 @@ import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.CAccount;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * 用户账户 服务类
@@ -20,6 +22,12 @@ public interface CAccountService extends IService<CAccount> {
      * @return
      */
     RestResult queryMyDeposit(Integer cid);
+
+    /**
+     * 统计押金金额
+     * @return
+     */
+    BigDecimal sumDepositMoney();
 
     /**
      * 我的钱包

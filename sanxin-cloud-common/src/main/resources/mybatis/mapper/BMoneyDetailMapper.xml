@@ -48,4 +48,17 @@
             </if>
         </where>
     </select>
+
+    <select id="queryBusinessIncome" resultType="java.math.BigDecimal">
+        SELECT ifnull(sum(cost),0) as money
+        FROM b_money_detail
+        where isout = 1
+        <if test="type == 1">
+            and DATE_FORMAT(create_time,'%Y-%m-%d')=DATE_FORMAT(#{date},'%Y-%m-%d')
+        </if>
+        <if test="type == 2">
+            and DATE_FORMAT(create_time,'%Y-%m-%d') &gt;= DATE_FORMAT(#{date,jdbcType=VARCHAR},'%Y-%m-%d')
+            and DATE_FORMAT(create_time,'%Y-%m-%d') &lt; DATE_FORMAT(#{endDate,jdbcType=VARCHAR},'%Y-%m-%d')
+        </if>
+    </select>
 </mapper>

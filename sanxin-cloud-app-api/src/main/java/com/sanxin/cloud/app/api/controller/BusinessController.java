@@ -153,6 +153,13 @@ public class BusinessController {
         return RestResult.success("", page);
     }
 
+    /**
+     * 查询收益明细
+     * @param page 分页数据
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return
+     */
     @GetMapping(value = BusinessMapping.QUERY_INCOME_DETAIL_LIST)
     public RestResult queryIncomeDetailList(SPage<BMoneyDetail> page, String startTime, String endTime) {
         String token = BaseUtil.getUserToken();
@@ -164,5 +171,18 @@ public class BusinessController {
         detail.setEndTime(endTime);
         businessService.queryMoneyDetailList(page, detail);
         return RestResult.success("", page);
+    }
+
+    /**
+     * 查询收益统计数据
+     * @param type
+     * @return
+     */
+    @GetMapping(value = BusinessMapping.QUERY_INCOME_STATISTICS)
+    public RestResult queryIncomeStatistics(Integer type) {
+        String token = BaseUtil.getUserToken();
+        Integer bid = loginTokenService.validLoginTid(token);
+        Map<String, Object> map = businessService.queryIncomeStatistics(bid, type);
+        return RestResult.success("", map);
     }
 }

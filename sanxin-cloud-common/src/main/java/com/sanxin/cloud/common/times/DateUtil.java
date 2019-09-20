@@ -42,7 +42,7 @@ public class DateUtil {
 	 * 1天折算成毫秒数
 	 */
 	public static final long MILLIS_A_DAY = 24 * 3600 * 1000;
-	
+
 	private static Map<String, Object> parsers = new HashMap<String, Object>();
 
 	private static SimpleDateFormat getDateParser(String pattern) {
@@ -56,25 +56,25 @@ public class DateUtil {
 
 	/**
 	 * 取得当前系统日期
-	 * 
+	 *
 	 * @return
 	 */
 	public static Date currentDate() {
 		return new Date();
 	}
-	
+
 	/**
 	 * 取得当前系统时间
-	 * 
+	 *
 	 * @return
 	 */
 	public static long currentTimeMillis() {
 		return System.currentTimeMillis();
 	}
-	
+
 	/**
 	 * 取得系统当前日期，返回默认日期格式的字符串。
-	 * 
+	 *
 	 * @param strFormat
 	 * @return
 	 */
@@ -85,7 +85,7 @@ public class DateUtil {
 
 	/**
 	 * 取得当前系统时间戳
-	 * 
+	 *
 	 * @return
 	 */
 	public static Timestamp currentTimestamp() {
@@ -94,7 +94,7 @@ public class DateUtil {
 
 	/**
 	 * 将日期字符串转换为java.util.Date对象
-	 * 
+	 *
 	 * @param dateString
 	 * @param pattern
 	 *            日期格式
@@ -113,7 +113,7 @@ public class DateUtil {
 
 	/**
 	 * 将日期字符串转换为java.util.Date对象，使用默认日期格式
-	 * 
+	 *
 	 * @param dateString
 	 * @return
 	 * @throws Exception
@@ -175,10 +175,10 @@ public class DateUtil {
 		c.setTimeInMillis(getMillis(date) - ((long) day) * MILLIS_A_DAY );
 		return c.getTime();
 	}
-	
+
 	/**
 	 * 返回毫秒
-	 * 
+	 *
 	 * @param date
 	 *            日期
 	 * @return 返回毫秒
@@ -189,11 +189,11 @@ public class DateUtil {
 		c.setTime(date);
 		return c.getTimeInMillis();
 	}
-	
-	
+
+
 	/**
 	 * 日期相加
-	 * 
+	 *
 	 * @param date
 	 *            日期
 	 * @param day
@@ -203,15 +203,15 @@ public class DateUtil {
 	 */
 	public static Date addDate(Date date, int day) {
 		Calendar c = Calendar.getInstance();
-		
+
 		c.setTimeInMillis(getMillis(date) + ((long) day) * MILLIS_A_DAY);
 		return c.getTime();
 	}
-	
+
 	public static Date getStringDate(String strDate) throws Exception{
 		return getDateParser(DEFAULT_DATEDETAIL).parse(strDate);
 	}
-	
+
 	public static Date getNowDate(){
 		SimpleDateFormat bartDateFormat = new SimpleDateFormat("yyyyMMdd");
 		Calendar date = Calendar.getInstance();
@@ -223,10 +223,10 @@ public class DateUtil {
 		}
 		 return newCreatDate;
 	}
-	
+
 	 /**
      * 获取当前日期是星期几<br>
-     * 
+     *
      * @param dt
      * @return 当前日期是星期几
      */
@@ -241,7 +241,7 @@ public class DateUtil {
     }
     /**
      * 日期相减，获取对应的天数
-     * 
+     *
      * @param bginDate
      * @param endDate
      * @return
@@ -250,50 +250,50 @@ public class DateUtil {
     {
         long day=0;
         try{
-            day=(endDate.getTime()-bginDate.getTime())/(24*60*60*1000);    
-            System.out.println("相隔的天数="+day);   
+            day=(endDate.getTime()-bginDate.getTime())/(24*60*60*1000);
+            System.out.println("相隔的天数="+day);
         }catch (Exception e){
         	 e.printStackTrace();
             return -1;
-        }   
+        }
         return day;
     }
     /**
-     * 
-    * @Title: getDateTimeAddMinutes 
+     *
+    * @Title: getDateTimeAddMinutes
     * @Description: TODO当前时间向后推n分钟
     * @param @param n
-    * @param @return    设定文件 
-    * @return long    返回类型 
+    * @param @return    设定文件
+    * @return long    返回类型
     * @throws
      */
     public static long getDateTimeAddMinutes(int n){
      return Calendar.getInstance().getTimeInMillis()+n*1000*60;
     }
-    
-    
+
+
     /**
      * 获取下周当前星期日期
      * @param count
      * @param pattern
      * @return
      */
-	 public static String getNextMonday(int count,String pattern) {  
-         
-	        Calendar strDate = Calendar.getInstance();         
-	        strDate.add(strDate.DATE,count);  
-	          
-	        //System.out.println(strDate.getTime());  
-	        GregorianCalendar currentDate = new GregorianCalendar();  
-	        currentDate.set(strDate.get(Calendar.YEAR), strDate.get(Calendar.MONTH),strDate.get(Calendar.DATE));  
-	        Date monday = currentDate.getTime();  
-	        SimpleDateFormat df = new SimpleDateFormat(pattern);  
-	        String preMonday = df.format(monday);  
-	        return preMonday;  
-	 } 
-	 
+	 public static String getNextMonday(int count,String pattern) {
+
+	        Calendar strDate = Calendar.getInstance();
+	        strDate.add(strDate.DATE,count);
+
+	        //System.out.println(strDate.getTime());
+	        GregorianCalendar currentDate = new GregorianCalendar();
+	        currentDate.set(strDate.get(Calendar.YEAR), strDate.get(Calendar.MONTH),strDate.get(Calendar.DATE));
+	        Date monday = currentDate.getTime();
+	        SimpleDateFormat df = new SimpleDateFormat(pattern);
+	        String preMonday = df.format(monday);
+	        return preMonday;
+	 }
+
 	/**
-	 * 获取当前星期的日期 
+	 * 获取当前星期的日期
 	 * @param weekDay
 	 * @return
 	 */
@@ -311,10 +311,10 @@ public class DateUtil {
         }
         return dates;
     }
- 	
+
  	/**
 	 * 将int型时间(1970年至今的秒数)转换成Date型时间
-	 * 
+	 *
 	 * @param unixTime
 	 *            1970年至今的秒数
 	 * @return
@@ -322,7 +322,7 @@ public class DateUtil {
 	public static Date getDateByUnixTime(long unixTime) {
 		return new Date(unixTime * 1000L);
 	}
-	
+
 	/**
 	 * 计算距离到当前时间多少天 小时 分钟
 	 * @param endDate
@@ -370,62 +370,62 @@ public class DateUtil {
 	public static List<String> dateeginEnd(String s1,String s2) throws ParseException {
 
  		List<String> strings=new ArrayList<>();
- 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
-		
-		Date   begin=sdf.parse(s1);      
-		Date   end=sdf.parse(s2);   
-   
-		double  between=(end.getTime()-begin.getTime())/1000;//除以1000是为了转换成秒      
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		Date   begin=sdf.parse(s1);
+		Date   end=sdf.parse(s2);
+
+		double  between=(end.getTime()-begin.getTime())/1000;//除以1000是为了转换成秒
 		double  day=between/(24*3600);
 		for(int i = 0;i<=day;i++){
 
-			Calendar cd = Calendar.getInstance();   
-			cd.setTime(begin);   
-			cd.add(Calendar.DATE, i);//增加一天  
+			Calendar cd = Calendar.getInstance();
+			cd.setTime(begin);
+			cd.add(Calendar.DATE, i);//增加一天
 			strings.add(sdf.format(cd.getTime()));
 		}
 		return strings;
 	}
-	
+
 	/**
 	 * 当月最后一天
 	 * @param date
 	 * @return
 	 */
 	public static String getLastDayOfMonth(Date date) {
-		
+
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		
+
 		int lastDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 		Date lastDate = calendar.getTime();
-		
+
 		lastDate.setDate(lastDay);
-		
+
 		return DateUtil.toDateString(lastDate);
 	}
-	
+
 	/**
 	 * 当月最后一天
 	 * @param date
 	 * @return
 	 */
 	public static Date getLastDayOfMonthDate(Date date) {
-		
+
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		
+
 		int lastDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 		Date lastDate = calendar.getTime();
-		
+
 		lastDate.setDate(lastDay);
-		
+
 		return lastDate;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 获取当月日期组
 	 * 如： 1月 {2018.1.1,2018.1.2 ... 2018.1.31}
 	 * @return
@@ -443,7 +443,7 @@ public class DateUtil {
 		}
 		return list;
 	}
-	
+
 	public static int getLocalweek(Date date) {
 		int weekOfMonth=1;
 		try {
@@ -454,11 +454,11 @@ public class DateUtil {
 		}
 		return weekOfMonth;
 	}
-	
+
 	public static int getLocalWeeknum(Date date) {
 		int num=1;
 		try {
-			Calendar c = Calendar.getInstance(); 
+			Calendar c = Calendar.getInstance();
  			c.setTime(date);
  			num=c.getActualMaximum(Calendar.WEEK_OF_MONTH);
 		} catch (Exception e) {
@@ -466,11 +466,11 @@ public class DateUtil {
 		}
 		return num;
 	}
-	
+
 	public static int getMouthnum(Date date) {
 		int num=30;
 		try {
-			Calendar c = Calendar.getInstance(); 
+			Calendar c = Calendar.getInstance();
  			c.setTime(date);
  			num=c.getActualMaximum(Calendar.DAY_OF_MONTH);
 		} catch (Exception e) {
@@ -478,8 +478,8 @@ public class DateUtil {
 		}
 		return num;
 	}
-	
-	
+
+
 	public static String dateDiff(long startTime, long endTime) {
 		//按照传入的格式生成一个simpledateformate对象
 		long nd = 1000*24*60*60;//一天的毫秒数
@@ -496,8 +496,8 @@ public class DateUtil {
 		}
 		return msg;
 	}
-	
-	
+
+
 	public static long  dateMinus(long startTime, long endTime) {
 		//按照传入的格式生成一个simpledateformate对象
 		long nd = 1000*24*60*60;//一天的毫秒数
@@ -511,7 +511,7 @@ public class DateUtil {
 		}
 		return min;
 	}
-	
+
 	/**
 	 * 加上月份
 	 * @param date
@@ -524,7 +524,7 @@ public class DateUtil {
 	  c.add(Calendar.MONTH, month);
 	  return c.getTime();
 	}
-	
+
 	/**
 	 * 获取当月最后一天
 	 * @param date
@@ -538,10 +538,10 @@ public class DateUtil {
 		calendar.set(Calendar.DAY_OF_MONTH, value);
 		return calendar.getTime();
 	}
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 * 分割时间段获取日期
 	 * @param dateStr 时间段字符串 如：2018-03-27 ~ 2018-03-28
 	 * @param regex 分隔符 如：~
@@ -557,63 +557,63 @@ public class DateUtil {
 		result[1] = toDate(arr[1].trim(), pattern);
 		return result;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 获取当日的起始时间
 	 * @return
 	 * @author WahYee
 	 * @date 2018年3月31日 下午2:06:40
 	 */
-	public static Date getStartTime(Date date) { 
+	public static Date getStartTime(Date date) {
         Calendar todayStart = Calendar.getInstance();
         todayStart.setTime(date);
-        todayStart.set(Calendar.HOUR_OF_DAY, 0);  
-        todayStart.set(Calendar.MINUTE, 0);  
-        todayStart.set(Calendar.SECOND, 0);  
-        todayStart.set(Calendar.MILLISECOND, 0);  
-        return todayStart.getTime();  
-    }  
-	
+        todayStart.set(Calendar.HOUR_OF_DAY, 0);
+        todayStart.set(Calendar.MINUTE, 0);
+        todayStart.set(Calendar.SECOND, 0);
+        todayStart.set(Calendar.MILLISECOND, 0);
+        return todayStart.getTime();
+    }
+
 	/**
-	 * 
+	 *
 	 * 获取当日结束时间
 	 * @return
 	 * @author WahYee
 	 * @date 2018年3月31日 下午2:05:55
 	 */
-	public static Date getEndTime(Date date) {  
+	public static Date getEndTime(Date date) {
         Calendar todayEnd = Calendar.getInstance();
         todayEnd.setTime(date);
-        todayEnd.set(Calendar.HOUR_OF_DAY, 23);  
-        todayEnd.set(Calendar.MINUTE, 59);  
-        todayEnd.set(Calendar.SECOND, 59);  
-        todayEnd.set(Calendar.MILLISECOND, 999);  
-        return todayEnd.getTime();  
+        todayEnd.set(Calendar.HOUR_OF_DAY, 23);
+        todayEnd.set(Calendar.MINUTE, 59);
+        todayEnd.set(Calendar.SECOND, 59);
+        todayEnd.set(Calendar.MILLISECOND, 999);
+        return todayEnd.getTime();
     }
-	
+
 	/**
-	 * 
+	 *
 	 * 获取当月开始时间
 	 * @param date
 	 * @return
 	 * @author WahYee
 	 * @date 2018年3月31日 下午2:46:56
 	 */
-	public static Date getStartTimeOfMonth(Date date) { 
+	public static Date getStartTimeOfMonth(Date date) {
         Calendar todayStart = Calendar.getInstance();
         todayStart.setTime(date);
         todayStart.add(Calendar.MONTH, 0);
         todayStart.set(Calendar.DAY_OF_MONTH,1);
-        todayStart.set(Calendar.HOUR_OF_DAY, 0);  
-        todayStart.set(Calendar.MINUTE, 0);  
-        todayStart.set(Calendar.SECOND, 0);  
-        todayStart.set(Calendar.MILLISECOND, 0);  
-        return todayStart.getTime();  
-    }  
-	
+        todayStart.set(Calendar.HOUR_OF_DAY, 0);
+        todayStart.set(Calendar.MINUTE, 0);
+        todayStart.set(Calendar.SECOND, 0);
+        todayStart.set(Calendar.MILLISECOND, 0);
+        return todayStart.getTime();
+    }
+
 	/**
-	 * 
+	 *
 	 * 获取当月的结束时间
 	 * @param date
 	 * @return
@@ -624,13 +624,13 @@ public class DateUtil {
         Calendar todayEnd = Calendar.getInstance();
         todayEnd.setTime(date);
         todayEnd.set(Calendar.DAY_OF_MONTH,todayEnd.getActualMaximum(Calendar.DAY_OF_MONTH));
-        todayEnd.set(Calendar.HOUR_OF_DAY, 23);  
-        todayEnd.set(Calendar.MINUTE, 59);  
-        todayEnd.set(Calendar.SECOND, 59);  
-        todayEnd.set(Calendar.MILLISECOND, 999);  
-        return todayEnd.getTime();  
+        todayEnd.set(Calendar.HOUR_OF_DAY, 23);
+        todayEnd.set(Calendar.MINUTE, 59);
+        todayEnd.set(Calendar.SECOND, 59);
+        todayEnd.set(Calendar.MILLISECOND, 999);
+        return todayEnd.getTime();
 	}
-	
+
 	/**
      * 功能描述：返回小时
      *
@@ -644,24 +644,24 @@ public class DateUtil {
         return calendar.get(Calendar.HOUR_OF_DAY);
     }
 	/**
-	 * 
+	 *
 	 * 获取当年的开始时间
 	 * @param date
 	 * @return
 	 * @author WahYee
 	 * @date 2018年3月31日 下午4:29:24
 	 */
-	public static Date getStartTimeOfYear(Date date) { 
+	public static Date getStartTimeOfYear(Date date) {
         Calendar todayStart = Calendar.getInstance();
         todayStart.setTime(date);
         int year =  todayStart.get(Calendar.YEAR);
-        todayStart.clear(); 
-        todayStart.set(Calendar.YEAR, year); 
-        return todayStart.getTime();  
+        todayStart.clear();
+        todayStart.set(Calendar.YEAR, year);
+        return todayStart.getTime();
     }
-	
+
 	/**
-	 * 
+	 *
 	 * 获取当年的结束时间
 	 * @param date
 	 * @return
@@ -672,17 +672,17 @@ public class DateUtil {
         Calendar todayEnd = Calendar.getInstance();
         todayEnd.setTime(date);
         int year =  todayEnd.get(Calendar.YEAR);
-        todayEnd.clear(); 
-        todayEnd.set(Calendar.YEAR, year); 
-        todayEnd.roll(Calendar.DAY_OF_YEAR, -1);  
-        todayEnd.set(Calendar.HOUR_OF_DAY, 23);  
-        todayEnd.set(Calendar.MINUTE, 59);  
-        todayEnd.set(Calendar.SECOND, 59);  
-        todayEnd.set(Calendar.MILLISECOND, 999);  
-        return todayEnd.getTime();  
+        todayEnd.clear();
+        todayEnd.set(Calendar.YEAR, year);
+        todayEnd.roll(Calendar.DAY_OF_YEAR, -1);
+        todayEnd.set(Calendar.HOUR_OF_DAY, 23);
+        todayEnd.set(Calendar.MINUTE, 59);
+        todayEnd.set(Calendar.SECOND, 59);
+        todayEnd.set(Calendar.MILLISECOND, 999);
+        return todayEnd.getTime();
     }
-	
-	 /* 
+
+	 /*
      * 将时间戳转换为时间
      */
     public static String stampToDate(String s){
@@ -693,16 +693,16 @@ public class DateUtil {
         res = simpleDateFormat.format(date);
         return res;
     }
-    
+
     public static boolean isFirstDay() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(DateUtil.currentDate());
         return calendar.get(Calendar.DAY_OF_MONTH) == 1;
 	}
-    
+
     /**
 	 * 判断该日期是否是该月的最后一天
-	 * 
+	 *
 	 * @param date
 	 *            需要判断的日期
 	 * @return
@@ -713,19 +713,92 @@ public class DateUtil {
 		return calendar.get(Calendar.DAY_OF_MONTH) == calendar
 				.getActualMaximum(Calendar.DAY_OF_MONTH);
 	}
-	
+
 	public static Date addMinute(int minute) {
 		 Calendar nowTime = Calendar.getInstance();
 		 nowTime.add(Calendar.MINUTE, minute);
 		 return nowTime.getTime();
 	}
-	
+
+	/**
+	 * 获取当前时间是本月的第几天
+	 * @param date
+	 * @return
+	 */
+	public static int getDayOfMonth(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.get(Calendar.DAY_OF_MONTH);
+	}
+
+	/**
+	 * 获取本周时间段
+	 * @return
+	 */
+	private static List<String> printWeekdays() {
+		List<String> list = new ArrayList<>();
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(toDate("2019-09-22"));
+		int num = calendar.get(Calendar.DAY_OF_WEEK);
+		while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+			calendar.add(Calendar.DATE, -1);
+		}
+		for (int i = 1; i < num; i++) {
+			list.add(toDateString(calendar.getTime()));
+			calendar.add(Calendar.DATE, 1);
+		}
+		return list;
+	}
+
+	/**
+	 * 获取本周日期
+	 * @param date
+	 * @return
+	 */
+	public static List<String> getWeekDays(Date date) {
+		List<String> list = new ArrayList<>();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		// 判断要计算的日期是否是周日，如果是则减一天计算周六的，否则会出问题，计算到下一周去了
+		// 获得当前日期是一个星期的第几天
+		int dayWeek = cal.get(Calendar.DAY_OF_WEEK);
+		if (1 == dayWeek) {
+			dayWeek = 8;
+		}
+		// 设置一个星期的第一天，按中国的习惯一个星期的第一天是星期一
+		cal.setFirstDayOfWeek(Calendar.MONDAY);
+		// 根据日历的规则，给当前日期减去星期几与一个星期第一天的差值
+		cal.add(Calendar.DATE, cal.getFirstDayOfWeek() - dayWeek);
+		for (int i=1; i<=dayWeek-1; i++) {
+			list.add(toDateString(cal.getTime()));
+			cal.add(Calendar.DATE, 1);
+		}
+		return list;
+	}
+
+	/**
+	 * 从月初开始，每隔几天的日期集合
+	 * 如：隔5天 08-01 08-06 08-11
+	 * @param date
+	 * @param num
+	 * @return
+	 */
+	public static List<String> getIntervalDay(Date date, Integer num) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		int endNum = calendar.get(Calendar.DAY_OF_MONTH);
+		List<String> list = new ArrayList<>();
+		Date time = getStartTimeOfMonth(date);
+		calendar.setTime(time);
+		for (int i=0;i<=endNum;) {
+			list.add(toDateString(calendar.getTime()));
+			calendar.add(Calendar.DATE, num);
+			i += num;
+		}
+		return list;
+	}
 
 	public static void main(String[] args) {
-		if (isLastDayOfMonth()) {
-			System.out.println(11);
-		}else {
-			System.out.println(22);
-		}
+		System.out.println(getIntervalDay(new Date(), 5));
 	}
 }

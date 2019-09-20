@@ -17,6 +17,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -90,5 +91,10 @@ public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> i
     public RestResult getBalance(Integer cid) {
         CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
         return RestResult.success(account.getMoney());
+    }
+
+    @Override
+    public BigDecimal sumDepositMoney() {
+        return baseMapper.sumDepositMoney();
     }
 }

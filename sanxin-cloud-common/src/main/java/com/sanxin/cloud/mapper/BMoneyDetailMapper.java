@@ -2,6 +2,7 @@ package com.sanxin.cloud.mapper;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.config.pages.SPage;
+import com.sanxin.cloud.dto.QueryTimeDataVo;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.entity.BMoneyDetail;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -33,4 +34,11 @@ public interface BMoneyDetailMapper extends BaseMapper<BMoneyDetail> {
      * @param detail
      */
     Page<BMoneyDetail> queryMoneyDetailList(SPage<BMoneyDetail> page, @Param("param") BMoneyDetail detail);
+
+    /**
+     * 查询商家营业数据
+     * @param vo
+     * @return
+     */
+    BigDecimal queryBusinessIncome(QueryTimeDataVo vo);
 }

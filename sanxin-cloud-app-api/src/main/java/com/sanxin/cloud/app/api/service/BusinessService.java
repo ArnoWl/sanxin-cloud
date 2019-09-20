@@ -1,15 +1,15 @@
 package com.sanxin.cloud.app.api.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.BusinessBaseVo;
 import com.sanxin.cloud.dto.BusinessDetailVo;
 import com.sanxin.cloud.dto.BusinessHomeVo;
 import com.sanxin.cloud.dto.PowerBankListVo;
-import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.entity.BMoneyDetail;
+
+import java.util.Map;
 
 public interface BusinessService {
 
@@ -61,4 +61,12 @@ public interface BusinessService {
      * @return
      */
     void queryMoneyDetailList(SPage<BMoneyDetail> page, BMoneyDetail detail);
+
+    /**
+     * 加盟商首页收益统计数据
+     * @param bid
+     * @param type 类型-区分月、周
+     * @return
+     */
+    Map<String, Object> queryIncomeStatistics(Integer bid, Integer type);
 }

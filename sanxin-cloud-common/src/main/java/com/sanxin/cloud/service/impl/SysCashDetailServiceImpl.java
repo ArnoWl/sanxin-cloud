@@ -211,6 +211,11 @@ public class SysCashDetailServiceImpl extends ServiceImpl<SysCashDetailMapper, S
         return RestResult.success("success");
     }
 
+    @Override
+    public BigDecimal sumCashMoney() {
+        return baseMapper.sumCashMoney();
+    }
+
     /**
      * 校验用户、商家的信息
      *

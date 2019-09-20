@@ -70,4 +70,16 @@ public class StaticUtils {
      * 支出收入类型 收入(val=1)
      */
     public static final Integer PAY_IN = 1;
+    /**
+     * 数据查询-日期
+     */
+    public static final Integer TIME_DAY = 1;
+    /**
+     * 数据查询-星期
+     */
+    public static final Integer TIME_WEEK = 2;
+    /**
+     * 数据查询-月
+     */
+    public static final Integer TIME_MONTH = 3;
 }

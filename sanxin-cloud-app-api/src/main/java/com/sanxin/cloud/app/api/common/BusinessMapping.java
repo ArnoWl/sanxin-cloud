@@ -20,4 +20,6 @@ public class BusinessMapping {
     public static final String QUERY_MONEY_DETAIL_LIST = "/queryMoneyDetailList";
     /** 查询收益明细*/
     public static final String QUERY_INCOME_DETAIL_LIST = "/queryIncomeDetailList";
+    /** 查询首页统计图*/
+    public static final String QUERY_INCOME_STATISTICS = "/queryIncomeStatistics";
 }

@@ -3,6 +3,7 @@ package com.sanxin.cloud.mapper;
 import com.sanxin.cloud.entity.SysCashDetail;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -21,4 +22,10 @@ public interface SysCashDetailMapper extends BaseMapper<SysCashDetail> {
      * @return
      */
     Integer getRuleNum(Map<String, Object> map);
+
+    /**
+     * 统计提现金额
+     * @return
+     */
+    BigDecimal sumCashMoney();
 }

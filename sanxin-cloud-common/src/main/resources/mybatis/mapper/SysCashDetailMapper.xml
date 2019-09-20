@@ -39,4 +39,8 @@
             and date_format(create_time, '%Y-%m') = date_format(curdate() , '%Y-%m')
         </if>
     </select>
+
+    <select id="sumCashMoney" resultType="java.math.BigDecimal">
+        SELECT IFNULL(sum(cash_money), 0) from sys_cash_detail where status = 2
+    </select>
 </mapper>
