@@ -14,6 +14,8 @@ public class MappingUtils {
     public static final String SEND_FORGET_CODE = "/sendForgetCode";
     /** 忘记密码操作 */
     public static final String FORGET_PASSWORD = "/forgetPassword";
+    /** 个人资料 */
+    public static final String PERSONAL_INFORM = "/personalInform";
 
     /**注册发送验证码*/
     public static final String SEND_REGISTER_CODE="/sendRegisterCode";
@@ -22,4 +24,9 @@ public class MappingUtils {
 
     /**获取附近门店*/
     public static final String NRARBY_BUSINESS="/nearbyBusiness";
+
+    /**我的押金*/
+    public static final String MY_DEPOSIT="/myDeposit";
+
+
 }

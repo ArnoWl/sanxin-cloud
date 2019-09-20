@@ -25,4 +25,29 @@ public interface LoginService {
      * @return
      */
     RestResult doLogin(LoginRegisterVo loginRegisterVo);
+
+    /**
+     * 个人资料
+     * @param cid
+     * @return
+     */
+    RestResult personalInform(Integer cid);
+
+    /**
+     * 修改个人资料
+     * @param customer
+     * @return
+     */
+    RestResult updatePersonalInform(CCustomer customer);
+
+    /**
+     * 修改登录或支付密码
+     * @param phone 手机号
+     * @param verCode 验证码
+     * @param password 密码
+     * @param type 1登录密码 2支付密码
+     * @param cid 用户id
+     * @return
+     */
+    RestResult updateLoginPass(String phone, String verCode, String password, Integer cid,Integer type);
 }

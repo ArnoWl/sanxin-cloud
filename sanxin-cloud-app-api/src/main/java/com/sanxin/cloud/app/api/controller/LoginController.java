@@ -8,6 +8,7 @@ import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.properties.PropertiesUtil;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.config.login.LoginTokenService;
 import com.sanxin.cloud.dto.LoginRegisterVo;
 import com.sanxin.cloud.entity.CCustomer;
 import com.sanxin.cloud.service.CCustomerService;
@@ -29,7 +30,8 @@ public class LoginController {
     private RegistService registService;
     @Autowired
     private HttpServletRequest request;
-
+    @Autowired
+    private LoginTokenService loginTokenService;
 
     /**
      * 发送手机验证码
@@ -67,6 +69,48 @@ public class LoginController {
     public RestResult doLogin(LoginRegisterVo loginRegisterVo) {
         return loginService.doLogin(loginRegisterVo);
     }
+
+
+    /**
+     * 个人资料
+     * @return
+     */
+    @PostMapping(value = MappingUtils.PERSONAL_INFORM)
+    public RestResult queryPersonalInform() {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginTid(token);
+        return loginService.personalInform(cid);
+    }
+
+    /**
+     * 修改个人资料
+     * @return
+     */
+    @PostMapping(value = MappingUtils.PERSONAL_INFORM)
+    public RestResult updatePersonalInform(CCustomer customer) {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginTid(token);
+        if (cid != null) {
+            customer.setId(cid);
+        }
+        return loginService.updatePersonalInform(customer);
+    }
+
+    /**
+     * 修改登录或支付密码
+     * @param Phone 手机号
+     * @param verCode 验证码
+     * @param password 密码
+     * @param type 1登录密码 2支付密码
+     * @return
+     */
+    @PostMapping(value = MappingUtils.PERSONAL_INFORM)
+    public RestResult updatePassword(String Phone,String verCode,String password,Integer type) {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginTid(token);
+        return loginService.updateLoginPass(Phone,verCode,password,cid,type);
+    }
+
 
     /**
      * 忘记密码

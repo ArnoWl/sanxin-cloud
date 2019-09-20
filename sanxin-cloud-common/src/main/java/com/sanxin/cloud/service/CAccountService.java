@@ -1,5 +1,6 @@
 package com.sanxin.cloud.service;
 
+import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.CAccount;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CAccountService extends IService<CAccount> {
 
+    /**
+     * 我的押金明细
+     * @param cid
+     * @return
+     */
+    RestResult queryMyDeposit(Integer cid);
 }

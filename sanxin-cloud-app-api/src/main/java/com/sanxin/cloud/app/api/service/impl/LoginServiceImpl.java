@@ -17,9 +17,11 @@ import com.sanxin.cloud.entity.CCustomer;
 import com.sanxin.cloud.enums.LoginChannelEnums;
 import com.sanxin.cloud.enums.RandNumType;
 import com.sanxin.cloud.exception.ThrowJsonException;
+import com.sanxin.cloud.mapper.CCustomerMapper;
 import com.sanxin.cloud.service.BBusinessService;
 import com.sanxin.cloud.service.CCustomerService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,8 @@ public class LoginServiceImpl implements LoginService {
     private RedisUtilsService redisUtilsService;
     @Autowired
     private CCustomerService customerService;
+    @Autowired
+    private CCustomerMapper customerMapper;
     @Autowired
     private BBusinessService businessService;
     @Autowired
@@ -108,6 +112,78 @@ public class LoginServiceImpl implements LoginService {
             return loginTokenService.getLoginToken(loginDto, LoginChannelEnums.APP);
         }
         return RestResult.fail("fail");
+    }
+
+    /**
+     * 个人资料
+     * @param cid
+     * @return
+     */
+    @Override
+    public RestResult personalInform(Integer cid) {
+        CCustomer customer = customerMapper.selectById(cid);
+        return RestResult.success(customer);
+    }
+
+    /**
+     * 修改个人资料
+     * @param customer
+     * @return
+     */
+    @Override
+    public RestResult updatePersonalInform(CCustomer customer) {
+        int i = customerMapper.updateById(customer);
+        if (i > 0) {
+            return RestResult.success("success");
+        }
+        return RestResult.fail("fail");
+    }
+
+    /**
+     * 修改登录或支付密码
+     * @param phone 手机号
+     * @param verCode 验证码
+     * @param password 密码
+     * @param type 1登录密码 2支付密码
+     * @param cid 用户id
+     * @return
+     */
+    @Override
+    public RestResult updateLoginPass(String phone, String verCode, String password, Integer cid, Integer type) {
+        if (StringUtils.isBlank(phone)) {
+            return RestResult.fail("user_phone_empty");
+        }
+        if (StringUtils.isBlank(verCode)) {
+            return RestResult.fail("user_code_empty");
+        }
+        //TODO 短信验证未写
+        //密码加密
+        String pass = PwdEncode.encodePwd(password);
+        CCustomer customer = customerMapper.selectOne(new QueryWrapper<CCustomer>().eq("id",cid).eq("phone",phone));
+        if (customer == null) {
+            return RestResult.fail("user_customer_empty");
+        }
+        switch (type){
+            //修改登录密码
+            case 1:
+                if (StringUtils.isBlank(password)) {
+                    return RestResult.fail("user_login_pass_empty");
+                }
+                customer.setPassWord(pass);
+                break;
+                //修改支付密码
+            case 2:
+                if (StringUtils.isBlank(password)) {
+                    return RestResult.fail("user_pay_pass_empty");
+                }
+                customer.setPayWord(pass);
+                break;
+        }
+        int i = customerMapper.updateById(customer);
+        if (i == 0) {
+            return RestResult.fail("fail");
+        }
+        return RestResult.success("success");
     }
 
 }
