@@ -14,4 +14,9 @@
         <result column="remark" property="remark" />
     </resultMap>
 
+    <!-- 用户点击提现申请返回判断支付方式(押金)查询最后一条充值记录 -->
+    <select id="selectLimt" resultType="com.sanxin.cloud.entity.CMarginDetail">
+        select * from c_margin_detail WHERE cid=#{cid} limit 1
+    </select>
+
 </mapper>

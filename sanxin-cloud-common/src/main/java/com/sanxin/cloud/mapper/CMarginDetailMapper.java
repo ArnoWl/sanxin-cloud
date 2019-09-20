@@ -13,4 +13,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface CMarginDetailMapper extends BaseMapper<CMarginDetail> {
 
+    /**
+     * 用户点击提现申请返回判断支付方式(押金)查询最后一条充值记录
+     * @param cid
+     * @return
+     */
+    CMarginDetail selectLimt(Integer cid);
 }

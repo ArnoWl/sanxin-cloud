@@ -32,5 +32,11 @@ public class MappingUtils {
     /**我的押金*/
     public static final String MY_DEPOSIT="/myDeposit";
 
+    /**查询充值方式*/
+    public static final String SELECT_LIMT="/selectLimt";
+
+    /**押金提现申请*/
+    public static final String MARGIN_WITHDRAW="/marginWithdraw";
+
 
 }

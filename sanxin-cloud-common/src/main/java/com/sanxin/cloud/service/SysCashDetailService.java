@@ -33,4 +33,17 @@ public interface SysCashDetailService extends IService<SysCashDetail> {
      */
     RestResult handleCashApply(SysCashDetail cashDetail, String payWord, String validCode);
 
+    /**
+     * 用户点击提现申请返回判断支付方式(押金)查询最后一条充值记录
+     * @param cid
+     * @return
+     */
+    RestResult selectLimt(Integer cid);
+
+    /**
+     * 确认申请提现
+     * @param cid
+     * @return
+     */
+    RestResult marginWithdraw(Integer cid);
 }

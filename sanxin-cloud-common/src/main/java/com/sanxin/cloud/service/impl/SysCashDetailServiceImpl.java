@@ -1,5 +1,6 @@
 package com.sanxin.cloud.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.language.AdminLanguageStatic;
@@ -11,12 +12,15 @@ import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.enums.CashTypeEnums;
 import com.sanxin.cloud.enums.ServiceEnums;
 import com.sanxin.cloud.exception.ThrowJsonException;
+import com.sanxin.cloud.mapper.CAccountMapper;
+import com.sanxin.cloud.mapper.CMarginDetailMapper;
 import com.sanxin.cloud.mapper.SysCashDetailMapper;
 import com.sanxin.cloud.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -44,6 +48,10 @@ public class SysCashDetailServiceImpl extends ServiceImpl<SysCashDetailMapper, S
     private CCustomerService customerService;
     @Autowired
     private BBusinessService businessService;
+    @Autowired
+    private CMarginDetailMapper marginDetailMapper;
+    @Autowired
+    private CAccountMapper accountMapper;
 
     @Override
     public RestResult handleCashStatus(Integer id, Integer status) {
@@ -58,9 +66,9 @@ public class SysCashDetailServiceImpl extends ServiceImpl<SysCashDetailMapper, S
             throw new ThrowJsonException(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
         // 如果是驳回,将金额退还
-        if (FunctionUtils.isEquals(cash.getStatus(),StaticUtils.STATUS_FAIL)) {
+        if (FunctionUtils.isEquals(cash.getStatus(), StaticUtils.STATUS_FAIL)) {
 
-        } else if(FunctionUtils.isEquals(cash.getStatus(),StaticUtils.STATUS_SUCCESS)){
+        } else if (FunctionUtils.isEquals(cash.getStatus(), StaticUtils.STATUS_SUCCESS)) {
 
         }
         return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
@@ -149,7 +157,63 @@ public class SysCashDetailServiceImpl extends ServiceImpl<SysCashDetailMapper, S
     }
 
     /**
+     * 用户点击提现申请返回判断支付方式(押金)查询最后一条充值记录
+     *
+     * @param cid
+     * @return
+     */
+    @Override
+    public RestResult selectLimt(Integer cid) {
+        CMarginDetail detail = marginDetailMapper.selectLimt(cid);
+        if (detail != null && detail.getIsout() == 0) {
+            return RestResult.success(detail.getType());
+        }
+        return RestResult.fail("withdraw_judge");
+    }
+
+    /**
+     * 确认申请提现
+     *
+     * @param cid
+     * @return
+     */
+    @Override
+    public RestResult marginWithdraw(Integer cid) {
+        CMarginDetail detail = marginDetailMapper.selectLimt(cid);
+        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
+        if (account.getDeposit().compareTo(BigDecimal.ZERO) == 0) {
+            return RestResult.fail("withdraw_apply");
+        }
+        CMarginDetail marginDetail = new CMarginDetail();
+        //如果是余额支付 提现流程(直接提现到余额)
+        if (detail.getType() == 1) {
+            BigDecimal deposit = account.getDeposit();
+            account.setMoney(FunctionUtils.add(account.getMoney(), account.getDeposit(), 2));
+            account.setDeposit(BigDecimal.ZERO);
+
+            marginDetail.setCid(cid);
+            marginDetail.setCost(deposit);
+            marginDetail.setCreateTime(new Date());
+            marginDetail.setIsout(0);
+
+        }
+        //如果是其他方式提现流程(未写支付所以空着)
+        //TODO 未写支付所以空着
+        if (detail.getType() == 0) {
+
+        }
+
+        int m = marginDetailMapper.insert(marginDetail);
+        int a = accountMapper.updateById(account);
+        if (a == 0 || m == 0) {
+            new ThrowJsonException("插入或者更新失败");
+        }
+        return RestResult.success("success");
+    }
+
+    /**
      * 校验用户、商家的信息
+     *
      * @param cashDetail
      * @param payWord
      * @return

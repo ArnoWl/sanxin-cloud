@@ -32,7 +32,7 @@ public class CMarginDetail implements Serializable {
     private String payCode;
 
     /**
-     * 1收入 0支出
+     * 1充值 0提现
      */
     private Integer isout;
 
