@@ -10,6 +10,7 @@
         <result column="hour" property="hour" />
         <result column="deposit" property="deposit" />
         <result column="version" property="version" />
+        <result column="password" property="password" />
     </resultMap>
 
 </mapper>

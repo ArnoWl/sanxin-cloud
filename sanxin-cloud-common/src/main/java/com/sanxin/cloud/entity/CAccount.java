@@ -1,5 +1,7 @@
 package com.sanxin.cloud.entity;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.io.Serializable;
 
@@ -11,6 +13,7 @@ import java.io.Serializable;
  * @author xiaoky
  * @since 2019-08-30
  */
+@Data
 public class CAccount implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,6 +45,11 @@ public class CAccount implements Serializable {
      */
     private Integer version;
 
+    /**
+     * 0输入密码 1免输密码
+     */
+    private Integer password;
+
     public Integer getId() {
         return id;
     }
@@ -49,6 +57,7 @@ public class CAccount implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+
     public Integer getCid() {
         return cid;
     }
@@ -56,6 +65,7 @@ public class CAccount implements Serializable {
     public void setCid(Integer cid) {
         this.cid = cid;
     }
+
     public BigDecimal getMoney() {
         return money;
     }
@@ -63,6 +73,7 @@ public class CAccount implements Serializable {
     public void setMoney(BigDecimal money) {
         this.money = money;
     }
+
     public BigDecimal getHour() {
         return hour;
     }
@@ -70,6 +81,7 @@ public class CAccount implements Serializable {
     public void setHour(BigDecimal hour) {
         this.hour = hour;
     }
+
     public BigDecimal getDeposit() {
         return deposit;
     }
@@ -77,6 +89,7 @@ public class CAccount implements Serializable {
     public void setDeposit(BigDecimal deposit) {
         this.deposit = deposit;
     }
+
     public Integer getVersion() {
         return version;
     }
@@ -85,15 +98,24 @@ public class CAccount implements Serializable {
         this.version = version;
     }
 
+    public Integer getPassword() {
+        return password;
+    }
+
+    public void setPassword(Integer password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
         return "CAccount{" +
-        "id=" + id +
-        ", cid=" + cid +
-        ", money=" + money +
-        ", hour=" + hour +
-        ", deposit=" + deposit +
-        ", version=" + version +
-        "}";
+                "id=" + id +
+                ", cid=" + cid +
+                ", money=" + money +
+                ", hour=" + hour +
+                ", deposit=" + deposit +
+                ", version=" + version +
+                ", password=" + password +
+                '}';
     }
 }
