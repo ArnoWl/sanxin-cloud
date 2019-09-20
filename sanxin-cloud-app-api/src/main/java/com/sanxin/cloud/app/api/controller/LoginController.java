@@ -46,7 +46,6 @@ public class LoginController {
         return registService.sendVerCode(phone,region);
     }
 
-
     /**
      * 注册用户
      * @param customer
@@ -59,7 +58,6 @@ public class LoginController {
         return RestResult.success("注册成功");
     }
 
-
     /**
      * 登录
      * @param loginRegisterVo 登录信息
@@ -69,7 +67,6 @@ public class LoginController {
     public RestResult doLogin(LoginRegisterVo loginRegisterVo) {
         return loginService.doLogin(loginRegisterVo);
     }
-
 
     /**
      * 个人资料
@@ -86,7 +83,7 @@ public class LoginController {
      * 修改个人资料
      * @return
      */
-    @PostMapping(value = MappingUtils.PERSONAL_INFORM)
+    @PostMapping(value = MappingUtils.UPDATE_PERSONAL_INFORM)
     public RestResult updatePersonalInform(CCustomer customer) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
@@ -104,13 +101,12 @@ public class LoginController {
      * @param type 1登录密码 2支付密码
      * @return
      */
-    @PostMapping(value = MappingUtils.PERSONAL_INFORM)
+    @PostMapping(value = MappingUtils.UPDATE_PASSWORD)
     public RestResult updatePassword(String Phone,String verCode,String password,Integer type) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
         return loginService.updateLoginPass(Phone,verCode,password,cid,type);
     }
-
 
     /**
      * 忘记密码
@@ -154,7 +150,6 @@ public class LoginController {
         }
         return loginService.handleResetPassword(loginRegisterVo,ext);
     }*/
-
 
 }
 

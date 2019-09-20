@@ -16,6 +16,10 @@ public class MappingUtils {
     public static final String FORGET_PASSWORD = "/forgetPassword";
     /** 个人资料 */
     public static final String PERSONAL_INFORM = "/personalInform";
+    /** 修改个人资料 */
+    public static final String UPDATE_PERSONAL_INFORM = "/updatePersonalInform";
+    /** 修改登录/支付密码 */
+    public static final String UPDATE_PASSWORD = "/updatePassword";
 
     /**注册发送验证码*/
     public static final String SEND_REGISTER_CODE="/sendRegisterCode";
