@@ -1,10 +1,10 @@
 package com.sanxin.cloud.dto;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.entity.CMarginDetail;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * 押金提现
@@ -12,5 +12,5 @@ import java.util.List;
 @Data
 public class CMarginVO {
     private BigDecimal margin;
-    private List<CMarginDetail> list;
+    private Page<CMarginDetail> list;
 }

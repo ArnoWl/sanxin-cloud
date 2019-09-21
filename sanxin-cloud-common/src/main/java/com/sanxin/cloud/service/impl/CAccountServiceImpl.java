@@ -1,17 +1,14 @@
 package com.sanxin.cloud.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.CMarginVO;
 import com.sanxin.cloud.dto.MoneyDetailVO;
-import com.sanxin.cloud.entity.BankDetail;
-import com.sanxin.cloud.entity.CAccount;
-import com.sanxin.cloud.entity.CMarginDetail;
-import com.sanxin.cloud.entity.CMoneyDetail;
-import com.sanxin.cloud.mapper.BankDetailMapper;
-import com.sanxin.cloud.mapper.CAccountMapper;
-import com.sanxin.cloud.mapper.CMarginDetailMapper;
-import com.sanxin.cloud.mapper.CMoneyDetailMapper;
+import com.sanxin.cloud.dto.UserTimeVO;
+import com.sanxin.cloud.entity.*;
+import com.sanxin.cloud.mapper.*;
 import com.sanxin.cloud.service.CAccountService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +35,9 @@ public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> i
     private BankDetailMapper bankDetailMapper;
     @Autowired
     private CMoneyDetailMapper moneyDetailMapper;
+    @Autowired
+    private CTimeDetailMapper timeDetailMapper;
+
 
     /**
      * 我的押金
@@ -45,9 +45,9 @@ public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> i
      * @return
      */
     @Override
-    public RestResult queryMyDeposit(Integer cid) {
+    public RestResult queryMyDeposit(SPage<CMarginDetail> page, Integer cid) {
         CMarginVO marginVO=new CMarginVO();
-        List<CMarginDetail> list = marginDetailMapper.selectList(new QueryWrapper<CMarginDetail>().eq("cid", cid));
+        Page<CMarginDetail> list = marginDetailMapper.queryMyDepositList(page, cid);
         CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
         marginVO.setList(list);
         marginVO.setMargin(account.getDeposit());
@@ -73,9 +73,9 @@ public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> i
      * @return
      */
     @Override
-    public RestResult queryBalanceDetail(Integer cid) {
+    public RestResult queryBalanceDetail(SPage<CMoneyDetail> page, Integer cid) {
         MoneyDetailVO moneyDetailVO=new MoneyDetailVO();
-        List<CMoneyDetail> list = moneyDetailMapper.selectList(new QueryWrapper<CMoneyDetail>().eq("cid", cid));
+        Page<CMoneyDetail> list = moneyDetailMapper.queryBalanceDetail(page,cid);
         CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
         moneyDetailVO.setList(list);
         moneyDetailVO.setBalance(account.getMoney());
@@ -97,4 +97,32 @@ public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> i
     public BigDecimal sumDepositMoney() {
         return baseMapper.sumDepositMoney();
     }
+
+    /**
+     * 用户时长明细
+     * @param page
+     * @param cid
+     * @return
+     */
+    @Override
+    public RestResult queryTimeDetail(SPage<CTimeDetail> page, Integer cid) {
+        UserTimeVO userTimeVO=new UserTimeVO();
+        SPage<CTimeDetail> list = timeDetailMapper.queryTimeDetail(page, cid);
+        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
+        userTimeVO.setList(list);
+        userTimeVO.setTime(account.getHour());
+        return RestResult.success(userTimeVO);
+    }
+
+    /**
+     * 剩余时长
+     * @param cid
+     * @return
+     */
+    @Override
+    public RestResult getTime(Integer cid) {
+        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
+        return RestResult.success(account.getHour());
+    }
+
 }

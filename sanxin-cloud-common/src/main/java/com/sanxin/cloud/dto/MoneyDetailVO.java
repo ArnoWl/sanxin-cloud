@@ -1,5 +1,6 @@
 package com.sanxin.cloud.dto;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.entity.CMoneyDetail;
 import lombok.Data;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Data
 public class MoneyDetailVO {
     private BigDecimal balance;
-    private List<CMoneyDetail> list;
+    private Page<CMoneyDetail> list;
 
     public BigDecimal getBalance() {
         return balance;
@@ -22,11 +23,11 @@ public class MoneyDetailVO {
         this.balance = balance;
     }
 
-    public List<CMoneyDetail> getList() {
+    public Page<CMoneyDetail> getList() {
         return list;
     }
 
-    public void setList(List<CMoneyDetail> list) {
+    public void setList(Page<CMoneyDetail> list) {
         this.list = list;
     }
 

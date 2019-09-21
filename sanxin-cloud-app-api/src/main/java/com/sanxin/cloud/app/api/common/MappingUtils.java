@@ -8,21 +8,28 @@ public class MappingUtils {
 
     /**登录*/
     public static final String REGISTER="/register";
+
     /**登录*/
     public static final String LOGIN="/login";
+
     /** 发送忘记密码验证码 */
     public static final String SEND_FORGET_CODE = "/sendForgetCode";
+
     /** 忘记密码操作 */
     public static final String FORGET_PASSWORD = "/forgetPassword";
+
     /** 个人资料 */
     public static final String PERSONAL_INFORM = "/personalInform";
+
     /** 修改个人资料 */
     public static final String UPDATE_PERSONAL_INFORM = "/updatePersonalInform";
+
     /** 修改登录/支付密码 */
     public static final String UPDATE_PASSWORD = "/updatePassword";
 
     /**注册发送验证码*/
     public static final String SEND_REGISTER_CODE="/sendRegisterCode";
+
     /**注册*/
     public static final String HANDLE_REGISTER="/handleRegister";
 
@@ -46,5 +53,11 @@ public class MappingUtils {
 
     /**我要充值显示余额*/
     public static final String GET_BALANCE="/getBalance";
+
+    /**用户时长明细*/
+    public static final String TIME_DETAIL="/timeDetail";
+
+    /**剩余时长*/
+    public static final String GET_TIME="/getTime";
 
 }

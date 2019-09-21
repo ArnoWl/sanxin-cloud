@@ -1,26 +1,26 @@
 package com.sanxin.cloud.mapper;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.CMoneyDetail;
+import com.sanxin.cloud.entity.CTimeDetail;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
- * 用户商余额明细 Mapper 接口
+ * 用户时长明细表 Mapper 接口
  * </p>
  *
  * @author Arno
  * @since 2019-09-20
  */
-public interface CMoneyDetailMapper extends BaseMapper<CMoneyDetail> {
+public interface CTimeDetailMapper extends BaseMapper<CTimeDetail> {
 
     /**
-     * 余额明细
+     * 用户时长明细
      * @param page
      * @param cid
      * @return
      */
-    Page<CMoneyDetail> queryBalanceDetail(SPage<CMoneyDetail> page,@Param("cid") Integer cid);
+    SPage<CTimeDetail> queryTimeDetail(SPage<CTimeDetail> page,@Param("cid") Integer cid);
 }

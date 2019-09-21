@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sanxin.cloud.mapper.CMoneyDetailMapper">
+<mapper namespace="com.sanxin.cloud.mapper.CTimeDetailMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.sanxin.cloud.entity.CMoneyDetail">
+    <resultMap id="BaseResultMap" type="com.sanxin.cloud.entity.CTimeDetail">
         <id column="id" property="id" />
         <result column="cid" property="cid" />
         <result column="pay_code" property="payCode" />
@@ -16,9 +16,9 @@
         <result column="remark" property="remark" />
     </resultMap>
 
-    <!-- 余额明细 -->
-    <select id="queryBalanceDetail" resultType="com.sanxin.cloud.entity.CMoneyDetail">
-        select * from c_money_detail where cid=#{cid}
+    <!-- 用户时长明细 -->
+    <select id="queryTimeDetail" resultType="com.sanxin.cloud.entity.CTimeDetail">
+        select * from c_time_detail where cid=#{cid}
     </select>
 
 </mapper>

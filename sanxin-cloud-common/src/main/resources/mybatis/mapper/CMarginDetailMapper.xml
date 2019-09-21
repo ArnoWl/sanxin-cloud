@@ -19,4 +19,9 @@
         select * from c_margin_detail WHERE cid=#{cid} limit 1
     </select>
 
+    <!-- 我的押金 -->
+    <select id="queryMyDepositList" resultType="com.sanxin.cloud.entity.CMarginDetail">
+        select * from c_margin_detail where cid=#{cid}
+    </select>
+
 </mapper>
