@@ -4,12 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.pwd.DESEncode;
-import com.sanxin.cloud.common.pwd.Encode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.common.times.DateUtil;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
 import com.sanxin.cloud.enums.LoginChannelEnums;
-import com.sanxin.cloud.exception.ThrowJsonException;
+import com.sanxin.cloud.exception.LoginOutException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -112,15 +111,15 @@ public class LoginTokenService {
      */
     public LoginDto validLoginLoginDto(String token) {
         if (StringUtils.isBlank(token)) {
-            throw new ThrowJsonException("1000");
+            throw new LoginOutException("1000");
         }
         String decrypt = redisUtilsService.getKey(token);
         if (StringUtils.isBlank(decrypt)) {
-            throw new ThrowJsonException("1000");
+            throw new LoginOutException("1000");
         }
         LoginDto loginDto = JSONObject.parseObject(decrypt, LoginDto.class);
         if (loginDto == null || loginDto.getTid() == null) {
-            throw new ThrowJsonException("1000");
+            throw new LoginOutException("1000");
         }
         return loginDto;
     }
@@ -135,21 +134,21 @@ public class LoginTokenService {
     public Integer validLoginTid(String token) {
         if (StringUtils.isBlank(token)) {
             //Token can't be Null
-            throw new ThrowJsonException("997");
+            throw new LoginOutException("997");
         }
         String decrypt = redisUtilsService.getKey(token);
         if (StringUtils.isBlank(decrypt)) {
             //Logon information error
-            throw new ThrowJsonException("998");
+            throw new LoginOutException("998");
         }
         LoginDto loginDto = JSONObject.parseObject(decrypt, LoginDto.class);
         if (loginDto == null || loginDto.getTid() == null) {
             //Unique primary can't be Null
-            throw new ThrowJsonException("999");
+            throw new LoginOutException("999");
         }
         if (loginDto.getChannel() == null) {
             //Error in landing channel
-            throw new ThrowJsonException("1000");
+            throw new LoginOutException("1000");
         }
         return loginDto.getTid();
     }
@@ -164,21 +163,21 @@ public class LoginTokenService {
     public Integer validLoginType(String token) {
         if (StringUtils.isBlank(token)) {
             //Token can't be Null
-            throw new ThrowJsonException("997");
+            throw new LoginOutException("997");
         }
         String decrypt = redisUtilsService.getKey(token);
         if (StringUtils.isBlank(decrypt)) {
             //Logon information error
-            throw new ThrowJsonException("998");
+            throw new LoginOutException("998");
         }
         LoginDto loginDto = JSONObject.parseObject(decrypt, LoginDto.class);
         if (loginDto == null || loginDto.getTid() == null) {
             //Unique primary can't be Null
-            throw new ThrowJsonException("999");
+            throw new LoginOutException("999");
         }
         if (loginDto.getChannel() == null) {
             //Error in landing channel
-            throw new ThrowJsonException("1000");
+            throw new LoginOutException("1000");
         }
         return loginDto.getType();
     }
