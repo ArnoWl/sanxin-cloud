@@ -42,10 +42,10 @@ public class RegistServiceImpl implements RegistService {
             throw new ThrowJsonException("不能重复注册");
         }
         // 根据手机号获取验证码
-        String verCode = redisUtilsService.getKey(Constant.PHONE_VERCODE + customer.getPhone());
+        /*String verCode = redisUtilsService.getKey(Constant.PHONE_VERCODE + customer.getPhone());
         if (!customer.getVerCode().equals(verCode)) {
             throw new ThrowJsonException("验证码不匹配");
-        }
+        }*/
         //加密密码
         String pass = PwdEncode.encodePwd(customer.getPassWord());
         customer.setPassWord(pass);
