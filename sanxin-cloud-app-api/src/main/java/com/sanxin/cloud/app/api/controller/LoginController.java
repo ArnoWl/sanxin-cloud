@@ -95,17 +95,16 @@ public class LoginController {
 
     /**
      * 修改登录或支付密码
-     * @param phone 手机号
      * @param verCode 验证码
      * @param password 密码
      * @param type 1登录密码 2支付密码
      * @return
      */
     @PostMapping(value = MappingUtils.UPDATE_PASSWORD)
-    public RestResult updatePassword(String phone,String verCode,String password,Integer type) {
+    public RestResult updatePassword(String verCode,String password,Integer type) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
-        return loginService.updateLoginPass(phone,verCode,password,cid,type);
+        return loginService.updateLoginPass(verCode,password,cid,type);
     }
 
     /**

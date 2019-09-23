@@ -149,17 +149,19 @@ public class LoginServiceImpl implements LoginService {
      * @return
      */
     @Override
-    public RestResult updateLoginPass(String phone, String verCode, String password, Integer cid, Integer type) {
-        if (StringUtils.isBlank(phone)) {
-            return RestResult.fail("user_phone_empty");
-        }
+    public RestResult updateLoginPass(String verCode, String password, Integer cid, Integer type) {
         if (StringUtils.isBlank(verCode)) {
             return RestResult.fail("user_code_empty");
+        }
+        //密码校验格式
+        boolean validPwd = FunctionUtils.validLoginPwd(password);
+        if (!validPwd) {
+            return RestResult.fail("user_login_pass_error");
         }
         //TODO 短信验证未写
         //密码加密
         String pass = PwdEncode.encodePwd(password);
-        CCustomer customer = customerMapper.selectOne(new QueryWrapper<CCustomer>().eq("id",cid).eq("phone",phone));
+        CCustomer customer = customerMapper.selectById(cid);
         if (customer == null) {
             return RestResult.fail("user_customer_empty");
         }

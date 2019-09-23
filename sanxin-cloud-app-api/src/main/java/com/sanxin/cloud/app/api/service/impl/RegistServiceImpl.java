@@ -2,6 +2,7 @@ package com.sanxin.cloud.app.api.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.app.api.service.RegistService;
+import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
@@ -33,12 +34,23 @@ public class RegistServiceImpl implements RegistService {
         return null;
     }
 
+    /**
+     * 注册
+     * @param customer
+     * @return
+     * @throws Exception
+     */
     @Override
     public RestResult doRegister(CCustomer customer) throws Exception {
         check(customer);
         CCustomer user = customerService.getOne(new QueryWrapper<CCustomer>().eq("phone", customer.getPhone()));
         if (user != null) {
-            return RestResult.fail("不能重复注册");
+            return RestResult.fail("phone_exist");
+        }
+        //密码校验格式
+        boolean validPwd = FunctionUtils.validLoginPwd(customer.getPassWord());
+        if (!validPwd) {
+            return RestResult.fail("user_login_pass_error");
         }
         // 根据手机号获取验证码
         /*String verCode = redisUtilsService.getKey(Constant.PHONE_VERCODE + customer.getPhone());
@@ -65,7 +77,7 @@ public class RegistServiceImpl implements RegistService {
             throw new ThrowJsonException("密码不能为空");
         }
         if (StringUtils.isEmpty(customer.getVerCode())) {
-            throw new ThrowJsonException("验证码不能为空");
+            throw new ThrowJsonException("verifycode_not_exist");
         }
     }
 }

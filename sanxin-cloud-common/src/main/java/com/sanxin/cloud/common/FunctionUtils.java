@@ -284,7 +284,24 @@ public class FunctionUtils {
 		return false;
 	}
 
+	/**
+	 * 校验密码是否8位数字以上并且包含字母
+	 * @param loginPwd
+	 * @return
+	 */
+	public static boolean validLoginPwd(String loginPwd) {
+		//正则表达式  匹配6位数密码
+		String pattern = "^(?![^a-zA-Z]+$)(?!\\D+$).{8,20}$";
+		Pattern p = Pattern.compile(pattern);
+		Matcher m = p.matcher(loginPwd);
+		boolean isMatch = m.matches();
+		if (isMatch) {
+			return true;
+		}
+		return false;
+	}
+
 	public static void main(String[] args) {
-		System.out.println(validPayword("123321"));
+		System.out.println(validLoginPwd("123456789101111111111a"));
 	}
 }

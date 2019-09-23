@@ -281,10 +281,12 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
                 if (StringUtils.isBlank(password)) {
                     return RestResult.fail("user_login_pass_empty");
                 }
-                // 登录密码-6-16位
-                if (password.length() < 6 || password.length() > 16) {
+                // 密码校验格式
+                boolean pass = FunctionUtils.validLoginPwd(password);
+                if (!pass) {
                     return RestResult.fail("user_login_pass_error");
                 }
+
                 // 密码加密
                 password = PwdEncode.encodePwd(password);
                 business.setPassWord(password);
