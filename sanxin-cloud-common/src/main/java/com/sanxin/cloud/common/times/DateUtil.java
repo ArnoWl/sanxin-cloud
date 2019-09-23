@@ -156,6 +156,17 @@ public class DateUtil {
 	}
 
 	/**
+	 * 将字符串类型的时间转换成另外一种格式
+	 * @param date
+	 * @param pattern
+	 * @return
+	 */
+	public static String toDateString(String date, String pattern) {
+		Date d = toDate(date);
+		return toDateString(d, pattern);
+	}
+
+	/**
 	 * 将java.util.Date对象转换为时间字符串，使用默认日期格式
 	 * @param date
 	 * @return
@@ -799,6 +810,6 @@ public class DateUtil {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(getIntervalDay(new Date(), 5));
+		System.out.println(toDateString("2018-09-08", "MM.dd"));
 	}
 }

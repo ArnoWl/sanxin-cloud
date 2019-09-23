@@ -13,4 +13,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface BDeviceTerminalService extends IService<BDeviceTerminal> {
 
+    /**
+     * 通过充电宝id查询充电宝
+     * @param terminalId
+     * @return
+     */
+    BDeviceTerminal getTerminalById(String terminalId);
 }

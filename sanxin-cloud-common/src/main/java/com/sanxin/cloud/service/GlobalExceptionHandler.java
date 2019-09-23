@@ -6,6 +6,7 @@ import com.sanxin.cloud.exception.ThrowJsonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -96,9 +97,16 @@ public class GlobalExceptionHandler {
 		return RestResult.fail("1001",e.getMessage(),null);
 	}
 
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	@ResponseBody
+	public RestResult handleRequestMethod(HttpRequestMethodNotSupportedException e){
+		return RestResult.fail("请求方式错误");
+	}
+
     @ExceptionHandler(value =  Exception.class)
     @ResponseBody
     public RestResult errorResponse(HttpServletRequest req,Exception e) {
 		return RestResult.fail("请求错误");
     }
+
 }

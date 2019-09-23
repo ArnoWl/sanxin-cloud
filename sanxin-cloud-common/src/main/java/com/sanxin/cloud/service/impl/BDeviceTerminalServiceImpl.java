@@ -1,5 +1,6 @@
 package com.sanxin.cloud.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.entity.BDeviceTerminal;
 import com.sanxin.cloud.mapper.BDeviceTerminalMapper;
 import com.sanxin.cloud.service.BDeviceTerminalService;
@@ -17,4 +18,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class BDeviceTerminalServiceImpl extends ServiceImpl<BDeviceTerminalMapper, BDeviceTerminal> implements BDeviceTerminalService {
 
+    @Override
+    public BDeviceTerminal getTerminalById(String terminalId) {
+        QueryWrapper<BDeviceTerminal> wrapper = new QueryWrapper<>();
+        wrapper.eq("terminal_id", terminalId);
+        return super.getOne(wrapper);
+    }
 }

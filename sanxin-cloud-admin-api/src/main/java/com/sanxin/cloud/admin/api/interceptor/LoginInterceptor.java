@@ -90,6 +90,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 strs.add("/payment/editAliPay");
                 strs.add("/home/labelMsg");
                 strs.add("/home/queryCashStatistics");
+                strs.add("/system/importTerminalSn");
                 System.out.println("returnUrl：："+returnUrl);
                 boolean bool = strs.contains(returnUrl);
                 if(!bool) {

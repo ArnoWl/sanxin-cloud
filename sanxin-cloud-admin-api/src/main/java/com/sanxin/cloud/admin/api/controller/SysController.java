@@ -14,10 +14,7 @@ import com.sanxin.cloud.dto.LanguageVo;
 import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.enums.LanguageEnums;
 import com.sanxin.cloud.enums.RichTextEnums;
-import com.sanxin.cloud.service.BDeviceService;
-import com.sanxin.cloud.service.GiftHourService;
-import com.sanxin.cloud.service.SysAgreementService;
-import com.sanxin.cloud.service.SysRichTextService;
+import com.sanxin.cloud.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -47,6 +44,8 @@ public class SysController {
     private GiftHourService giftHourService;
     @Autowired
     private BDeviceService bDeviceService;
+    @Autowired
+    private BDeviceTerminalService bDeviceTerminalService;
 
     /**
      * 查询系统协议列表
@@ -239,6 +238,34 @@ public class SysController {
                 device.setBid(1);
                 device.setCode(code);
                 boolean result = bDeviceService.save(device);
+                System.out.println(result);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RestResult.success("13");
+    }
+
+    @GetMapping("/importTerminalSn")
+    public RestResult importTerminalSn() {
+        String filePath = "C:/Users/xky/Desktop/充电宝ID1.xls";
+        try {
+            HSSFWorkbook work = new HSSFWorkbook(new FileInputStream(filePath));// 得到这个excel表格对象
+            HSSFSheet sheet = work.getSheetAt(0); // 得到第一个sheet
+            int rowNo = sheet.getLastRowNum(); // 得到行数
+            for (int i = 2; i <= rowNo; i++) {
+                HSSFRow row = sheet.getRow(i);
+                for (int j = 0; j < row.getLastCellNum(); j++) {
+                    HSSFCell c = row.getCell(j);
+                    if (c != null) {
+                        c.setCellType(HSSFCell.CELL_TYPE_STRING);
+                    }
+                }
+                HSSFCell cell0 = row.getCell(0);
+                String terminalId = cell0.getStringCellValue();
+                BDeviceTerminal device = new BDeviceTerminal();
+                device.setTerminalId(terminalId);
+                boolean result = bDeviceTerminalService.save(device);
                 System.out.println(result);
             }
         } catch (Exception e) {

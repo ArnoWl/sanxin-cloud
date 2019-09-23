@@ -11,20 +11,16 @@ import com.sanxin.cloud.config.login.LoginTokenService;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.BusinessBaseVo;
 import com.sanxin.cloud.dto.BusinessDetailVo;
-import com.sanxin.cloud.dto.PowerBankListVo;
 import com.sanxin.cloud.dto.BusinessHomeVo;
+import com.sanxin.cloud.dto.PowerBankListVo;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.entity.BMoneyDetail;
 import com.sanxin.cloud.service.BBusinessService;
-import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -71,7 +67,7 @@ public class BusinessController {
      * @param vo
      * @return
      */
-    @PutMapping(value = BusinessMapping.EDIT_BUSINESS_INFO)
+    @PostMapping(value = BusinessMapping.EDIT_BUSINESS_INFO)
     public RestResult editBusinessInfo(BusinessBaseVo vo) {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginTid(token);
@@ -118,7 +114,7 @@ public class BusinessController {
      * @param vo
      * @return
      */
-    @PutMapping(value = BusinessMapping.EDIT_BUSINESS_CENTER)
+    @PostMapping(value = BusinessMapping.EDIT_BUSINESS_CENTER)
     public RestResult editBusinessCenter(BusinessDetailVo vo) {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginTid(token);
