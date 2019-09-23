@@ -20,6 +20,7 @@ public interface RegistService {
     /**
      * 注册
      * @param customer
+     * @return
      */
-    void doRegister(CCustomer customer) throws Exception;
+    RestResult doRegister(CCustomer customer) throws Exception;
 }

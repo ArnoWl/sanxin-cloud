@@ -1,5 +1,6 @@
 package com.sanxin.cloud.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 @Data
@@ -55,7 +56,8 @@ public class PowerBankListVo {
     /**
      * 大机柜 小机柜
      */
-    private Integer type;
+    @TableField(exist = false)
+    private String cabinet;
     /**
      * 详细地址
      */
@@ -76,6 +78,16 @@ public class PowerBankListVo {
      * banner图
      */
     private String coverUrl;
+
+    private String businessHours;
+
+    public String getBusinessHours() {
+        return businessHours;
+    }
+
+    public void setBusinessHours(String businessHours) {
+        this.businessHours = businessHours;
+    }
 
     public Integer getId() {
         return id;
@@ -173,12 +185,12 @@ public class PowerBankListVo {
         this.strRepayPort = strRepayPort;
     }
 
-    public Integer getType() {
-        return type;
+    public String getCabinet() {
+        return cabinet;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setCabinet(String cabinet) {
+        this.cabinet = cabinet;
     }
 
     public String getAddressDetail() {
@@ -236,12 +248,13 @@ public class PowerBankListVo {
                 ", repayPort=" + repayPort +
                 ", strLendPort='" + strLendPort + '\'' +
                 ", strRepayPort='" + strRepayPort + '\'' +
-                ", type=" + type +
+                ", cabinet='" + cabinet + '\'' +
                 ", addressDetail='" + addressDetail + '\'' +
                 ", distance=" + distance +
                 ", remark='" + remark + '\'' +
                 ", status=" + status +
                 ", coverUrl='" + coverUrl + '\'' +
+                ", businessHours='" + businessHours + '\'' +
                 '}';
     }
 }

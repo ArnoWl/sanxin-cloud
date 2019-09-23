@@ -37,7 +37,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tokenInterceptor)
                 // 拦截所有请求
-                //.addPathPatterns("/**")
+                .addPathPatterns("/**")
                 .excludePathPatterns("/user-protocol/**")
                 .excludePathPatterns("/register/**")
                 .excludePathPatterns("/richText/**")

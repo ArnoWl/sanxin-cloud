@@ -27,7 +27,7 @@
 
     <!-- 根据经纬度分页查询周边商铺 -->
     <select id="findByShops" resultType="com.sanxin.cloud.dto.PowerBankListVo">
-        SELECT b.id,d.code, b.company_name,b.start_day,b.end_day,b.start_time,b.end_time,d.lend_port,d.repay_port,d.type,b.address_detail,d.status,b.head_url,b.cover_url,
+        SELECT b.id,d.code, b.company_name,b.start_day,b.end_day,b.start_time,b.end_time,SUM(d.lend_port)  as lend_port,SUM(d.repay_port) as repay_port,b.address_detail,d.status,b.head_url,b.cover_url,
         round(
         6378.138 * 2 * asin(
         sqrt(
@@ -42,6 +42,12 @@
         <if test="search != null and search != ''">
             AND b.company_name like concat('%',#{search},'%')
         </if>
+        GROUP BY
+        b.id
+    </select>
+    <!-- 大小机柜分类 -->
+    <select id="findByCabinet" resultType="java.lang.Integer">
+    select distinct type from b_device where bid=#{id} and type is not null
     </select>
 
 </mapper>

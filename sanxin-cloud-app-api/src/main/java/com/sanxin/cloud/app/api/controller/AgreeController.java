@@ -30,6 +30,6 @@ public class AgreeController {
         Integer type = 1;
         String language = BaseUtil.getLanguage();
         SysAgreement agreement = sysAgreementService.getByTypeAndLanguage(type, language);
-        return RestResult.success(LanguageUtils.getMessage("password_empty"), agreement);
+        return RestResult.success(LanguageUtils.getMessage("success"), agreement);
     }
 }

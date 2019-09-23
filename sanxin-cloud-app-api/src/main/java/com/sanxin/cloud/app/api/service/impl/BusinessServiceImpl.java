@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sanxin.cloud.app.api.service.BusinessService;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
+import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.common.times.DateUtil;
@@ -19,10 +20,7 @@ import com.sanxin.cloud.entity.BAccount;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.entity.BMoneyDetail;
 import com.sanxin.cloud.entity.CPushLog;
-import com.sanxin.cloud.enums.CardTypeEnums;
-import com.sanxin.cloud.enums.CashTypeEnums;
-import com.sanxin.cloud.enums.HandleTypeEnums;
-import com.sanxin.cloud.enums.WeekEnums;
+import com.sanxin.cloud.enums.*;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.mapper.BBusinessMapper;
 import com.sanxin.cloud.mapper.BMoneyDetailMapper;
@@ -50,6 +48,7 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
 
     /**
      * 根据经纬度分页查询周边商铺
+     *
      * @param current
      * @param size
      * @param latVal
@@ -65,25 +64,35 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
         page.setSize(size);
         List<PowerBankListVo> byShops = baseMapper.findByShops(page, latVal, lonVal, search, radius);
         for (PowerBankListVo byShop : byShops) {
+            List<Integer> cabinet = baseMapper.findByCabinet(byShop.getId());
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < cabinet.size(); i++) {
+                if (i > 0) {
+                    sb.append(" ");
+                }
+                sb.append(DeviceTypeEnums.getName(cabinet.get(i)));
+            }
+            byShop.setBusinessHours(FunctionUtils.getHours(byShop.getStartDay(),byShop.getEndDay(),byShop.getStartTime(),byShop.getEndTime()));
+            byShop.setCabinet(sb.toString());
             if (byShop.getLendPort() == 0 && byShop.getRepayPort() != 0) {
-                byShop.setStrLendPort("不可租用");
-                byShop.setStrRepayPort("可归还");
-                byShop.setRemark("温馨提示：无法出借充电宝，请选择其他门店");
+                byShop.setStrLendPort(LanguageUtils.getMessage("device_1"));
+                byShop.setStrRepayPort(LanguageUtils.getMessage("device_2"));
+                byShop.setRemark(LanguageUtils.getMessage("device_3"));
             }
             if (byShop.getLendPort() != 0 && byShop.getRepayPort() == 0) {
-                byShop.setStrLendPort("可租用");
-                byShop.setStrRepayPort("不可归还");
-                byShop.setRemark("温馨提示：无法归还充电宝，请选择其他门店");
+                byShop.setStrLendPort(LanguageUtils.getMessage("device_4"));
+                byShop.setStrRepayPort(LanguageUtils.getMessage("device_5"));
+                byShop.setRemark(LanguageUtils.getMessage("device_6"));
             }
             if (byShop.getLendPort() == 0 && byShop.getRepayPort() == 0) {
-                byShop.setStrLendPort("不可租用");
-                byShop.setStrRepayPort("不可归还");
-                byShop.setRemark("温馨提示：无法出借和归还充电宝，请选择其他门店");
+                byShop.setStrLendPort(LanguageUtils.getMessage("device_1"));
+                byShop.setStrRepayPort(LanguageUtils.getMessage("device_5"));
+                byShop.setRemark(LanguageUtils.getMessage("device_6"));
             }
             if (byShop.getLendPort() != 0 && byShop.getRepayPort() != 0) {
-                byShop.setStrLendPort("可租用");
-                byShop.setStrRepayPort("可归还");
-                byShop.setRemark("温馨提示：仓口即将还满，如要归还请尽快前往");
+                byShop.setStrLendPort(LanguageUtils.getMessage("device_4"));
+                byShop.setStrRepayPort(LanguageUtils.getMessage("device_2"));
+                byShop.setRemark(LanguageUtils.getMessage("device_7"));
             }
         }
         return page.setRecords(byShops);
@@ -100,6 +109,7 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
 
     /**
      * 查询商家中心数据
+     *
      * @param bid
      * @return
      */
@@ -116,7 +126,7 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
         List<String> coverUrlList = new ArrayList<String>();
         if (StringUtils.isNotBlank(business.getCoverUrl())) {
             JSONArray jsonArray = JSON.parseArray(business.getCoverUrl());
-            for (int i = 0; i<jsonArray.size(); i++) {
+            for (int i = 0; i < jsonArray.size(); i++) {
                 String url = "";
                 JSONObject jsonObject = (JSONObject) JSONObject.toJSON(jsonArray.get(i));
                 coverUrlList.add(jsonObject.getString("url"));
@@ -150,12 +160,12 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
         if (vo.getCoverUrlList() == null || vo.getCoverUrlList().size() <= 0) {
             return RestResult.fail("business_cover_empty");
         }
-        if (vo.getCoverUrlList().size()>5) {
+        if (vo.getCoverUrlList().size() > 5) {
             return RestResult.fail("business_cover_size");
         }
         // 将图片重新封装一次
         List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
-        for(String coverUrl : vo.getCoverUrlList()) {
+        for (String coverUrl : vo.getCoverUrlList()) {
             Map<String, Object> map = new HashMap<>();
             map.put("url", coverUrl);
             mapList.add(map);
@@ -187,7 +197,7 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
         pushLogWrapper.eq("target_id", bid).eq("target_type", CashTypeEnums.BUSINESS.getId())
                 .eq("reading", StaticUtils.STATUS_NO);
         int logNum = pushLogService.count(pushLogWrapper);
-        if (logNum>0) {
+        if (logNum > 0) {
             tips = true;
         }
         vo.setTips(tips);
@@ -224,14 +234,14 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
             QueryTimeDataVo vo = new QueryTimeDataVo();
             vo.setType(type);
             // 循环时间集
-            for (int i = 0; i< dateList.size(); i++) {
+            for (int i = 0; i < dateList.size(); i++) {
                 String data = dateList.get(i);
                 vo.setDate(data);
                 if (type == StaticUtils.TIME_WEEK) {
-                    if (i==dateList.size()-1) {
+                    if (i == dateList.size() - 1) {
                         vo.setEndDate(DateUtil.toDateString(DateUtil.getEndTimeOfMonth(date)));
                     } else {
-                        vo.setEndDate(dateList.get(i+1));
+                        vo.setEndDate(dateList.get(i + 1));
                     }
                 }
                 BigDecimal money = bMoneyDetailMapper.queryBusinessIncome(vo);
@@ -265,14 +275,14 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
         if (StringUtils.isBlank(verCode)) {
             return RestResult.fail("user_code_empty");
         }
-        switch (type){
+        switch (type) {
             //修改登录密码
             case StaticUtils.TYPE_PASS_WORD:
                 if (StringUtils.isBlank(password)) {
                     return RestResult.fail("user_login_pass_empty");
                 }
                 // 登录密码-6-16位
-                if (password.length()<6 || password.length()>16) {
+                if (password.length() < 6 || password.length() > 16) {
                     return RestResult.fail("user_login_pass_error");
                 }
                 // 密码加密
@@ -303,11 +313,12 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
 
     /**
      * 通过类型获得不同的时间集
+     *
      * @param type 1 day, 2 week, 3 month
      * @param time 时间
      * @return List 时间集
      */
-    public List<String> getDateListByType (Integer type, Date time) {
+    public List<String> getDateListByType(Integer type, Date time) {
         List<String> dateList = new ArrayList<>();
         if (FunctionUtils.isEquals(type, StaticUtils.TIME_DAY)) {
             dateList = DateUtil.getWeekDays(time);

@@ -28,4 +28,6 @@ public interface BBusinessMapper extends BaseMapper<BBusiness> {
      * @return
      */
     List<PowerBankListVo> findByShops(IPage<PowerBankListVo> page, @Param(value = "latVal") String latVal, @Param(value = "lonVal") String lonVal, @Param(value = "search") String search, @Param(value = "radius") Integer radius);
+
+    List<Integer> findByCabinet(@Param(value = "id") Integer id);
 }

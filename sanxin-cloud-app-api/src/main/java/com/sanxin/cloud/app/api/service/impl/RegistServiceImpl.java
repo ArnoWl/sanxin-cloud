@@ -2,7 +2,6 @@ package com.sanxin.cloud.app.api.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.app.api.service.RegistService;
-import com.sanxin.cloud.common.Constant;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
@@ -35,11 +34,11 @@ public class RegistServiceImpl implements RegistService {
     }
 
     @Override
-    public void doRegister(CCustomer customer) throws Exception {
+    public RestResult doRegister(CCustomer customer) throws Exception {
         check(customer);
         CCustomer user = customerService.getOne(new QueryWrapper<CCustomer>().eq("phone", customer.getPhone()));
         if (user != null) {
-            throw new ThrowJsonException("不能重复注册");
+            return RestResult.fail("不能重复注册");
         }
         // 根据手机号获取验证码
         /*String verCode = redisUtilsService.getKey(Constant.PHONE_VERCODE + customer.getPhone());
@@ -51,6 +50,7 @@ public class RegistServiceImpl implements RegistService {
         customer.setPassWord(pass);
         customerService.save(customer);
 
+        return RestResult.success("success");
     }
 
     /**

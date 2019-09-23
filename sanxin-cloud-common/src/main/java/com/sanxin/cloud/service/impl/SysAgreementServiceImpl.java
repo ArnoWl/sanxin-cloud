@@ -32,11 +32,11 @@ public class SysAgreementServiceImpl extends ServiceImpl<SysAgreementMapper, Sys
         // 返回对应语言的内容
         JSONObject object = JSONObject.parseObject(agreement.getTitle());
         agreement.setTitle(object.getString(language));
-        if (LanguageEnums.CN.name().equals(language)) {
+        if (LanguageEnums.CN.name().equalsIgnoreCase(language)) {
             agreement.setContent(agreement.getCnContent());
-        } else if (LanguageEnums.EN.name().equals(language)) {
+        } else if (LanguageEnums.EN.name().equalsIgnoreCase(language)) {
             agreement.setContent(agreement.getEnContent());
-        } else if (LanguageEnums.THAI.name().equals(language)) {
+        } else if (LanguageEnums.THAI.name().equalsIgnoreCase(language)) {
             agreement.setContent(agreement.getThaiContent());
         }
         return agreement;
