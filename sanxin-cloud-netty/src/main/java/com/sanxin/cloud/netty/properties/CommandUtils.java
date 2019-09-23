@@ -1,6 +1,7 @@
 package com.sanxin.cloud.netty.properties;
 
 import com.sanxin.cloud.common.random.RandNumUtils;
+import com.sanxin.cloud.config.redis.RedisUtilsService;
 import com.sanxin.cloud.enums.RandNumType;
 import com.sanxin.cloud.netty.enums.CommandEnums;
 import com.sanxin.cloud.netty.hex.HexUtils;
@@ -144,6 +145,16 @@ public class CommandUtils {
         }
         log.info("发送16进制内容----------【"+HexUtils.str2HexStr(out_str)+"】----------");
         return out_str;
+    }
+
+
+    /**
+     * 注入redis
+     *
+     * @return
+     */
+    private RedisUtilsService getRedisUtilsService() {
+        return SpringBeanFactoryUtils.getApplicationContext().getBean(RedisUtilsService.class);
     }
 
 }
