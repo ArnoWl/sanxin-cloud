@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sanxin.cloud.app.api.service.BusinessService;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
+import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.common.times.DateUtil;
 import com.sanxin.cloud.config.pages.SPage;
@@ -245,6 +246,59 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
         map.put("date", dateArray);
         map.put("series", moneyArray);
         return map;
+    }
+
+    @Override
+    public RestResult updatePassword(Integer bid, String verCode, String password, Integer type) {
+        BBusiness business = businessService.validById(bid);
+        // 校验参数
+        // 校验短信验证码
+        if (StringUtils.isBlank(verCode)) {
+            return RestResult.fail("user_code_empty");
+        }
+        // TODO 校验短信验证码正确性
+
+        // 判断类型值是否符合
+        if (type != StaticUtils.TYPE_PASS_WORD && type != StaticUtils.TYPE_PAY_WORD) {
+            return RestResult.fail("data_exception");
+        }
+        if (StringUtils.isBlank(verCode)) {
+            return RestResult.fail("user_code_empty");
+        }
+        switch (type){
+            //修改登录密码
+            case StaticUtils.TYPE_PASS_WORD:
+                if (StringUtils.isBlank(password)) {
+                    return RestResult.fail("user_login_pass_empty");
+                }
+                // 登录密码-6-16位
+                if (password.length()<6 || password.length()>16) {
+                    return RestResult.fail("user_login_pass_error");
+                }
+                // 密码加密
+                password = PwdEncode.encodePwd(password);
+                business.setPassWord(password);
+                break;
+            //修改支付密码
+            case StaticUtils.TYPE_PAY_WORD:
+                if (StringUtils.isBlank(password)) {
+                    return RestResult.fail("user_pay_pass_empty");
+                }
+                // 支付密码-判断是否为6位数字
+                if (!FunctionUtils.validPayword(password)) {
+                    return RestResult.fail("user_pay_pass_error");
+                }
+                // 密码加密
+                password = PwdEncode.encodePwd(password);
+                business.setPayWord(password);
+                break;
+        }
+        // 修改
+        boolean result = businessService.updateById(business);
+        if (result) {
+            return RestResult.success("success");
+        }
+        return RestResult.fail("fail");
     }
 
     /**

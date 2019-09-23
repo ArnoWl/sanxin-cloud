@@ -165,14 +165,14 @@ public class LoginServiceImpl implements LoginService {
         }
         switch (type){
             //修改登录密码
-            case 1:
+            case StaticUtils.TYPE_PASS_WORD:
                 if (StringUtils.isBlank(password)) {
                     return RestResult.fail("user_login_pass_empty");
                 }
                 customer.setPassWord(pass);
                 break;
                 //修改支付密码
-            case 2:
+            case StaticUtils.TYPE_PAY_WORD:
                 if (StringUtils.isBlank(password)) {
                     return RestResult.fail("user_pay_pass_empty");
                 }

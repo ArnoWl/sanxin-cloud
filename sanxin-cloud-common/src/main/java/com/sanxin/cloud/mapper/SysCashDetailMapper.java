@@ -1,5 +1,6 @@
 package com.sanxin.cloud.mapper;
 
+import com.sanxin.cloud.dto.QueryTimeDataVo;
 import com.sanxin.cloud.entity.SysCashDetail;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -28,4 +29,11 @@ public interface SysCashDetailMapper extends BaseMapper<SysCashDetail> {
      * @return
      */
     BigDecimal sumCashMoney();
+
+    /**
+     * 时间段查询提现时间
+     * @param vo
+     * @return
+     */
+    BigDecimal sumCashMoneyByTime(QueryTimeDataVo vo);
 }

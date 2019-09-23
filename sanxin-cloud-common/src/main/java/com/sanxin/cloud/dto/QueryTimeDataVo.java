@@ -8,13 +8,17 @@ package com.sanxin.cloud.dto;
 public class QueryTimeDataVo {
 
     /**
-     * 查询数据id
+     * 业务id
      */
     private Integer targetId;
     /**
      * 类型 日期，星期，月份
      */
     private Integer type;
+    /**
+     * 业务类型
+     */
+    private Integer targetType;
     /**
      * 查询时间
      */
@@ -102,5 +106,25 @@ public class QueryTimeDataVo {
      */
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    /**
+     * Gets the value of targetType.
+     *
+     * @return the value of targetType
+     */
+    public Integer getTargetType() {
+        return targetType;
+    }
+
+    /**
+     * Sets the targetType.
+     *
+     * <p>You can use getTargetType() to get the value of targetType</p>
+     *
+     * @param targetType targetType
+     */
+    public void setTargetType(Integer targetType) {
+        this.targetType = targetType;
     }
 }

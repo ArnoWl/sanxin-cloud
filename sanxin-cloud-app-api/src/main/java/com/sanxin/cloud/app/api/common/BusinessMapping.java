@@ -22,4 +22,6 @@ public class BusinessMapping {
     public static final String QUERY_INCOME_DETAIL_LIST = "/queryIncomeDetailList";
     /** 查询首页统计图*/
     public static final String QUERY_INCOME_STATISTICS = "/queryIncomeStatistics";
+    /** 修改密码*/
+    public static final String UPDATE_PASSWORD = "/updatePassword";
 }

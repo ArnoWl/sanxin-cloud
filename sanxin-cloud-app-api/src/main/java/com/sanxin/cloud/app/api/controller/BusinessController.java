@@ -185,4 +185,19 @@ public class BusinessController {
         Map<String, Object> map = businessService.queryIncomeStatistics(bid, type);
         return RestResult.success("", map);
     }
+
+    /**
+     * 修改密码
+     * @param verCode 验证码
+     * @param password 密码
+     * @param type 类型
+     * @return
+     */
+    @PostMapping(value = BusinessMapping.UPDATE_PASSWORD)
+    public RestResult updatePassword(String verCode, String password, Integer type) {
+        String token = BaseUtil.getUserToken();
+        Integer bid = loginTokenService.validLoginTid(token);
+        RestResult result = businessService.updatePassword(bid, verCode, password, type);
+        return result;
+    }
 }

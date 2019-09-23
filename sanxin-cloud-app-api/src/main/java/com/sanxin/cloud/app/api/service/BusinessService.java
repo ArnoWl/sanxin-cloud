@@ -69,4 +69,14 @@ public interface BusinessService {
      * @return
      */
     Map<String, Object> queryIncomeStatistics(Integer bid, Integer type);
+
+    /**
+     * 加盟商修改密码操作
+     * @param bid
+     * @param verCode 验证码
+     * @param password 密码
+     * @param type 类型-支付密码|登录密码
+     * @return
+     */
+    RestResult updatePassword(Integer bid, String verCode, String password, Integer type);
 }

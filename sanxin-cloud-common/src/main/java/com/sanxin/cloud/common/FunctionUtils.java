@@ -235,8 +235,21 @@ public class FunctionUtils {
 		}
 	}
 
-	public static void main(String[] args) {
-		System.out.println(validEmail("12312@qq.com"));
+	/**
+	 * 手机号中间4位数字转*号
+	 * @param phone
+	 * @return
+	 */
+	public static String replayPhone(String phone) {
+		String str = phone;
+		if (phone.length() > 3) {
+			str = phone.substring(0, 3);
+			str += "****";
+		}
+		if (phone.length() > 7) {
+			str += phone.substring(7);
+		}
+		return str;
 	}
 
 	/**
@@ -253,4 +266,25 @@ public class FunctionUtils {
 			.append(" ").append(startTime).append("-").append(endTime);
     	return sb.toString();
     }
+
+	/**
+	 * 校验支付密码是否6位数字
+	 * @param payword
+	 * @return
+	 */
+	public static boolean validPayword(String payword) {
+		//正则表达式  匹配6位数密码
+		String pattern = "\\d{6}";
+		Pattern p = Pattern.compile(pattern);
+		Matcher m = p.matcher(payword);
+		boolean isMatch = m.matches();
+		if (isMatch) {
+			return true;
+		}
+		return false;
+	}
+
+	public static void main(String[] args) {
+		System.out.println(validPayword("123321"));
+	}
 }

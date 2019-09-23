@@ -5,22 +5,28 @@ import com.alibaba.fastjson.JSONObject;
 import com.netflix.discovery.converters.Auto;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.language.AdminLanguageStatic;
 import com.sanxin.cloud.common.language.LanguageUtils;
+import com.sanxin.cloud.common.pwd.DESEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.dto.LanguageVo;
-import com.sanxin.cloud.entity.GiftHour;
-import com.sanxin.cloud.entity.SysAgreement;
-import com.sanxin.cloud.entity.SysRichText;
+import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.enums.LanguageEnums;
 import com.sanxin.cloud.enums.RichTextEnums;
+import com.sanxin.cloud.service.BDeviceService;
 import com.sanxin.cloud.service.GiftHourService;
 import com.sanxin.cloud.service.SysAgreementService;
 import com.sanxin.cloud.service.SysRichTextService;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +45,8 @@ public class SysController {
     private SysRichTextService sysRichTextService;
     @Autowired
     private GiftHourService giftHourService;
+    @Autowired
+    private BDeviceService bDeviceService;
 
     /**
      * 查询系统协议列表
@@ -208,5 +216,34 @@ public class SysController {
             return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
         return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+    }
+
+    @GetMapping("/importDeviceSn")
+    public RestResult importDeviceSn() {
+        String filePath = "C:/Users/xky/Desktop/机柜SN1.xls";
+        try {
+            HSSFWorkbook work = new HSSFWorkbook(new FileInputStream(filePath));// 得到这个excel表格对象
+            HSSFSheet sheet = work.getSheetAt(0); // 得到第一个sheet
+            int rowNo = sheet.getLastRowNum(); // 得到行数
+            for (int i = 2; i <= rowNo; i++) {
+                HSSFRow row = sheet.getRow(i);
+                for (int j = 0; j < row.getLastCellNum(); j++) {
+                    HSSFCell c = row.getCell(j);
+                    if (c != null) {
+                        c.setCellType(HSSFCell.CELL_TYPE_STRING);
+                    }
+                }
+                HSSFCell cell0 = row.getCell(0);
+                String code = cell0.getStringCellValue();
+                BDevice device = new BDevice();
+                device.setBid(1);
+                device.setCode(code);
+                boolean result = bDeviceService.save(device);
+                System.out.println(result);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RestResult.success("13");
     }
 }

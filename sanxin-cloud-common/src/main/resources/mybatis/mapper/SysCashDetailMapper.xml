@@ -41,6 +41,24 @@
     </select>
 
     <select id="sumCashMoney" resultType="java.math.BigDecimal">
-        SELECT IFNULL(sum(cash_money), 0) from sys_cash_detail where status = 2
+        SELECT IFNULL(sum(real_money), 0) from sys_cash_detail where status = 2
+    </select>
+
+    <select id="sumCashMoneyByTime" resultType="java.math.BigDecimal" parameterType="com.sanxin.cloud.dto.QueryTimeDataVo">
+        SELECT IFNULL(SUM(real_money),0)
+        FROM sys_cash_detail
+        where `status` = 2
+        <if test="targetType != null">
+            and type = #{targetType, jdbcType=INTEGER}
+        </if>
+        <if test="type==1">
+            and date_format(create_time,'%Y-%m-%d') =date_format(#{date},'%Y-%m-%d')
+        </if>
+        <if test="type==2">
+            and YEARWEEK(date_format(create_time,'%Y-%m-%d')) = YEARWEEK(#{date})
+        </if>
+        <if test="type==3">
+            and date_format(create_time, '%Y-%m') = date_format(#{date} , '%Y-%m')
+        </if>
     </select>
 </mapper>

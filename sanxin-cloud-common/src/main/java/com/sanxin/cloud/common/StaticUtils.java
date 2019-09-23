@@ -82,4 +82,12 @@ public class StaticUtils {
      * 数据查询-月
      */
     public static final Integer TIME_MONTH = 3;
+    /**
+     * 类型-登录密码(val=1)
+     */
+    public static final int TYPE_PASS_WORD = 1;
+    /**
+     * 类型-支付密码(val=2)
+     */
+    public static final int TYPE_PAY_WORD = 2;
 }
