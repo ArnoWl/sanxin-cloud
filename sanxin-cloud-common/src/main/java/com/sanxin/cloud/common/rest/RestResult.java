@@ -24,7 +24,7 @@ public class RestResult implements Serializable {
     public boolean status;
 
     /**
-     * 状态码 00表示成功  -1表示失败
+     * 状态码 1表示成功  -1表示失败
      */
     public String code;
 
@@ -72,7 +72,7 @@ public class RestResult implements Serializable {
     public static RestResult success(String msg,Object data){
         RestResult restResult=new RestResult();
         restResult.status=true;
-        restResult.code="00";
+        restResult.code="1";
         restResult.msg=getLanguageMsg(msg);
         restResult.data=data;
         return restResult;
@@ -86,7 +86,7 @@ public class RestResult implements Serializable {
     public static RestResult success(String msg){
         RestResult restResult=new RestResult();
         restResult.status=true;
-        restResult.code="00";
+        restResult.code="1";
         restResult.msg=getLanguageMsg(msg);
         restResult.data=null;
         return restResult;
@@ -100,7 +100,7 @@ public class RestResult implements Serializable {
     public static RestResult success(Object data){
         RestResult restResult=new RestResult();
         restResult.status=true;
-        restResult.code="00";
+        restResult.code="1";
         restResult.msg=getLanguageMsg("success");
         restResult.data=data;
         return restResult;
