@@ -1,6 +1,7 @@
 package com.sanxin.cloud.app.api.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.app.api.service.BusinessService;
 import com.sanxin.cloud.app.api.service.LoginService;
 import com.sanxin.cloud.common.Constant;
 import com.sanxin.cloud.common.FunctionUtils;
@@ -11,6 +12,8 @@ import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.login.LoginDto;
 import com.sanxin.cloud.config.login.LoginTokenService;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
+import com.sanxin.cloud.dto.BusinessHomeVo;
+import com.sanxin.cloud.dto.CustomerHomeVo;
 import com.sanxin.cloud.dto.LoginRegisterVo;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.entity.CCustomer;
@@ -42,10 +45,11 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private CCustomerMapper customerMapper;
     @Autowired
-    private BBusinessService businessService;
+    private BBusinessService bbusinessService;
     @Autowired
     private LoginTokenService loginTokenService;
-
+    @Autowired
+    private BusinessService businessService;
     /**
      * 登录
      * @param loginRegisterVo 登录信息
@@ -84,16 +88,22 @@ public class LoginServiceImpl implements LoginService {
                 throw new ThrowJsonException("账号已被冻结，请联系管理员");
             }
             //加密 封装 存入redis
-            loginDto.setChannel(LoginChannelEnums.APP.getChannel());
+            loginDto.setChannel(loginRegisterVo.getChannel());
             loginDto.setTid(customer.getId());
             loginDto.setType(StaticUtils.LOGIN_CUSTOMER);
             // 生成token
-            return loginTokenService.getLoginToken(loginDto, LoginChannelEnums.APP);
+            RestResult result = loginTokenService.getLoginToken(loginDto, LoginChannelEnums.getLoginEnum(loginRegisterVo.getChannel()));
+            if (!result.status) {
+                return result;
+            }
+            CustomerHomeVo custome = personalInform(customer.getId());
+            custome.setToken(result.getData().toString());
+            return RestResult.success("", custome);
         } else if (FunctionUtils.isEquals(StaticUtils.LOGIN_BUSINESS, loginRegisterVo.getType())) {
             // 加盟商
-            BBusiness business = businessService.getOne(new QueryWrapper<BBusiness>().eq("phone", phone));
+            BBusiness business = bbusinessService.getOne(new QueryWrapper<BBusiness>().eq("phone", phone));
             if (business == null) {
-                throw new ThrowJsonException("用户不存在");
+                throw new ThrowJsonException("加盟商不存在");
             }
             //加密密码
             String pass = PwdEncode.encodePwd(passWord);
@@ -105,11 +115,18 @@ public class LoginServiceImpl implements LoginService {
                 throw new ThrowJsonException("未审核通过");
             }
             //加密 封装 存入redis
-            loginDto.setChannel(LoginChannelEnums.APP.getChannel());
+            loginDto.setChannel(loginRegisterVo.getChannel());
             loginDto.setTid(business.getId());
             loginDto.setType(StaticUtils.LOGIN_BUSINESS);
+
+            BusinessHomeVo businessHome = businessService.getBusinessHome(business.getId());
             // 生成token
-            return loginTokenService.getLoginToken(loginDto, LoginChannelEnums.APP);
+            RestResult loginToken = loginTokenService.getLoginToken(loginDto, LoginChannelEnums.getLoginEnum(loginRegisterVo.getChannel()));
+            if (!loginToken.status) {
+                return loginToken;
+            }
+            businessHome.setToken(loginToken.getData().toString());
+            return RestResult.success("",businessHome);
         }
         return RestResult.fail("fail");
     }
@@ -120,9 +137,17 @@ public class LoginServiceImpl implements LoginService {
      * @return
      */
     @Override
-    public RestResult personalInform(Integer cid) {
+    public CustomerHomeVo personalInform(Integer cid) {
+        CustomerHomeVo homeVo=new CustomerHomeVo();
         CCustomer customer = customerMapper.selectById(cid);
-        return RestResult.success(customer);
+        homeVo.setPhone(customer.getPhone());
+        homeVo.setCreateTime(customer.getCreateTime());
+        homeVo.setEmail(customer.getEmail());
+        homeVo.setStatus(customer.getStatus());
+        homeVo.setToken(customer.getToken());
+        homeVo.setIsValid(customer.getIsReal());
+        homeVo.setHeadUrl(customer.getHeadUrl());
+        return homeVo;
     }
 
     /**

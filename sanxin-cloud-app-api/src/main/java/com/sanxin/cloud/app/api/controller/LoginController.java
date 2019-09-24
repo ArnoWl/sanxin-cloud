@@ -9,6 +9,7 @@ import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.properties.PropertiesUtil;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.login.LoginTokenService;
+import com.sanxin.cloud.dto.CustomerHomeVo;
 import com.sanxin.cloud.dto.LoginRegisterVo;
 import com.sanxin.cloud.entity.CCustomer;
 import com.sanxin.cloud.service.CCustomerService;
@@ -64,7 +65,7 @@ public class LoginController {
      * @return
      */
     @PostMapping(value = MappingUtils.LOGIN)
-    public RestResult doLogin(@RequestBody LoginRegisterVo loginRegisterVo) {
+    public RestResult doLogin(LoginRegisterVo loginRegisterVo) {
         return loginService.doLogin(loginRegisterVo);
     }
 
@@ -76,7 +77,8 @@ public class LoginController {
     public RestResult queryPersonalInform() {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
-        return loginService.personalInform(cid);
+        CustomerHomeVo homeVo = loginService.personalInform(cid);
+        return RestResult.success(homeVo);
     }
 
     /**

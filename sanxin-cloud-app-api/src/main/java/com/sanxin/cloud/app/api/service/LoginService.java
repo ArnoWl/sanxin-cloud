@@ -6,6 +6,7 @@ import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.random.RandNumUtils;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.dto.CustomerHomeVo;
 import com.sanxin.cloud.dto.LoginRegisterVo;
 import com.sanxin.cloud.entity.CCustomer;
 import com.sanxin.cloud.enums.RandNumType;
@@ -31,7 +32,7 @@ public interface LoginService {
      * @param cid
      * @return
      */
-    RestResult personalInform(Integer cid);
+    CustomerHomeVo personalInform(Integer cid);
 
     /**
      * 修改个人资料

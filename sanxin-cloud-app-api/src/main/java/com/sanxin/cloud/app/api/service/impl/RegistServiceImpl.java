@@ -60,6 +60,8 @@ public class RegistServiceImpl implements RegistService {
         //加密密码
         String pass = PwdEncode.encodePwd(customer.getPassWord());
         customer.setPassWord(pass);
+        customer.setNickName(customer.getPhone());
+        customer.setHeadUrl(customer.getPhone());
         customerService.save(customer);
 
         return RestResult.success("success");

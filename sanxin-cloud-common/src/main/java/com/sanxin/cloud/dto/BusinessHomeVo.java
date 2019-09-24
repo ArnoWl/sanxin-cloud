@@ -1,5 +1,7 @@
 package com.sanxin.cloud.dto;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 
 /**
@@ -7,6 +9,7 @@ import java.math.BigDecimal;
  * @author xiaoky
  * @date 2019-09-19
  */
+@Data
 public class BusinessHomeVo {
     /**
      * 头像
@@ -40,6 +43,18 @@ public class BusinessHomeVo {
      * 总收益
      */
     private BigDecimal totalIncome;
+    /**
+     * token
+     */
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     /**
      * Gets the value of headUrl.
