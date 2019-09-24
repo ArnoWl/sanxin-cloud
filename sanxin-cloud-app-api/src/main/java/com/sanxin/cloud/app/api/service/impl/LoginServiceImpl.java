@@ -28,6 +28,7 @@ import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  *
@@ -63,10 +64,10 @@ public class LoginServiceImpl implements LoginService {
             return RestResult.fail("data_exception");
         }
         if (StringUtils.isEmpty(phone)) {
-            throw new ThrowJsonException("手机号不能为空");
+            throw new ThrowJsonException("register_phone_empty");
         }
         if (StringUtils.isEmpty(passWord)) {
-            throw new ThrowJsonException("密码不能为空");
+            throw new ThrowJsonException("register_pass_empty");
         }
 
         LoginDto loginDto = LoginDto.getInstance();
@@ -76,16 +77,16 @@ public class LoginServiceImpl implements LoginService {
             // 查询用户
             CCustomer customer = customerService.getOne(new QueryWrapper<CCustomer>().eq("phone", phone));
             if (customer == null) {
-                throw new ThrowJsonException("用户不存在");
+                throw new ThrowJsonException("register_user_empty");
             }
             //加密密码
             String pass = PwdEncode.encodePwd(passWord);
             if (!customer.getPassWord().equals(pass)) {
-                throw new ThrowJsonException("密码错误");
+                throw new ThrowJsonException("register_password_error");
             }
             //判断账号是否被冻结
             if(customer.getStatus() == StaticUtils.STATUS_NO) {
-                throw new ThrowJsonException("账号已被冻结，请联系管理员");
+                throw new ThrowJsonException("register_user_freeze");
             }
             //加密 封装 存入redis
             loginDto.setChannel(loginRegisterVo.getChannel());
@@ -98,21 +99,21 @@ public class LoginServiceImpl implements LoginService {
             }
             CustomerHomeVo custome = personalInform(customer.getId());
             custome.setToken(result.getData().toString());
-            return RestResult.success("", custome);
+            return RestResult.success("success", custome);
         } else if (FunctionUtils.isEquals(StaticUtils.LOGIN_BUSINESS, loginRegisterVo.getType())) {
             // 加盟商
             BBusiness business = bbusinessService.getOne(new QueryWrapper<BBusiness>().eq("phone", phone));
             if (business == null) {
-                throw new ThrowJsonException("加盟商不存在");
+                throw new ThrowJsonException("register_franchisee_empty");
             }
             //加密密码
             String pass = PwdEncode.encodePwd(passWord);
             if (!business.getPassWord().equals(pass)) {
-                throw new ThrowJsonException("密码错误");
+                throw new ThrowJsonException("register_password_error");
             }
             //判断账号是否被冻结
             if(!FunctionUtils.isEquals(business.getStatus(), StaticUtils.STATUS_SUCCESS)) {
-                throw new ThrowJsonException("未审核通过");
+                throw new ThrowJsonException("register_not_pass");
             }
             //加密 封装 存入redis
             loginDto.setChannel(loginRegisterVo.getChannel());
@@ -126,7 +127,7 @@ public class LoginServiceImpl implements LoginService {
                 return loginToken;
             }
             businessHome.setToken(loginToken.getData().toString());
-            return RestResult.success("",businessHome);
+            return RestResult.success("success",businessHome);
         }
         return RestResult.fail("fail");
     }

@@ -68,7 +68,7 @@ public class BusinessController {
      * @return
      */
     @PostMapping(value = BusinessMapping.EDIT_BUSINESS_INFO)
-    public RestResult editBusinessInfo(BusinessBaseVo vo) {
+    public RestResult editBusinessInfo(@RequestBody BusinessBaseVo vo) {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginTid(token);
         BBusiness business = bBusinessService.validById(bid);

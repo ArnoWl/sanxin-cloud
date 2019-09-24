@@ -65,7 +65,7 @@ public class LoginController {
      * @return
      */
     @PostMapping(value = MappingUtils.LOGIN)
-    public RestResult doLogin(LoginRegisterVo loginRegisterVo) {
+    public RestResult doLogin(@RequestBody LoginRegisterVo loginRegisterVo) {
         return loginService.doLogin(loginRegisterVo);
     }
 
@@ -73,7 +73,7 @@ public class LoginController {
      * 个人资料
      * @return
      */
-    @PostMapping(value = MappingUtils.PERSONAL_INFORM)
+    @GetMapping(value = MappingUtils.PERSONAL_INFORM)
     public RestResult queryPersonalInform() {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
