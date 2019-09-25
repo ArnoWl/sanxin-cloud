@@ -182,4 +182,64 @@ public class LoginTokenService {
         }
         return loginDto.getType();
     }
+
+    /**
+     * 通过token获取cid
+     * @param token 仅限传入用户端token,避免主键相同时用户端和商家端token互用
+     * @return
+     */
+    public Integer validLoginCid(String token) {
+        if (StringUtils.isBlank(token)) {
+            //Token can't be Null
+            throw new LoginOutException("997");
+        }
+        String decrypt = redisUtilsService.getKey(token);
+        if (StringUtils.isBlank(decrypt)) {
+            //Logon information error
+            throw new LoginOutException("998");
+        }
+        LoginDto loginDto = JSONObject.parseObject(decrypt, LoginDto.class);
+        if (loginDto == null || loginDto.getTid() == null) {
+            //Unique primary can't be Null
+            throw new LoginOutException("999");
+        }
+        if (!FunctionUtils.isEquals(loginDto.getType(), StaticUtils.LOGIN_CUSTOMER)) {
+            throw new LoginOutException("999");
+        }
+        if (loginDto.getChannel() == null) {
+            //Error in landing channel
+            throw new LoginOutException("1000");
+        }
+        return loginDto.getTid();
+    }
+
+    /**
+     * 通过token获取id
+     * @param token 仅限传入商家端token,避免主键相同时用户端和商家端token互用
+     * @return
+     */
+    public Integer validLoginBid(String token) {
+        if (StringUtils.isBlank(token)) {
+            //Token can't be Null
+            throw new LoginOutException("997");
+        }
+        String decrypt = redisUtilsService.getKey(token);
+        if (StringUtils.isBlank(decrypt)) {
+            //Logon information error
+            throw new LoginOutException("998");
+        }
+        LoginDto loginDto = JSONObject.parseObject(decrypt, LoginDto.class);
+        if (loginDto == null || loginDto.getTid() == null) {
+            //Unique primary can't be Null
+            throw new LoginOutException("999");
+        }
+        if (!FunctionUtils.isEquals(loginDto.getType(), StaticUtils.LOGIN_BUSINESS)) {
+            throw new LoginOutException("999");
+        }
+        if (loginDto.getChannel() == null) {
+            //Error in landing channel
+            throw new LoginOutException("1000");
+        }
+        return loginDto.getTid();
+    }
 }

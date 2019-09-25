@@ -2,13 +2,23 @@ package com.sanxin.cloud.netty.properties;
 
 import com.sanxin.cloud.common.random.RandNumUtils;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
+import com.sanxin.cloud.entity.BDeviceTerminal;
+import com.sanxin.cloud.enums.DeviceStatusEnums;
 import com.sanxin.cloud.enums.RandNumType;
+import com.sanxin.cloud.enums.TerminalStatusEnums;
 import com.sanxin.cloud.netty.enums.CommandEnums;
 import com.sanxin.cloud.netty.hex.HexUtils;
+import com.sanxin.cloud.netty.service.HandleService;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 充电宝指令
@@ -19,6 +29,7 @@ import org.slf4j.LoggerFactory;
 public class CommandUtils {
 
     private static Logger log = LoggerFactory.getLogger(CommandUtils.class);
+    private static HandleService handleService = SpringBeanFactoryUtils.getApplicationContext().getBean(HandleService.class);
     /**
      * 接收到机器的指令
      * @param content  机器发送过来的16进制
@@ -50,6 +61,7 @@ public class CommandUtils {
                 log.info("接收指令----------【"+command+":"+enums.getRemark()+"】----------");
                 switch (enums){
                     case x60:
+                        // 机柜登陆及响应
                         //获取机器码长度 然后机器码长度从16转10进制
                         String box_length_str=hex_arr[15]+hex_arr[16];
                         Integer box_length=Integer.parseInt(box_length_str,16);
@@ -66,33 +78,131 @@ public class CommandUtils {
                         NettySocketHolder.put(boxId,ctx);
                         break;
                     case x61:
+                        // 心跳及响应
                         //心跳字节返回内容
                         out_str=HexUtils.hexStr2Str(hex.replace(" ",""));
                         break;
                     case x62:
+                        // 查询机柜软件版本号及响应
+                        String soft_ver_len_str = hex_arr[9] + hex_arr[10];
+                        Integer soft_ver_len = Integer.parseInt(soft_ver_len_str, 16);
+                        String soft_ver = String.join("", Arrays.copyOfRange(hex_arr, 11, soft_ver_len+11));
+                        System.out.println("机柜软件版本号"+HexUtils.hexStr2Str(soft_ver).trim());
                         break;
                     case x63:
+                        // 设置机柜服务器地址及响应
+                        System.out.println("设置机柜服务器地址及响应");
                         break;
                     case x64:
+                        // 查询机柜库存及响应
                         //获取到设备号
                         boxId=NettySocketHolder.get(ctx);
+                        Integer terminalNum = Integer.parseInt(hex_arr[9], 16);
+                        System.out.println("剩余充电宝个数"+terminalNum);
+                        List<String> list = new ArrayList<>();
+                        // 更新设备可租借数量
+                        // boolean updateNum = handleService.handleUpdateDeviceRentNum(boxId, terminalNum);
+                        for (int i=1;i<hex_arr.length/10;i++) {
+                            int num = 10*i;
+                            String slot = hex_arr[num];
+                            System.out.println("查询库存-充电宝槽位编号"+slot);
+                            // 获取充电宝Id
+                            String terminalId = String.join("", Arrays.copyOfRange(hex_arr, num+1, num+9));
+                            terminalId = getTerminalId(terminalId);
+                            System.out.println("查询库存-充电宝Id"+terminalId);
+                            Integer level = Integer.parseInt(hex_arr[num + 9], 16);
+                            System.out.println("查询库存-充电宝电量"+level);
+                            list.add(slot);
+                            // BDeviceTerminal terminal = new BDeviceTerminal();
+                            // terminal.setTerminalId(terminalId);
+                            // terminal.setStatus(TerminalStatusEnums.CHARGING.getStatus());
+                            // terminal.setSlot(slot);
+                            // terminal.setdCode(boxId);
+                            // terminal.setLevel(level);
+                            // 操作-更新充电宝数据
+                            // handleService.handleUpdateTerminal(terminal);
+                        }
+                        // 调用借充电宝的方法
+                        if (list != null && list.size()>=0) {
+                            out_str = sendCommand(CommandEnums.x65.getCommand(), list.get(0));
+                        }
                         break;
                     case x65:
-
+                        // 借充电宝及响应
+                        String slot = hex_arr[9];
+                        System.out.println("借充电宝响应  槽位"+slot);
+                        String result = hex_arr[10];
+                        System.out.println("借充电宝响应  结果"+result);
+                        String terminalId = String.join("", Arrays.copyOfRange(hex_arr, 11, hex_arr.length));
+                        terminalId = getTerminalId(terminalId);
+                        System.out.println("借充电宝响应  充电宝Id"+terminalId);
+                        if (Integer.parseInt(result, 16) == 1) {
+                            // 借充电宝成功
+                            // handleService.handleLendSuccess(terminalId);
+                        }
                         break;
                     case x66:
+                        // 归还充电宝
+                        slot = hex_arr[9];
+                        terminalId = String.join("", Arrays.copyOfRange(hex_arr, 10, hex_arr.length));
+                        terminalId = getTerminalId(terminalId);
+                        System.out.println("归还充电宝  槽位"+slot);
+                        System.out.println("归还充电宝  充电宝编号"+terminalId);
+
+                        // 充电宝表状态-改为已归还
+                        // 查找该充电宝对应的订单，操作订单
+                        // String status = handleService.handleReturnTerminal(slot, terminalId, ctx);
+                        // System.out.println("归还充电宝  充电宝状态"+status);
+                        out_str = "0009"+enums.getCommand()+"0100"+hex_token+slot+"01";
+                        out_str = HexUtils.hexStr2Str(out_str);
                         break;
                     case x67:
+                        // 远程重启机柜及响应
+                        System.out.println("远程重启机柜");
                         break;
                     case x68:
                         break;
                     case x69:
+                        // 查询 ICCID
+                        String ICCID_len_str = hex_arr[9]+hex_arr[10];
+                        Integer ICCID_len = Integer.parseInt(ICCID_len_str, 16);
+                        String ICCID = String.join("", Arrays.copyOfRange(hex_arr, 10, ICCID_len));
+                        System.out.println("查询 ICCID"+HexUtils.hexStr2Str(ICCID));
                         break;
                     case x6A:
+                        // 查询服务器地址
+                        String address_length_str=hex_arr[9]+hex_arr[10];
+                        Integer address_length=Integer.parseInt(address_length_str, 16);
+                        String address = String.join("", Arrays.copyOfRange(hex_arr, 11, 11+address_length));
+                        System.out.println("查询服务器地址  16进制"+address);
+                        System.out.println("查询服务器地址"+HexUtils.hexStr2Str(address));
+                        String port_len_str = hex_arr[11+address_length]+hex_arr[12+address_length];
+                        Integer port_len = Integer.parseInt(port_len_str, 16);
+                        String port = String.join("", Arrays.copyOfRange(hex_arr, 13+address_length, 13+address_length+port_len));
+                        System.out.println("查询服务器地址端口  16进制"+port);
+                        System.out.println("查询服务器地址端口"+HexUtils.hexStr2Str(port));
+                        Integer heartbeat = Integer.parseInt(hex_arr[13+address_length+port_len], 16);
+                        System.out.println("查询服务器地址 心跳间隔"+heartbeat);
                         break;
                     case x6B:
+                        // 查询机柜库存充电宝数量
+                        String terminal_num_str = hex_arr[9];
+                        terminalNum = Integer.parseInt(terminal_num_str, 16);
+                        System.out.println("查询机柜库存充电宝数量" + terminalNum);
                         break;
                     case x80:
+                        // 强制弹出充电宝
+                        slot = hex_arr[9];
+                        result = hex_arr[10];
+                        terminalId = String.join("", Arrays.copyOfRange(hex_arr, 11, hex_arr.length));
+                        terminalId = getTerminalId(terminalId);
+                        System.out.println("强制弹出槽位编号"+Integer.parseInt(slot, 16));
+                        System.out.println("强制弹出结果"+Integer.parseInt(result, 16));
+                        System.out.println("强制弹出充电宝Id"+terminalId);
+                        if (Integer.parseInt(result, 16) == 1) {
+                            // 强制弹出成功
+                            // handleService.handleLendSuccess(terminalId);
+                        }
                         break;
                 }
             }
@@ -115,10 +225,35 @@ public class CommandUtils {
         log.info("发送指令----------【"+command+":"+enums.getRemark()+"】----------");
         switch (enums){
             case x62:
+                // 查询机柜软件版本号及响应
+                out_str="0007"+enums.getCommand()+"0133"+hex_token;
+                out_str=HexUtils.hexStr2Str(out_str);
                 break;
             case x63:
+                // 设置机柜服务器地址及响应
+                String address = "47.244.167.166";
+                String port = "8086";
+                // 服务器地址长度
+                Integer addressLen = address.length();
+                // 服务器地址长度16进制
+                String addressLenHex = HexUtils.hexStr2Str(addressLen.toString());
+                // 服务器地址16进制
+                String addressHex = HexUtils.hexStr2Str(address);
+                // 服务器端口长度
+                Integer portLen = port.length();
+                // 服务器端口长度16进制
+                String portLenHex = HexUtils.hexStr2Str(portLen.toString());
+                // 服务器端口16进制
+                String portHex = HexUtils.hexStr2Str(port);
+                // 心跳间隔
+                Integer heartbeat = 30;
+                // 心跳间隔16进制
+                String heartbeatHex = HexUtils.hexStr2Str(heartbeat.toString());
+                out_str="0007"+enums.getCommand()+"0133"+hex_token+addressLenHex+addressHex+portLenHex+portHex+heartbeatHex;
+                out_str=HexUtils.hexStr2Str(out_str);
                 break;
             case x64:
+                // 查询机柜库存及响应
                 out_str="0007"+enums.getCommand()+"0133"+hex_token;
                 out_str=HexUtils.hexStr2Str(out_str);
                 break;
@@ -131,30 +266,50 @@ public class CommandUtils {
             case x66:
                 break;
             case x67:
+                // 远程重启机柜及响应
+                out_str="0007"+enums.getCommand()+"0133"+hex_token;
+                out_str=HexUtils.hexStr2Str(out_str);
                 break;
             case x68:
                 break;
             case x69:
+                // 查询 ICCID
+                out_str="0007"+enums.getCommand()+"0133"+hex_token;
+                out_str=HexUtils.hexStr2Str(out_str);
                 break;
             case x6A:
+                // 查询服务器地址
+                out_str="0007"+enums.getCommand()+"0133"+hex_token;
+                out_str=HexUtils.hexStr2Str(out_str);
                 break;
             case x6B:
+                // 查询机柜库存充电宝数量
+                out_str="0007"+enums.getCommand()+"0133"+hex_token;
+                out_str=HexUtils.hexStr2Str(out_str);
                 break;
             case x80:
+                //强制弹出充电宝
+                //将16进制转字符串
+                out_str="0008"+enums.getCommand()+"0133"+hex_token+params[0];
+                out_str=HexUtils.hexStr2Str(out_str);
                 break;
         }
         log.info("发送16进制内容----------【"+HexUtils.str2HexStr(out_str)+"】----------");
         return out_str;
     }
 
-
     /**
-     * 注入redis
-     *
+     * 获取充电宝Id-转码
+     * @param terminalId
      * @return
      */
-    private RedisUtilsService getRedisUtilsService() {
-        return SpringBeanFactoryUtils.getApplicationContext().getBean(RedisUtilsService.class);
+    public static String getTerminalId(String terminalId) {
+        String result = "";
+        String left = terminalId.substring(0, 8);
+        result = HexUtils.hexStr2Str(left).trim();
+        String right = terminalId.substring(8, 16);
+        result += right;
+        return result;
     }
 
 }
