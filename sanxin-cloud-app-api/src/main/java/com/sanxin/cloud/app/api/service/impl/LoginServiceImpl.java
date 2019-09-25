@@ -1,11 +1,15 @@
 package com.sanxin.cloud.app.api.service.impl;
 
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.response.AlipaySystemOauthTokenResponse;
+import com.alipay.api.response.AlipayUserInfoShareResponse;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.app.api.service.BusinessService;
 import com.sanxin.cloud.app.api.service.LoginService;
 import com.sanxin.cloud.common.Constant;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
+import com.sanxin.cloud.common.alipay.AliLoginUtil;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.random.RandNumUtils;
 import com.sanxin.cloud.common.rest.RestResult;
@@ -63,43 +67,30 @@ public class LoginServiceImpl implements LoginService {
         if (loginRegisterVo.getType() == null) {
             return RestResult.fail("data_exception");
         }
-        if (StringUtils.isEmpty(phone)) {
-            throw new ThrowJsonException("register_phone_empty");
-        }
-        if (StringUtils.isEmpty(passWord)) {
-            throw new ThrowJsonException("register_pass_empty");
+        // 如果不是小程序和用户端
+        if (!(FunctionUtils.isEquals(StaticUtils.LOGIN_CUSTOMER, loginRegisterVo.getType())
+                &&FunctionUtils.isEquals(LoginChannelEnums.ALI_PROGRAM.getChannel(), loginRegisterVo.getChannel()))) {
+            if (StringUtils.isEmpty(phone)) {
+                throw new ThrowJsonException("register_phone_empty");
+            }
+            if (StringUtils.isEmpty(passWord)) {
+                throw new ThrowJsonException("register_pass_empty");
+            }
         }
 
         LoginDto loginDto = LoginDto.getInstance();
         // 判断登录类型
         // 用户
         if (FunctionUtils.isEquals(StaticUtils.LOGIN_CUSTOMER, loginRegisterVo.getType())) {
-            // 查询用户
-            CCustomer customer = customerService.getOne(new QueryWrapper<CCustomer>().eq("phone", phone));
-            if (customer == null) {
-                throw new ThrowJsonException("register_user_empty");
+            // 判断渠道是否小程序
+            // 小程序应该授权登录
+            RestResult result = null;
+            if (FunctionUtils.isEquals(loginRegisterVo.getChannel(), LoginChannelEnums.ALI_PROGRAM.getChannel())) {
+                result = aliProgramLogin(loginRegisterVo);
+            } else {
+                result = appCustomerLogin(loginRegisterVo, loginDto, passWord, phone);
             }
-            //加密密码
-            String pass = PwdEncode.encodePwd(passWord);
-            if (!customer.getPassWord().equals(pass)) {
-                throw new ThrowJsonException("register_password_error");
-            }
-            //判断账号是否被冻结
-            if(customer.getStatus() == StaticUtils.STATUS_NO) {
-                throw new ThrowJsonException("register_user_freeze");
-            }
-            //加密 封装 存入redis
-            loginDto.setChannel(loginRegisterVo.getChannel());
-            loginDto.setTid(customer.getId());
-            loginDto.setType(StaticUtils.LOGIN_CUSTOMER);
-            // 生成token
-            RestResult result = loginTokenService.getLoginToken(loginDto, LoginChannelEnums.getLoginEnum(loginRegisterVo.getChannel()));
-            if (!result.status) {
-                return result;
-            }
-            CustomerHomeVo custome = personalInform(customer.getId());
-            custome.setToken(result.getData().toString());
-            return RestResult.success("success", custome);
+            return result;
         } else if (FunctionUtils.isEquals(StaticUtils.LOGIN_BUSINESS, loginRegisterVo.getType())) {
             // 加盟商
             BBusiness business = bbusinessService.getOne(new QueryWrapper<BBusiness>().eq("phone", phone));
@@ -130,6 +121,57 @@ public class LoginServiceImpl implements LoginService {
             return RestResult.success("success",businessHome);
         }
         return RestResult.fail("fail");
+    }
+
+    private RestResult aliProgramLogin(LoginRegisterVo loginRegisterVo) {
+        if (StringUtils.isBlank(loginRegisterVo.getAuthCode())) {
+            return RestResult.fail("授权失败");
+        }
+        try {
+            AlipaySystemOauthTokenResponse accessTokenResponse = AliLoginUtil.getAccessToken(loginRegisterVo.getAuthCode());
+            String accessToken = accessTokenResponse.getAccessToken();
+            AlipayUserInfoShareResponse aliUserInfo = AliLoginUtil.getAliUserInfo(accessToken);
+            System.out.println("获取到的用户头像"+aliUserInfo.getAvatar());
+            System.out.println("获取到的性别"+aliUserInfo.getGender());
+            System.out.println("获取到的昵称"+aliUserInfo.getNickName());
+            System.out.println("获取到的手机"+aliUserInfo.getPhone());
+            System.out.println("获取到的用户Id"+aliUserInfo.getUserId());
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+            return RestResult.fail("授权失败");
+        }
+        return RestResult.success("success");
+    }
+
+
+
+    private RestResult appCustomerLogin(LoginRegisterVo loginRegisterVo, LoginDto loginDto, String passWord, String phone) {
+        // 查询用户
+        CCustomer customer = customerService.getOne(new QueryWrapper<CCustomer>().eq("phone", phone));
+        if (customer == null) {
+            throw new ThrowJsonException("register_user_empty");
+        }
+        //加密密码
+        String pass = PwdEncode.encodePwd(passWord);
+        if (!customer.getPassWord().equals(pass)) {
+            throw new ThrowJsonException("register_password_error");
+        }
+        //判断账号是否被冻结
+        if(customer.getStatus() == StaticUtils.STATUS_NO) {
+            throw new ThrowJsonException("register_user_freeze");
+        }
+        //加密 封装 存入redis
+        loginDto.setChannel(loginRegisterVo.getChannel());
+        loginDto.setTid(customer.getId());
+        loginDto.setType(StaticUtils.LOGIN_CUSTOMER);
+        // 生成token
+        RestResult result = loginTokenService.getLoginToken(loginDto, LoginChannelEnums.getLoginEnum(loginRegisterVo.getChannel()));
+        if (!result.status) {
+            return result;
+        }
+        CustomerHomeVo custome = personalInform(customer.getId());
+        custome.setToken(result.getData().toString());
+        return RestResult.success("success", custome);
     }
 
     /**

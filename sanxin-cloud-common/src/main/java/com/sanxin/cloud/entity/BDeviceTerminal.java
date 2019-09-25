@@ -34,6 +34,10 @@ public class BDeviceTerminal implements Serializable {
      * 充电宝电量  0~4(20~100电量) 状态为充电中数据才有效
      */
     private Integer level;
+    /**
+     * 充电槽位——状态为充电中数据才有效
+     */
+    private String slot;
 
     /**
      * 柜机编号——状态为充电中数据才有效
@@ -122,6 +126,26 @@ public class BDeviceTerminal implements Serializable {
 
     public void setLastRevertTime(Date lastRevertTime) {
         this.lastRevertTime = lastRevertTime;
+    }
+
+    /**
+     * Gets the value of slot.
+     *
+     * @return the value of slot
+     */
+    public String getSlot() {
+        return slot;
+    }
+
+    /**
+     * Sets the slot.
+     *
+     * <p>You can use getSlot() to get the value of slot</p>
+     *
+     * @param slot slot
+     */
+    public void setSlot(String slot) {
+        this.slot = slot;
     }
 
     @Override
