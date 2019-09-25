@@ -256,4 +256,39 @@ public class LoginServiceImpl implements LoginService {
         return RestResult.success("success");
     }
 
+    /**
+     * 找回密码
+     * @param phone
+     * @param passWord
+     * @param validCode
+     * @return
+     */
+    @Override
+    public RestResult forgetPassword(String phone,String passWord,String validCode) {
+        if (StringUtils.isBlank(phone)) {
+            return RestResult.fail("register_phone_empty");
+        }
+        if (StringUtils.isBlank(passWord)) {
+            return RestResult.fail("register_pass_empty");
+        }
+        if (StringUtils.isBlank(validCode)) {
+            return RestResult.fail("verifycode_not_exist");
+        }
+        CCustomer customer = customerMapper.selectOne(new QueryWrapper<CCustomer>().eq("phone", phone));
+        if (customer == null) {
+            return RestResult.fail("login_not_exist");
+        }
+        //TODO 短信验证未写
+
+        //密码加密
+        String pass = PwdEncode.encodePwd(passWord);
+        customer.setPassWord(passWord);
+        int i = customerMapper.updateById(customer);
+        if (i == 0) {
+            return RestResult.fail("fail");
+        }
+        return RestResult.success("success");
+    }
+
+
 }

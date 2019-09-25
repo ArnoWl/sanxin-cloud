@@ -50,4 +50,14 @@ public interface LoginService {
      * @return
      */
     RestResult updateLoginPass(String verCode, String password, Integer cid,Integer type);
+
+    /**
+     * 找回密码
+     * @param phone
+     * @param passWord
+     * @param validCode
+     * @return
+     */
+    RestResult forgetPassword(String phone,String passWord,String validCode);
+
 }

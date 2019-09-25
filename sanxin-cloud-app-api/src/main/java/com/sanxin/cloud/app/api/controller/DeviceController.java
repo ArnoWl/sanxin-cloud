@@ -41,7 +41,7 @@ public class DeviceController {
      * 查询柜机数量
      * @return
      */
-    @GetMapping(value = DeviceMapping.DEVICE_NUM)
+    @RequestMapping(value = DeviceMapping.DEVICE_NUM)
     public RestResult getDeviceNum() {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginTid(token);
@@ -61,7 +61,7 @@ public class DeviceController {
      * @param key 暂时无用，设计图上有一个搜索
      * @return
      */
-    @GetMapping(value = DeviceMapping.QUERY_DEVICE_LIST)
+    @RequestMapping(value = DeviceMapping.QUERY_DEVICE_LIST)
     public RestResult queryDeviceList(SPage<BDevice> page, Integer type, String key) {
         deviceService.queryDeviceList(page, type, key);
         return RestResult.success("", page);
@@ -72,7 +72,7 @@ public class DeviceController {
      * @param deviceId
      * @return
      */
-    @GetMapping(value = DeviceMapping.GET_DEVICE_DETAIL)
+    @RequestMapping(value = DeviceMapping.GET_DEVICE_DETAIL)
     public RestResult getDeviceDetail(Integer deviceId) {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginTid(token);

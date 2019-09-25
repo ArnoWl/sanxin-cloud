@@ -37,7 +37,7 @@ public class OrderController {
      * @param key 查询条件暂时没用-图上不知道查什么
      * @return
      */
-    @GetMapping(value = OrderMapping.QUERY_BUSINESS_ORDER_LIST)
+    @RequestMapping(value = OrderMapping.QUERY_BUSINESS_ORDER_LIST)
     public RestResult queryBusinessOrderList(SPage<OrderMain> page, String key, Integer orderStatus) {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginTid(token);
@@ -56,7 +56,7 @@ public class OrderController {
      * @param orderCode
      * @return
      */
-    @GetMapping(value = OrderMapping.GET_BUSINESS_ORDER_DETAIL)
+    @RequestMapping(value = OrderMapping.GET_BUSINESS_ORDER_DETAIL)
     public RestResult getBusinessOrderDetail(String orderCode) {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginTid(token);

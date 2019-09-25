@@ -27,7 +27,7 @@ public class AccountController {
      * 我的押金明细
      * @return
      */
-    @GetMapping(value = MappingUtils.MY_DEPOSIT)
+    @RequestMapping(value = MappingUtils.MY_DEPOSIT)
     public RestResult queryMyDeposit(SPage<CMarginDetail> page) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
@@ -38,7 +38,7 @@ public class AccountController {
      * 我的押金明细
      * @return
      */
-    @GetMapping(value = MappingUtils.MY_PURSE)
+    @RequestMapping(value = MappingUtils.MY_PURSE)
     public RestResult queryMyPurse() {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
@@ -49,7 +49,7 @@ public class AccountController {
      * 余额明细
      * @return
      */
-    @GetMapping(value = MappingUtils.BALANCE_DETAIL)
+    @RequestMapping(value = MappingUtils.BALANCE_DETAIL)
     public RestResult queryBalanceDetail(SPage<CMoneyDetail> page) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
@@ -60,7 +60,7 @@ public class AccountController {
      * 我要充值显示余额
      * @return
      */
-    @GetMapping(value = MappingUtils.GET_BALANCE)
+    @RequestMapping(value = MappingUtils.GET_BALANCE)
     public RestResult getBalance() {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
@@ -71,7 +71,7 @@ public class AccountController {
      * 用户时长明细
      * @return
      */
-    @GetMapping(value = MappingUtils.TIME_DETAIL)
+    @RequestMapping(value = MappingUtils.TIME_DETAIL)
     public RestResult queryTimeDetail(SPage<CTimeDetail> page) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
@@ -82,7 +82,7 @@ public class AccountController {
      * 剩余时长
      * @return
      */
-    @GetMapping(value = MappingUtils.GET_TIME)
+    @RequestMapping(value = MappingUtils.GET_TIME)
     public RestResult getTime() {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);

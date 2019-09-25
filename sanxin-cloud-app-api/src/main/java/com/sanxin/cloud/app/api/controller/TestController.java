@@ -27,12 +27,12 @@ import java.util.List;
 public class TestController {
     private final AuthRequestFactory factory;
 
-    @GetMapping
+    @RequestMapping
     public List<String> list() {
         return factory.oauthList();
     }
 
-    @GetMapping("/login/{type}")
+    @RequestMapping("/login/{type}")
     public void login(@PathVariable String type, HttpServletResponse response) throws IOException {
         AuthRequest authRequest = factory.get(getAuthSource(type));
         response.sendRedirect(authRequest.authorize(AuthStateUtils.createState()));

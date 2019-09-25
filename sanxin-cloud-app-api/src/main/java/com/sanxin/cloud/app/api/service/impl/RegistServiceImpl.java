@@ -12,6 +12,7 @@ import com.sanxin.cloud.service.CCustomerService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * 注册Service
@@ -41,17 +42,17 @@ public class RegistServiceImpl implements RegistService {
      * @throws Exception
      */
     @Override
-    public RestResult doRegister(CCustomer customer) throws Exception {
+    public RestResult doRegister(CCustomer customer){
         check(customer);
         CCustomer user = customerService.getOne(new QueryWrapper<CCustomer>().eq("phone", customer.getPhone()));
         if (user != null) {
             return RestResult.fail("phone_exist");
         }
         //密码校验格式
-        boolean validPwd = FunctionUtils.validLoginPwd(customer.getPassWord());
+        /*boolean validPwd = FunctionUtils.validLoginPwd(customer.getPassWord());
         if (!validPwd) {
             return RestResult.fail("user_login_pass_error");
-        }
+        }*/
         // 根据手机号获取验证码
         /*String verCode = redisUtilsService.getKey(Constant.PHONE_VERCODE + customer.getPhone());
         if (!customer.getVerCode().equals(verCode)) {
@@ -62,21 +63,25 @@ public class RegistServiceImpl implements RegistService {
         customer.setPassWord(pass);
         customer.setNickName(customer.getPhone());
         customer.setHeadUrl(customer.getPhone());
-        customerService.save(customer);
+        boolean save = customerService.save(customer);
+        if (save) {
+            return RestResult.success("success");
+        }
+        return RestResult.fail("fail");
 
-        return RestResult.success("success");
+
     }
 
     /**
      * 校验必填
      * @param customer
      */
-    private void check(CCustomer customer) throws Exception {
+    private void check(CCustomer customer){
         if (StringUtils.isEmpty(customer.getPhone())) {
-            throw new ThrowJsonException("手机号不能为空");
+            throw new ThrowJsonException("register_phone_empty");
         }
         if (StringUtils.isEmpty(customer.getPassWord())) {
-            throw new ThrowJsonException("密码不能为空");
+            throw new ThrowJsonException("register_phone_empty");
         }
         if (StringUtils.isEmpty(customer.getVerCode())) {
             throw new ThrowJsonException("verifycode_not_exist");

@@ -42,8 +42,8 @@ public class LoginController {
      * @return
      * @throws Exception
      */
-    @GetMapping(value = MappingUtils.SEND_REGISTER_CODE)
-    public RestResult sendVerCode(@RequestParam String phone,String region) throws Exception {
+    @RequestMapping(value = MappingUtils.SEND_REGISTER_CODE)
+    public RestResult sendVerCode(String phone,String region) throws Exception {
         return registService.sendVerCode(phone,region);
     }
 
@@ -53,10 +53,9 @@ public class LoginController {
      * @return
      * @throws Exception
      */
-    @PostMapping(value = MappingUtils.REGISTER)
-    public RestResult doRegister(@RequestBody CCustomer customer) throws Exception {
-        registService.doRegister(customer);
-        return RestResult.success("注册成功");
+    @RequestMapping(value = MappingUtils.REGISTER)
+    public RestResult doRegister(CCustomer customer) throws Exception {
+        return registService.doRegister(customer);
     }
 
     /**
@@ -64,8 +63,8 @@ public class LoginController {
      * @param loginRegisterVo 登录信息
      * @return
      */
-    @PostMapping(value = MappingUtils.LOGIN)
-    public RestResult doLogin(@RequestBody LoginRegisterVo loginRegisterVo) {
+    @RequestMapping(value = MappingUtils.LOGIN)
+    public RestResult doLogin(LoginRegisterVo loginRegisterVo) {
         return loginService.doLogin(loginRegisterVo);
     }
 
@@ -73,7 +72,7 @@ public class LoginController {
      * 个人资料
      * @return
      */
-    @GetMapping(value = MappingUtils.PERSONAL_INFORM)
+    @RequestMapping(value = MappingUtils.PERSONAL_INFORM)
     public RestResult queryPersonalInform() {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
@@ -85,8 +84,8 @@ public class LoginController {
      * 修改个人资料
      * @return
      */
-    @PostMapping(value = MappingUtils.UPDATE_PERSONAL_INFORM)
-    public RestResult updatePersonalInform(@RequestBody CCustomer customer) {
+    @RequestMapping(value = MappingUtils.UPDATE_PERSONAL_INFORM)
+    public RestResult updatePersonalInform(CCustomer customer) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
         if (cid != null) {
@@ -102,7 +101,7 @@ public class LoginController {
      * @param type 1登录密码 2支付密码
      * @return
      */
-    @PostMapping(value = MappingUtils.UPDATE_PASSWORD)
+    @RequestMapping(value = MappingUtils.UPDATE_PASSWORD)
     public RestResult updatePassword(String verCode,String password,Integer type) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
@@ -110,47 +109,16 @@ public class LoginController {
     }
 
     /**
-     * 忘记密码
-     * @param loginVo
+     * 找回密码
+     * @param phone
+     * @param passWord
+     * @param validCode
      * @return
      */
-    /*@RequestMapping(value = MappingUtils.SEND_FORGET_CODE)
-    public RestResult sendResetPasswordCode(LoginRegisterVo loginVo) {
-        String ext = LanguageUtils.getLanguage(request);
-        if (loginVo.getType() == null) {
-            return RestResult.fail(PropertiesUtil.getVal("type_choose",ext));
-        }
-        if (StringUtils.isBlank(loginVo.getLogin())) {
-            return RestResult.fail(PropertiesUtil.getVal("login_not_exist",ext));
-        }
-        return loginService.sendResetPasswordCode(loginVo,ext);
-    }*/
-
-    /**
-     * 重置密码
-     * @param loginRegisterVo
-     * @return
-     */
-    /*@RequestMapping(value = MappingUtils.FORGET_PASSWORD)
-    public RestResult forgetPassword(LoginRegisterVo loginRegisterVo) {
-        String ext = LanguageUtils.getLanguage(request);
-        if (loginRegisterVo.getType() == null) {
-            return RestResult.fail(PropertiesUtil.getVal("type_choose",ext));
-        }
-        if (StringUtils.isBlank(loginRegisterVo.getLogin())) {
-            return RestResult.fail(PropertiesUtil.getVal("login_not_exist",ext));
-        }
-        if (StringUtils.isBlank(loginRegisterVo.getValidCode())) {
-            return RestResult.fail(PropertiesUtil.getVal("verifycode_not_exist",ext));
-        }
-        if (StringUtils.isBlank(loginRegisterVo.getPassword())) {
-            return RestResult.fail(PropertiesUtil.getVal("password_empty",ext));
-        }
-        if (StringUtils.isBlank(loginRegisterVo.getConfirmPassword())) {
-            return RestResult.fail(PropertiesUtil.getVal("confirmpd_empty",ext));
-        }
-        return loginService.handleResetPassword(loginRegisterVo,ext);
-    }*/
+    @RequestMapping(value = MappingUtils.FORGET_PASSWORD)
+    public RestResult forgetPassword(String phone,String passWord,String validCode) {
+        return loginService.forgetPassword(phone,passWord,validCode);
+    }
 
 }
 

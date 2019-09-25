@@ -26,7 +26,7 @@ public class RichTextController {
      * 使用充电宝指南
      * @return
      */
-    @GetMapping(value = "/use")
+    @RequestMapping(value = "/use")
     public RestResult use() {
         Integer type = 1;
         String language = BaseUtil.getLanguage();
@@ -38,7 +38,7 @@ public class RichTextController {
      * 归还充电宝指南
      * @return
      */
-    @GetMapping(value = "/restore")
+    @RequestMapping(value = "/restore")
     public RestResult restore() {
         Integer type = 2;
         String language = BaseUtil.getLanguage();
@@ -50,7 +50,7 @@ public class RichTextController {
      * 关于我们
      * @return
      */
-    @GetMapping(value = "/aboutUs")
+    @RequestMapping(value = "/aboutUs")
     public RestResult aboutUs() {
         Integer type = 3;
         String language = BaseUtil.getLanguage();

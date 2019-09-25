@@ -25,7 +25,7 @@ public class AgreeController {
      * 用户注册协议
      * @return
      */
-    @GetMapping(value = "/registerAgree")
+    @RequestMapping(value = "/registerAgree")
     public RestResult registerAgree() {
         Integer type = 1;
         String language = BaseUtil.getLanguage();
