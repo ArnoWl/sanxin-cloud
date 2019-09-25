@@ -22,17 +22,14 @@ import com.sanxin.cloud.dto.LoginRegisterVo;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.entity.CCustomer;
 import com.sanxin.cloud.enums.LoginChannelEnums;
-import com.sanxin.cloud.enums.RandNumType;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.mapper.CCustomerMapper;
 import com.sanxin.cloud.service.BBusinessService;
 import com.sanxin.cloud.service.CCustomerService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @author xiaoky
@@ -169,9 +166,9 @@ public class LoginServiceImpl implements LoginService {
         if (!result.status) {
             return result;
         }
-        CustomerHomeVo custome = personalInform(customer.getId());
-        custome.setToken(result.getData().toString());
-        return RestResult.success("success", custome);
+        CustomerHomeVo vo = personalInform(customer.getId());
+        vo.setToken(result.getData().toString());
+        return RestResult.success("success", vo);
     }
 
     /**
@@ -196,7 +193,6 @@ public class LoginServiceImpl implements LoginService {
 
     /**
      * 修改个人资料
-     *
      * @param customer
      * @return
      */
@@ -212,7 +208,6 @@ public class LoginServiceImpl implements LoginService {
     /**
      * 修改登录或支付密码
      *
-     * @param phone    手机号
      * @param verCode  验证码
      * @param password 密码
      * @param type     1登录密码 2支付密码

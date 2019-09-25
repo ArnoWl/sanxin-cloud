@@ -28,8 +28,8 @@ public class TerminalController {
     public RestResult lendTerminal(String code) {
         Map<String, String> map = new HashMap<>();
         map.put("boxId", code);
-        map.put("commond", "01");
-        HttpUtil.getInstance().get("http://47.244.167.166:8003/netty/borrowBattery", map);
-        return RestResult.success("");
+        map.put("slot", "01");
+        HttpUtil.getInstance().get("http://35.240.194.196:8003/netty/borrowBattery", map);
+        return RestResult.success("success");
     }
 }

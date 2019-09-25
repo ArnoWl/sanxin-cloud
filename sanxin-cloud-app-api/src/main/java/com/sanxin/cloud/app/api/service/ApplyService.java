@@ -1,19 +1,9 @@
 package com.sanxin.cloud.app.api.service;
 
-import com.sanxin.cloud.common.FunctionUtils;
-import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.AAdvert;
 import com.sanxin.cloud.entity.AgAgent;
 import com.sanxin.cloud.entity.BBusiness;
-import com.sanxin.cloud.enums.CardTypeEnums;
-import com.sanxin.cloud.service.AAdvertService;
-import com.sanxin.cloud.service.AgAgentService;
-import com.sanxin.cloud.service.BBusinessService;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import sun.management.resources.agent;
 
 /**
  * 处理申请
