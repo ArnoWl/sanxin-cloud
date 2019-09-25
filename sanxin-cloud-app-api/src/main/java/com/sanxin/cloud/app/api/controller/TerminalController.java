@@ -30,6 +30,6 @@ public class TerminalController {
         map.put("boxId", code);
         map.put("commond", "01");
         HttpUtil.getInstance().get("http://47.244.167.166:8003/netty/borrowBattery", map);
-        return null;
+        return RestResult.success("");
     }
 }
