@@ -15,7 +15,7 @@ public class MappingUtils {
     /** 发送忘记密码验证码 */
     public static final String SEND_FORGET_CODE = "/sendForgetCode";
 
-    /** 忘记密码操作 */
+    /** 找回密码操作 */
     public static final String FORGET_PASSWORD = "/forgetPassword";
 
     /** 个人资料 */

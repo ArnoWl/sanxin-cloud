@@ -31,7 +31,7 @@ public class CPushLogController {
      * @param page
      * @return
      */
-    @GetMapping(value = "/myMessage")
+    @RequestMapping(value = "/myMessage")
     public RestResult queryMyMessage(SPage<CPushLog> page) {
         String token = BaseUtil.getInstance().getRegId();
         pushLogService.queryMyMessage(page,Integer.parseInt(token));

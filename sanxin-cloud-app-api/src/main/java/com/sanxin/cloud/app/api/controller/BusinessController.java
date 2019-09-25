@@ -44,7 +44,7 @@ public class BusinessController {
      * @param search
      * @return
      */
-    @GetMapping(value = MappingUtils.NRARBY_BUSINESS)
+    @RequestMapping(value = MappingUtils.NRARBY_BUSINESS)
     public RestResult pageByShops(@RequestParam Integer current, @RequestParam Integer size, String latVal, String lonVal,String search){
         IPage<PowerBankListVo> byShops = businessService.findByShops(current, size, latVal, lonVal, search, radius);
         return RestResult.success("成功",byShops);
@@ -54,7 +54,7 @@ public class BusinessController {
      * 获取店铺基本资料
      * @return
      */
-    @GetMapping(value = BusinessMapping.GET_BUSINESS_INFO)
+    @RequestMapping(value = BusinessMapping.GET_BUSINESS_INFO)
     public RestResult getBusinessInfo() {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginTid(token);
@@ -101,7 +101,7 @@ public class BusinessController {
      * 获取商家中心数据
      * @return
      */
-    @GetMapping(value = BusinessMapping.GET_BUSINESS_CENTER)
+    @RequestMapping(value = BusinessMapping.GET_BUSINESS_CENTER)
     public RestResult getBusinessCenter() {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginTid(token);
@@ -126,7 +126,7 @@ public class BusinessController {
      * 查询加盟商首页数据
      * @return
      */
-    @GetMapping(value = BusinessMapping.GET_BUSINESS_HOME)
+    @RequestMapping(value = BusinessMapping.GET_BUSINESS_HOME)
     public RestResult getBusinessHome() {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginTid(token);
@@ -139,7 +139,7 @@ public class BusinessController {
      * @param page
      * @return
      */
-    @GetMapping(value = BusinessMapping.QUERY_MONEY_DETAIL_LIST)
+    @RequestMapping(value = BusinessMapping.QUERY_MONEY_DETAIL_LIST)
     public RestResult queryMoneyDetailList(SPage<BMoneyDetail> page) {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginTid(token);
@@ -156,7 +156,7 @@ public class BusinessController {
      * @param endTime 结束时间
      * @return
      */
-    @GetMapping(value = BusinessMapping.QUERY_INCOME_DETAIL_LIST)
+    @RequestMapping(value = BusinessMapping.QUERY_INCOME_DETAIL_LIST)
     public RestResult queryIncomeDetailList(SPage<BMoneyDetail> page, String startTime, String endTime) {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginTid(token);
@@ -174,7 +174,7 @@ public class BusinessController {
      * @param type
      * @return
      */
-    @GetMapping(value = BusinessMapping.QUERY_INCOME_STATISTICS)
+    @RequestMapping(value = BusinessMapping.QUERY_INCOME_STATISTICS)
     public RestResult queryIncomeStatistics(Integer type) {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginTid(token);

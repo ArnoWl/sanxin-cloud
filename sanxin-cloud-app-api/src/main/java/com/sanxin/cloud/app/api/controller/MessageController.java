@@ -64,7 +64,7 @@ public class MessageController {
      * @param page 分页
      * @return
      */
-    @GetMapping("/queryAdvertList")
+    @RequestMapping("/queryAdvertList")
     public RestResult queryAdvertList(SPage<AAdvertContent> page) {
         messageService.queryAdvertList(page);
         return RestResult.success("", page);

@@ -245,7 +245,7 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
                     }
                 }
                 BigDecimal money = bMoneyDetailMapper.queryBusinessIncome(vo);
-                moneyArray.add(money);
+                moneyArray.add(money.toString());
                 dateArray.add(DateUtil.toDateString(data, "MM.dd"));
             }
         } catch (Exception e) {

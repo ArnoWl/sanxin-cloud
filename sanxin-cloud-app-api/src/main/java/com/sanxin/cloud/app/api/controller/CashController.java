@@ -39,7 +39,7 @@ public class CashController {
      * 查询银行卡列表
      * @return
      */
-    @GetMapping(value = "/queryBankList")
+    @RequestMapping(value = "/queryBankList")
     public RestResult queryBankList(SPage<BankDetail> page) {
         String token = BaseUtil.getUserToken();
         Integer targetId = loginTokenService.validLoginTid(token);
@@ -96,7 +96,7 @@ public class CashController {
      * @param bankId
      * @return
      */
-    @GetMapping(value = "/getBank")
+    @RequestMapping(value = "/getBank")
     public RestResult getBankDetail(Integer bankId) {
         String token = BaseUtil.getUserToken();
         Integer targetId = loginTokenService.validLoginTid(token);
@@ -131,7 +131,7 @@ public class CashController {
      * @param type 根据类型查询提现规则
      * @return
      */
-    @GetMapping(value = "/getCashScale")
+    @RequestMapping(value = "/getCashScale")
     public RestResult getCashScale(Integer type) {
         Map<String, Object> map = sysCashRuleService.getCashRule(type);
         return RestResult.success("success", map);
@@ -152,7 +152,7 @@ public class CashController {
      * 用户点击提现申请返回判断支付方式(押金)查询最后一条充值记录
      * @return
      */
-    @GetMapping(MappingUtils.SELECT_LIMT)
+    @RequestMapping(MappingUtils.SELECT_LIMT)
     public RestResult selectLimt() {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
@@ -163,7 +163,7 @@ public class CashController {
      * 确认申请提现
      * @return
      */
-    @GetMapping(MappingUtils.MARGIN_WITHDRAW)
+    @RequestMapping(MappingUtils.MARGIN_WITHDRAW)
     public RestResult marginWithdraw() {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
