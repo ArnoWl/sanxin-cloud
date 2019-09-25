@@ -35,7 +35,7 @@ public class AccountController {
     }
 
     /**
-     * 我的押金明细
+     * 我的钱包
      * @return
      */
     @RequestMapping(value = MappingUtils.MY_PURSE)

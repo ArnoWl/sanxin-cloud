@@ -53,7 +53,7 @@ public class LoginController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = MappingUtils.REGISTER)
+    @RequestMapping(value = MappingUtils.REGISTER ,method = RequestMethod.POST)
     public RestResult doRegister(CCustomer customer) throws Exception {
         return registService.doRegister(customer);
     }
@@ -102,22 +102,22 @@ public class LoginController {
      * @return
      */
     @RequestMapping(value = MappingUtils.UPDATE_PASSWORD)
-    public RestResult updatePassword(String verCode,String password,Integer type) {
+    public RestResult updatePassword(String verCode,String password,Integer type,Integer userType) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
-        return loginService.updateLoginPass(verCode,password,cid,type);
+        return loginService.updateLoginPass(verCode,password,cid,type,userType);
     }
 
     /**
      * 找回密码
      * @param phone
-     * @param passWord
-     * @param validCode
+     * @param password
+     * @param verCode
      * @return
      */
     @RequestMapping(value = MappingUtils.FORGET_PASSWORD)
-    public RestResult forgetPassword(String phone,String passWord,String validCode) {
-        return loginService.forgetPassword(phone,passWord,validCode);
+    public RestResult forgetPassword(String phone,String password,String verCode) {
+        return loginService.forgetPassword(phone,password,verCode);
     }
 
 }

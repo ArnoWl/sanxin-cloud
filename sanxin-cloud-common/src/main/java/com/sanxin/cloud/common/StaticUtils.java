@@ -90,4 +90,12 @@ public class StaticUtils {
      * 类型-支付密码(val=2)
      */
     public static final int TYPE_PAY_WORD = 2;
+    /**
+     * 类型-用户(val=1)
+     */
+    public static final int TYPE_USER = 1;
+    /**
+     * 类型-加盟商(val=2)
+     */
+    public static final int TYPE_FRANCHISEE = 2;
 }

@@ -11,8 +11,10 @@ import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
+import com.sanxin.cloud.entity.BAccount;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.enums.CardTypeEnums;
+import com.sanxin.cloud.mapper.BAccountMapper;
 import com.sanxin.cloud.service.BBusinessService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import java.util.*;
 
 /**
  * 加盟商Controller
+ *
  * @author xiaoky
  * @date 2019-08-27
  */
@@ -30,10 +33,13 @@ import java.util.*;
 public class BusinessController {
     @Autowired
     private BBusinessService businessService;
+    @Autowired
+    private BAccountMapper accountMapper;
 
     /**
      * 查询加盟商列表
-     * @param page 分页数据
+     *
+     * @param page     分页数据
      * @param business 查询数据
      * @return com.sanxin.cloud.common.rest.RestResult
      */
@@ -56,6 +62,7 @@ public class BusinessController {
 
     /**
      * 查询加盟商数据——不分页
+     *
      * @return
      */
     @GetMapping(value = "/queryAllList")
@@ -71,6 +78,7 @@ public class BusinessController {
 
     /**
      * 查询加盟商详情数据
+     *
      * @param id
      * @return com.sanxin.cloud.common.rest.RestResult
      */
@@ -82,6 +90,7 @@ public class BusinessController {
 
     /**
      * 编辑加盟商
+     *
      * @param business 数据
      * @return com.sanxin.cloud.common.rest.RestResult
      */
@@ -93,7 +102,7 @@ public class BusinessController {
         } else {
             // 将图片重新封装一次
             List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
-            for(String coverUrl : business.getCoverUrlList()) {
+            for (String coverUrl : business.getCoverUrlList()) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("url", coverUrl);
                 mapList.add(map);
@@ -109,18 +118,22 @@ public class BusinessController {
 
     /**
      * 加盟商审核
-     * @param id 加盟商id
+     *
+     * @param id     加盟商id
      * @param status 审核状态
      * @return com.sanxin.cloud.common.rest.RestResult
      */
     @PostMapping(value = "/handleStatus")
-    public RestResult handleStatus(Integer id, Integer status){
+    public RestResult handleStatus(Integer id, Integer status) {
         BBusiness business = new BBusiness();
         business.setId(id);
         business.setStatus(status);
         business.setCheckTime(new Date());
+        BAccount account = new BAccount();
+        account.setBid(id);
+        int insert = accountMapper.insert(account);
         boolean result = businessService.updateById(business);
-        if (result) {
+        if (result && insert > 0) {
             return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
         }
         return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
@@ -128,6 +141,7 @@ public class BusinessController {
 
     /**
      * 重置登录密码
+     *
      * @param id
      * @return
      */
@@ -147,6 +161,7 @@ public class BusinessController {
 
     /**
      * 重置支付密码
+     *
      * @param id
      * @return
      */

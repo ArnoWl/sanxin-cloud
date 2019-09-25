@@ -49,15 +49,15 @@ public interface LoginService {
      * @param cid 用户id
      * @return
      */
-    RestResult updateLoginPass(String verCode, String password, Integer cid,Integer type);
+    RestResult updateLoginPass(String verCode, String password, Integer cid,Integer type,Integer userType);
 
     /**
      * 找回密码
      * @param phone
-     * @param passWord
-     * @param validCode
+     * @param password
+     * @param verCode
      * @return
      */
-    RestResult forgetPassword(String phone,String passWord,String validCode);
+    RestResult forgetPassword(String phone,String password,String verCode);
 
 }

@@ -35,7 +35,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
- *
  * @author xiaoky
  * @date 2019-09-16
  */
@@ -55,8 +54,10 @@ public class LoginServiceImpl implements LoginService {
     private LoginTokenService loginTokenService;
     @Autowired
     private BusinessService businessService;
+
     /**
      * 登录
+     *
      * @param loginRegisterVo 登录信息
      * @return
      */
@@ -69,7 +70,7 @@ public class LoginServiceImpl implements LoginService {
         }
         // 如果不是小程序和用户端
         if (!(FunctionUtils.isEquals(StaticUtils.LOGIN_CUSTOMER, loginRegisterVo.getType())
-                &&FunctionUtils.isEquals(LoginChannelEnums.ALI_PROGRAM.getChannel(), loginRegisterVo.getChannel()))) {
+                && FunctionUtils.isEquals(LoginChannelEnums.ALI_PROGRAM.getChannel(), loginRegisterVo.getChannel()))) {
             if (StringUtils.isEmpty(phone)) {
                 throw new ThrowJsonException("register_phone_empty");
             }
@@ -103,7 +104,7 @@ public class LoginServiceImpl implements LoginService {
                 throw new ThrowJsonException("register_password_error");
             }
             //判断账号是否被冻结
-            if(!FunctionUtils.isEquals(business.getStatus(), StaticUtils.STATUS_SUCCESS)) {
+            if (!FunctionUtils.isEquals(business.getStatus(), StaticUtils.STATUS_SUCCESS)) {
                 throw new ThrowJsonException("register_not_pass");
             }
             //加密 封装 存入redis
@@ -118,7 +119,7 @@ public class LoginServiceImpl implements LoginService {
                 return loginToken;
             }
             businessHome.setToken(loginToken.getData().toString());
-            return RestResult.success("success",businessHome);
+            return RestResult.success("success", businessHome);
         }
         return RestResult.fail("fail");
     }
@@ -131,18 +132,17 @@ public class LoginServiceImpl implements LoginService {
             AlipaySystemOauthTokenResponse accessTokenResponse = AliLoginUtil.getAccessToken(loginRegisterVo.getAuthCode());
             String accessToken = accessTokenResponse.getAccessToken();
             AlipayUserInfoShareResponse aliUserInfo = AliLoginUtil.getAliUserInfo(accessToken);
-            System.out.println("获取到的用户头像"+aliUserInfo.getAvatar());
-            System.out.println("获取到的性别"+aliUserInfo.getGender());
-            System.out.println("获取到的昵称"+aliUserInfo.getNickName());
-            System.out.println("获取到的手机"+aliUserInfo.getPhone());
-            System.out.println("获取到的用户Id"+aliUserInfo.getUserId());
+            System.out.println("获取到的用户头像" + aliUserInfo.getAvatar());
+            System.out.println("获取到的性别" + aliUserInfo.getGender());
+            System.out.println("获取到的昵称" + aliUserInfo.getNickName());
+            System.out.println("获取到的手机" + aliUserInfo.getPhone());
+            System.out.println("获取到的用户Id" + aliUserInfo.getUserId());
         } catch (AlipayApiException e) {
             e.printStackTrace();
             return RestResult.fail("授权失败");
         }
         return RestResult.success("success");
     }
-
 
 
     private RestResult appCustomerLogin(LoginRegisterVo loginRegisterVo, LoginDto loginDto, String passWord, String phone) {
@@ -157,7 +157,7 @@ public class LoginServiceImpl implements LoginService {
             throw new ThrowJsonException("register_password_error");
         }
         //判断账号是否被冻结
-        if(customer.getStatus() == StaticUtils.STATUS_NO) {
+        if (customer.getStatus() == StaticUtils.STATUS_NO) {
             throw new ThrowJsonException("register_user_freeze");
         }
         //加密 封装 存入redis
@@ -176,12 +176,13 @@ public class LoginServiceImpl implements LoginService {
 
     /**
      * 个人资料
+     *
      * @param cid
      * @return
      */
     @Override
     public CustomerHomeVo personalInform(Integer cid) {
-        CustomerHomeVo homeVo=new CustomerHomeVo();
+        CustomerHomeVo homeVo = new CustomerHomeVo();
         CCustomer customer = customerMapper.selectById(cid);
         homeVo.setPhone(customer.getPhone());
         homeVo.setCreateTime(customer.getCreateTime());
@@ -195,6 +196,7 @@ public class LoginServiceImpl implements LoginService {
 
     /**
      * 修改个人资料
+     *
      * @param customer
      * @return
      */
@@ -209,69 +211,112 @@ public class LoginServiceImpl implements LoginService {
 
     /**
      * 修改登录或支付密码
-     * @param phone 手机号
-     * @param verCode 验证码
+     *
+     * @param phone    手机号
+     * @param verCode  验证码
      * @param password 密码
-     * @param type 1登录密码 2支付密码
-     * @param cid 用户id
+     * @param type     1登录密码 2支付密码
+     * @param cid      用户id
+     * @param userType 1用户 2加盟商
      * @return
      */
     @Override
-    public RestResult updateLoginPass(String verCode, String password, Integer cid, Integer type) {
+    public RestResult updateLoginPass(String verCode, String password, Integer cid, Integer type, Integer userType) {
         if (StringUtils.isBlank(verCode)) {
             return RestResult.fail("user_code_empty");
-        }
-        //密码校验格式
-        boolean validPwd = FunctionUtils.validLoginPwd(password);
-        if (!validPwd) {
-            return RestResult.fail("user_login_pass_error");
         }
         //TODO 短信验证未写
         //密码加密
         String pass = PwdEncode.encodePwd(password);
-        CCustomer customer = customerMapper.selectById(cid);
-        if (customer == null) {
-            return RestResult.fail("user_customer_empty");
-        }
-        switch (type){
-            //修改登录密码
+        switch (userType) {
+            //用户
             case StaticUtils.TYPE_PASS_WORD:
-                if (StringUtils.isBlank(password)) {
-                    return RestResult.fail("user_login_pass_empty");
+                CCustomer customer = customerMapper.selectById(cid);
+                if (customer == null) {
+                    return RestResult.fail("user_customer_empty");
                 }
-                customer.setPassWord(pass);
-                break;
-                //修改支付密码
-            case StaticUtils.TYPE_PAY_WORD:
-                if (StringUtils.isBlank(password)) {
-                    return RestResult.fail("user_pay_pass_empty");
+                switch (type) {
+                    //修改登录密码
+                    case StaticUtils.TYPE_PASS_WORD:
+                        /*boolean passPwd = FunctionUtils.validLoginPwd(password);
+                        if (!passPwd) {
+                            return RestResult.fail("user_login_pass_error");
+                        }*/
+                        if (StringUtils.isBlank(password)) {
+                            return RestResult.fail("user_login_pass_empty");
+                        }
+                        customer.setPassWord(pass);
+                        break;
+                    //修改支付密码
+                    case StaticUtils.TYPE_PAY_WORD:
+                        /*boolean payPwd = FunctionUtils.validPayword(password);
+                        if (!payPwd) {
+                            return RestResult.fail("user_pay_pass_error");
+                        }*/
+                        if (StringUtils.isBlank(password)) {
+                            return RestResult.fail("user_pay_pass_empty");
+                        }
+                        customer.setPayWord(pass);
+                        break;
                 }
-                customer.setPayWord(pass);
-                break;
+                int i = customerMapper.updateById(customer);
+                if (i == 0) {
+                    return RestResult.fail("fail");
+                }
+                return RestResult.success("success");
+            //加盟商
+            case StaticUtils.TYPE_FRANCHISEE:
+                BBusiness business = bbusinessService.selectById(cid);
+                switch (type) {
+                    //修改登录密码
+                    case StaticUtils.TYPE_PASS_WORD:
+                        /*boolean passPwd = FunctionUtils.validLoginPwd(password);
+                        if (!passPwd) {
+                            return RestResult.fail("user_login_pass_error");
+                        }*/
+                        if (StringUtils.isBlank(password)) {
+                            return RestResult.fail("user_login_pass_empty");
+                        }
+                        business.setPassWord(pass);
+                        break;
+                    //修改支付密码
+                    case StaticUtils.TYPE_PAY_WORD:
+                        /*boolean payPwd = FunctionUtils.validPayword(password);
+                        if (!payPwd) {
+                            return RestResult.fail("user_pay_pass_error");
+                        }*/
+                        if (StringUtils.isBlank(password)) {
+                            return RestResult.fail("user_pay_pass_empty");
+                        }
+                        business.setPayWord(pass);
+                        break;
+                }
+                boolean b = bbusinessService.updateById(business);
+                if (!b) {
+                    return RestResult.fail("fail");
+                }
+                return RestResult.success("success");
         }
-        int i = customerMapper.updateById(customer);
-        if (i == 0) {
-            return RestResult.fail("fail");
-        }
-        return RestResult.success("success");
+        return RestResult.fail("success");
     }
 
     /**
      * 找回密码
+     *
      * @param phone
      * @param passWord
      * @param validCode
      * @return
      */
     @Override
-    public RestResult forgetPassword(String phone,String passWord,String validCode) {
+    public RestResult forgetPassword(String phone, String password, String verCode) {
         if (StringUtils.isBlank(phone)) {
             return RestResult.fail("register_phone_empty");
         }
-        if (StringUtils.isBlank(passWord)) {
+        if (StringUtils.isBlank(password)) {
             return RestResult.fail("register_pass_empty");
         }
-        if (StringUtils.isBlank(validCode)) {
+        if (StringUtils.isBlank(verCode)) {
             return RestResult.fail("verifycode_not_exist");
         }
         CCustomer customer = customerMapper.selectOne(new QueryWrapper<CCustomer>().eq("phone", phone));
@@ -281,8 +326,13 @@ public class LoginServiceImpl implements LoginService {
         //TODO 短信验证未写
 
         //密码加密
-        String pass = PwdEncode.encodePwd(passWord);
-        customer.setPassWord(passWord);
+        String pass = PwdEncode.encodePwd(password);
+
+        boolean passPwd = FunctionUtils.validLoginPwd(password);
+        if (!passPwd) {
+            return RestResult.fail("user_login_pass_error");
+        }
+        customer.setPassWord(pass);
         int i = customerMapper.updateById(customer);
         if (i == 0) {
             return RestResult.fail("fail");

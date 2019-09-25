@@ -1,13 +1,16 @@
 package com.sanxin.cloud.app.api.service.impl;
 
+import com.alipay.api.domain.Account;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.app.api.service.RegistService;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
+import com.sanxin.cloud.entity.CAccount;
 import com.sanxin.cloud.entity.CCustomer;
 import com.sanxin.cloud.exception.ThrowJsonException;
+import com.sanxin.cloud.mapper.CAccountMapper;
 import com.sanxin.cloud.service.CCustomerService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * 注册Service
+ *
  * @author xiaoky
  * @date 2019-09-16
  */
@@ -25,6 +29,8 @@ public class RegistServiceImpl implements RegistService {
     private CCustomerService customerService;
     @Autowired
     private RedisUtilsService redisUtilsService;
+    @Autowired
+    private CAccountMapper accountMapper;
 
     @Override
     public RestResult sendVerCode(String phone, String region) {
@@ -37,12 +43,13 @@ public class RegistServiceImpl implements RegistService {
 
     /**
      * 注册
+     *
      * @param customer
      * @return
      * @throws Exception
      */
     @Override
-    public RestResult doRegister(CCustomer customer){
+    public RestResult doRegister(CCustomer customer) {
         check(customer);
         CCustomer user = customerService.getOne(new QueryWrapper<CCustomer>().eq("phone", customer.getPhone()));
         if (user != null) {
@@ -64,19 +71,21 @@ public class RegistServiceImpl implements RegistService {
         customer.setNickName(customer.getPhone());
         customer.setHeadUrl(customer.getPhone());
         boolean save = customerService.save(customer);
-        if (save) {
+        CAccount account = new CAccount();
+        account.setCid(customer.getId());
+        int insert = accountMapper.insert(account);
+        if (insert > 0 && save) {
             return RestResult.success("success");
         }
         return RestResult.fail("fail");
-
-
     }
 
     /**
      * 校验必填
+     *
      * @param customer
      */
-    private void check(CCustomer customer){
+    private void check(CCustomer customer) {
         if (StringUtils.isEmpty(customer.getPhone())) {
             throw new ThrowJsonException("register_phone_empty");
         }
