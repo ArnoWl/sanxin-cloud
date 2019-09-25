@@ -30,7 +30,7 @@ public class AccountController {
     @RequestMapping(value = MappingUtils.MY_DEPOSIT)
     public RestResult queryMyDeposit(SPage<CMarginDetail> page) {
         String token = BaseUtil.getUserToken();
-        Integer cid = loginTokenService.validLoginTid(token);
+        Integer cid = loginTokenService.validLoginCid(token);
         return accountService.queryMyDeposit(page,cid);
     }
 
@@ -41,7 +41,7 @@ public class AccountController {
     @RequestMapping(value = MappingUtils.MY_PURSE)
     public RestResult queryMyPurse() {
         String token = BaseUtil.getUserToken();
-        Integer cid = loginTokenService.validLoginTid(token);
+        Integer cid = loginTokenService.validLoginCid(token);
         return accountService.queryMyPurse(cid);
     }
 
@@ -52,7 +52,7 @@ public class AccountController {
     @RequestMapping(value = MappingUtils.BALANCE_DETAIL)
     public RestResult queryBalanceDetail(SPage<CMoneyDetail> page) {
         String token = BaseUtil.getUserToken();
-        Integer cid = loginTokenService.validLoginTid(token);
+        Integer cid = loginTokenService.validLoginCid(token);
         return accountService.queryBalanceDetail(page,cid);
     }
 
@@ -63,7 +63,7 @@ public class AccountController {
     @RequestMapping(value = MappingUtils.GET_BALANCE)
     public RestResult getBalance() {
         String token = BaseUtil.getUserToken();
-        Integer cid = loginTokenService.validLoginTid(token);
+        Integer cid = loginTokenService.validLoginCid(token);
         return accountService.getBalance(cid);
     }
 
@@ -74,7 +74,7 @@ public class AccountController {
     @RequestMapping(value = MappingUtils.TIME_DETAIL)
     public RestResult queryTimeDetail(SPage<CTimeDetail> page) {
         String token = BaseUtil.getUserToken();
-        Integer cid = loginTokenService.validLoginTid(token);
+        Integer cid = loginTokenService.validLoginCid(token);
         return accountService.queryTimeDetail(page,cid);
     }
 
@@ -85,7 +85,7 @@ public class AccountController {
     @RequestMapping(value = MappingUtils.GET_TIME)
     public RestResult getTime() {
         String token = BaseUtil.getUserToken();
-        Integer cid = loginTokenService.validLoginTid(token);
+        Integer cid = loginTokenService.validLoginCid(token);
         return accountService.getTime(cid);
     }
 }

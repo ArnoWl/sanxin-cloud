@@ -75,7 +75,7 @@ public class LoginController {
     @RequestMapping(value = MappingUtils.PERSONAL_INFORM)
     public RestResult queryPersonalInform() {
         String token = BaseUtil.getUserToken();
-        Integer cid = loginTokenService.validLoginTid(token);
+        Integer cid = loginTokenService.validLoginCid(token);
         CustomerHomeVo homeVo = loginService.personalInform(cid);
         return RestResult.success(homeVo);
     }
@@ -87,7 +87,7 @@ public class LoginController {
     @RequestMapping(value = MappingUtils.UPDATE_PERSONAL_INFORM)
     public RestResult updatePersonalInform(CCustomer customer) {
         String token = BaseUtil.getUserToken();
-        Integer cid = loginTokenService.validLoginTid(token);
+        Integer cid = loginTokenService.validLoginCid(token);
         if (cid != null) {
             customer.setId(cid);
         }

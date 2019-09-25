@@ -44,7 +44,7 @@ public class DeviceController {
     @RequestMapping(value = DeviceMapping.DEVICE_NUM)
     public RestResult getDeviceNum() {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         businessService.validById(bid);
         Integer large = deviceService.countByType(bid, DeviceTypeEnums.LARGE_CABINET.getType());
         Integer small = deviceService.countByType(bid, DeviceTypeEnums.SMALL_CABINET.getType());
@@ -75,7 +75,7 @@ public class DeviceController {
     @RequestMapping(value = DeviceMapping.GET_DEVICE_DETAIL)
     public RestResult getDeviceDetail(Integer deviceId) {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         DeviceDetailVo device = deviceService.getDeviceDetail(deviceId, bid);
         return RestResult.success("", device);
     }
@@ -90,7 +90,7 @@ public class DeviceController {
     public RestResult handleDeviceStatus(Integer deviceId, Integer status) {
         // 校验店铺
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         businessService.validById(bid);
         BDevice device = bDeviceService.getById(deviceId);
         if (!FunctionUtils.isEquals(bid, device.getBid())) {
@@ -110,7 +110,7 @@ public class DeviceController {
     public RestResult editDevice(Integer deviceId, String code, Integer status, Integer type) {
         // 校验店铺
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         businessService.validById(bid);
         BDevice device = bDeviceService.getById(deviceId);
         if (device == null) {
@@ -152,7 +152,7 @@ public class DeviceController {
     @PostMapping(value = DeviceMapping.ADD_DEVICE)
     public RestResult addDevice(String code, Integer status, Integer type) {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         // 校验code是否为null
         if (StringUtils.isBlank(code)) {
             return RestResult.fail("device_code_empty");
@@ -190,7 +190,7 @@ public class DeviceController {
     public RestResult deleteDevice(Integer deviceId) {
         // 校验店铺
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         businessService.validById(bid);
         BDevice device = bDeviceService.getById(deviceId);
         if (device == null) {

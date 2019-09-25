@@ -57,7 +57,7 @@ public class BusinessController {
     @RequestMapping(value = BusinessMapping.GET_BUSINESS_INFO)
     public RestResult getBusinessInfo() {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         BusinessBaseVo vo = businessService.getBusinessInfo(bid);
         return RestResult.success("", vo);
     }
@@ -70,7 +70,7 @@ public class BusinessController {
     @PostMapping(value = BusinessMapping.EDIT_BUSINESS_INFO)
     public RestResult editBusinessInfo(@RequestBody BusinessBaseVo vo) {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         BBusiness business = bBusinessService.validById(bid);
         // 校验参数
         if (StringUtils.isBlank(vo.getHeadUrl())) {
@@ -104,7 +104,7 @@ public class BusinessController {
     @RequestMapping(value = BusinessMapping.GET_BUSINESS_CENTER)
     public RestResult getBusinessCenter() {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         BusinessDetailVo vo = businessService.getBusinessCenter(bid);
         return RestResult.success("", vo);
     }
@@ -117,7 +117,7 @@ public class BusinessController {
     @PostMapping(value = BusinessMapping.EDIT_BUSINESS_CENTER)
     public RestResult editBusinessCenter(BusinessDetailVo vo) {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         RestResult result = businessService.editBusinessCenter(bid, vo);
         return result;
     }
@@ -129,7 +129,7 @@ public class BusinessController {
     @RequestMapping(value = BusinessMapping.GET_BUSINESS_HOME)
     public RestResult getBusinessHome() {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         BusinessHomeVo vo = businessService.getBusinessHome(bid);
         return RestResult.success("", vo);
     }
@@ -142,7 +142,7 @@ public class BusinessController {
     @RequestMapping(value = BusinessMapping.QUERY_MONEY_DETAIL_LIST)
     public RestResult queryMoneyDetailList(SPage<BMoneyDetail> page) {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         BMoneyDetail detail = new BMoneyDetail();
         detail.setBid(bid);
         businessService.queryMoneyDetailList(page, detail);
@@ -159,7 +159,7 @@ public class BusinessController {
     @RequestMapping(value = BusinessMapping.QUERY_INCOME_DETAIL_LIST)
     public RestResult queryIncomeDetailList(SPage<BMoneyDetail> page, String startTime, String endTime) {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         BMoneyDetail detail = new BMoneyDetail();
         detail.setBid(bid);
         detail.setIsout(StaticUtils.PAY_IN);
@@ -177,7 +177,7 @@ public class BusinessController {
     @RequestMapping(value = BusinessMapping.QUERY_INCOME_STATISTICS)
     public RestResult queryIncomeStatistics(Integer type) {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         Map<String, Object> map = businessService.queryIncomeStatistics(bid, type);
         return RestResult.success("", map);
     }
@@ -192,7 +192,7 @@ public class BusinessController {
     @PostMapping(value = BusinessMapping.UPDATE_PASSWORD)
     public RestResult updatePassword(String verCode, String password, Integer type) {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         RestResult result = businessService.updatePassword(bid, verCode, password, type);
         return result;
     }
