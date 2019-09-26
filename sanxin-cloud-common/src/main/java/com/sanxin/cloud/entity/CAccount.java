@@ -1,5 +1,6 @@
 package com.sanxin.cloud.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -50,6 +51,7 @@ public class CAccount implements Serializable {
      */
     private Integer password;
 
+    @TableField(exist = false)
     private Integer card;
 
     public Integer getId() {
