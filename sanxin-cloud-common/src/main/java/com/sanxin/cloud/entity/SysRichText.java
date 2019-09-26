@@ -6,6 +6,7 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -17,6 +18,7 @@ import java.io.Serializable;
  * @author xiaoky
  * @since 2019-09-02
  */
+@Data
 public class SysRichText implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -64,6 +66,12 @@ public class SysRichText implements Serializable {
      */
     @TableField(exist = false)
     private String thaiTitle;
+
+    /**
+     * 接口方返回数据
+     */
+    @TableField(exist = false)
+    private String content;
 
     public Integer getId() {
         return id;
@@ -146,13 +154,17 @@ public class SysRichText implements Serializable {
     @Override
     public String toString() {
         return "SysRichText{" +
-        "id=" + id +
-        ", type=" + type +
-        ", title=" + title +
-        ", cnContent=" + cnContent +
-        ", enContent=" + enContent +
-        ", thaiContent=" + thaiContent +
-        ", createTime=" + createTime +
-        "}";
+                "id=" + id +
+                ", type=" + type +
+                ", title='" + title + '\'' +
+                ", cnContent='" + cnContent + '\'' +
+                ", enContent='" + enContent + '\'' +
+                ", thaiContent='" + thaiContent + '\'' +
+                ", createTime=" + createTime +
+                ", cnTitle='" + cnTitle + '\'' +
+                ", enTitle='" + enTitle + '\'' +
+                ", thaiTitle='" + thaiTitle + '\'' +
+                ", content='" + content + '\'' +
+                '}';
     }
 }

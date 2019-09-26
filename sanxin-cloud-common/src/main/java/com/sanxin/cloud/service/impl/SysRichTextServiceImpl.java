@@ -66,12 +66,12 @@ public class SysRichTextServiceImpl extends ServiceImpl<SysRichTextMapper, SysRi
         // 返回对应语言的内容
         JSONObject object = JSONObject.parseObject(richText.getTitle());
         richText.setTitle(object.getString(language));
-        if (LanguageEnums.CN.name().equals(language)) {
-            richText.setCnContent(richText.getCnContent());
-        } else if (LanguageEnums.EN.name().equals(language)) {
-            richText.setEnContent(richText.getEnContent());
-        } else if (LanguageEnums.THAI.name().equals(language)) {
-            richText.setThaiContent(richText.getThaiContent());
+        if (LanguageEnums.CN.name().equalsIgnoreCase(language)) {
+            richText.setContent(richText.getCnContent());
+        } else if (LanguageEnums.EN.name().equalsIgnoreCase(language)) {
+            richText.setContent(richText.getEnContent());
+        } else if (LanguageEnums.THAI.name().equalsIgnoreCase(language)) {
+            richText.setContent(richText.getThaiContent());
         }
         return richText;
     }
