@@ -1,6 +1,7 @@
 package com.sanxin.cloud.common.times;
 
 
+import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.exception.ThrowJsonException;
 
 import java.sql.Timestamp;
@@ -492,18 +493,29 @@ public class DateUtil {
 
 
 	public static String dateDiff(long startTime, long endTime) {
+		String dayStr = LanguageUtils.getMessage("day");
+		String hourStr = LanguageUtils.getMessage("hour");
+		String minuteStr = LanguageUtils.getMessage("minute");
 		//按照传入的格式生成一个simpledateformate对象
 		long nd = 1000*24*60*60;//一天的毫秒数
 		long nh = 1000*60*60;//一小时的毫秒数
 		long nm = 1000*60;//一分钟的毫秒数
 		//获得两个时间的毫秒时间差异
-		String msg="0天0小时0分钟";
+		String msg="0"+minuteStr;
 		if(endTime>=startTime) {
+			StringBuffer timeSb = new StringBuffer();
 			long diff =endTime -startTime;
 			long day = diff/nd;//计算差多少天
 			long hour = diff%nd/nh;//计算差多少小时
 			long min = diff%nd%nh/nm;//计算差多少分钟
-			msg=day+"天"+hour+"小时"+min+"分钟";
+			if (day > 0) {
+				timeSb.append(day).append(dayStr);
+			}
+			if (hour > 0) {
+				timeSb.append(hour).append(hourStr);
+			}
+			timeSb.append(min).append(minuteStr);
+			msg=timeSb.toString();
 		}
 		return msg;
 	}

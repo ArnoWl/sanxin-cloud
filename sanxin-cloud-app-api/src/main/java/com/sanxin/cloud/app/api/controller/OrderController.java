@@ -34,7 +34,7 @@ public class OrderController {
     /**
      * 查询订单列表
      * @param page
-     * @param key 查询条件暂时没用-图上不知道查什么
+     * @param key 模糊查询订单编号
      * @return
      */
     @RequestMapping(value = OrderMapping.QUERY_BUSINESS_ORDER_LIST)
@@ -45,7 +45,6 @@ public class OrderController {
         OrderMain orderMain = new OrderMain();
         orderMain.setBid(bid);
         orderMain.setOrderStatus(orderStatus);
-        // TODO key没做操作
         orderMain.setKey(key);
         SPage<OrderBusVo> pageInfo = orderService.queryBusinessOrderList(page, orderMain);
         return RestResult.success("", pageInfo);

@@ -9,6 +9,7 @@ import com.sanxin.cloud.dto.BusinessHomeVo;
 import com.sanxin.cloud.dto.PowerBankListVo;
 import com.sanxin.cloud.entity.BMoneyDetail;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 public interface BusinessService {
@@ -79,4 +80,11 @@ public interface BusinessService {
      * @return
      */
     RestResult updatePassword(Integer bid, String verCode, String password, Integer type);
+
+    /**
+     * 查询今日收益
+     * @param bid
+     * @return
+     */
+    BigDecimal getTodayIncome(Integer bid);
 }

@@ -329,4 +329,15 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
         }
         return dateList;
     }
+
+    /**
+     * 查询今日收益
+     * @param bid
+     * @return
+     */
+    @Override
+    public BigDecimal getTodayIncome(Integer bid) {
+        BigDecimal todayIncome = bMoneyDetailMapper.getIncome(bid, StaticUtils.TIME_DAY);
+        return todayIncome;
+    }
 }

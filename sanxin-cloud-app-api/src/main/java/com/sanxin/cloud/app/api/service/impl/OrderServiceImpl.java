@@ -5,6 +5,7 @@ import com.sanxin.cloud.app.api.service.OrderService;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.common.times.DateUtil;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.OrderBusDetailVo;
 import com.sanxin.cloud.dto.OrderBusVo;
@@ -18,12 +19,14 @@ import com.sanxin.cloud.service.BBusinessService;
 import com.sanxin.cloud.service.CCustomerService;
 import com.sanxin.cloud.service.OrderMainService;
 import net.bytebuddy.implementation.bytecode.Throw;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,7 +46,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public SPage<OrderBusVo> queryBusinessOrderList(SPage<OrderMain> page, OrderMain orderMain) {
         QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
-        wrapper.eq("bid", orderMain.getBid()).eq("order_status", orderMain.getOrderStatus());
+        wrapper.eq("bid", orderMain.getBid()).eq("order_status", orderMain.getOrderStatus())
+            .like(StringUtils.isNotBlank(orderMain.getKey()), "order_code", orderMain.getKey());
         orderMainService.page(page, wrapper);
         List<OrderBusVo> list = new ArrayList<>();
         for (OrderMain o : page.getRecords()) {
@@ -56,8 +60,16 @@ public class OrderServiceImpl implements OrderService {
             if (customer != null) {
                 vo.setCusName(customer.getNickName());
             }
-            // TODO 使用时长(写死了)
-            vo.setUseHour("20分钟");
+
+            Date endTime = new Date();
+            // 使用时长
+            if (!FunctionUtils.isEquals(o.getOrderStatus(), OrderStatusEnums.USING.getId())) {
+                // 如果订单正在使用中，计算使用时长应该用当前时间和借出时间算
+                // 其它状态用归还时间算
+                endTime = o.getReturnTime();
+            }
+            String useHour = DateUtil.dateDiff(o.getPayTime().getTime(), endTime.getTime());
+            vo.setUseHour(useHour);
             // TODO 预计租金(写死了)
             vo.setEstimatedRentMoney(BigDecimal.ONE);
             list.add(vo);
@@ -85,8 +97,15 @@ public class OrderServiceImpl implements OrderService {
         if (customer != null) {
             vo.setCusName(customer.getNickName());
         }
-        // TODO 使用时长(写死了)
-        vo.setUseHour("20分钟");
+        Date endTime = new Date();
+        // 使用时长
+        if (!FunctionUtils.isEquals(order.getOrderStatus(), OrderStatusEnums.USING.getId())) {
+            // 如果订单正在使用中，计算使用时长应该用当前时间和借出时间算
+            // 其它状态用归还时间算
+            endTime = order.getReturnTime();
+        }
+        String useHour = DateUtil.dateDiff(order.getPayTime().getTime(), endTime.getTime());
+        vo.setUseHour(useHour);
         // TODO 预计租金(写死了)
         vo.setEstimatedRentMoney(BigDecimal.ONE);
         // 支付方式

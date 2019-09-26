@@ -13,14 +13,17 @@ import com.sanxin.cloud.dto.BusinessBaseVo;
 import com.sanxin.cloud.dto.BusinessDetailVo;
 import com.sanxin.cloud.dto.BusinessHomeVo;
 import com.sanxin.cloud.dto.PowerBankListVo;
+import com.sanxin.cloud.entity.BAccount;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.entity.BMoneyDetail;
+import com.sanxin.cloud.service.BAccountService;
 import com.sanxin.cloud.service.BBusinessService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -34,6 +37,8 @@ public class BusinessController {
     private BBusinessService bBusinessService;
     @Autowired
     private LoginTokenService loginTokenService;
+    @Autowired
+    private BAccountService bAccountService;
 
     /**
      * 根据经纬度分页查询周边商铺
@@ -47,7 +52,7 @@ public class BusinessController {
     @RequestMapping(value = MappingUtils.NRARBY_BUSINESS)
     public RestResult pageByShops(@RequestParam Integer current, @RequestParam Integer size, String latVal, String lonVal,String search){
         IPage<PowerBankListVo> byShops = businessService.findByShops(current, size, latVal, lonVal, search, radius);
-        return RestResult.success("成功",byShops);
+        return RestResult.success("success",byShops);
     }
 
     /**
@@ -146,7 +151,12 @@ public class BusinessController {
         BMoneyDetail detail = new BMoneyDetail();
         detail.setBid(bid);
         businessService.queryMoneyDetailList(page, detail);
-        return RestResult.success("", page);
+        // 余额、收益
+        BAccount bAccount = bAccountService.getByBid(detail.getBid());
+        Map<String, Object> map = new HashMap<>();
+        map.put("list", page);
+        map.put("money", bAccount.getMoney());
+        return RestResult.success("", map);
     }
 
     /**
@@ -166,7 +176,13 @@ public class BusinessController {
         detail.setStartTime(startTime);
         detail.setEndTime(endTime);
         businessService.queryMoneyDetailList(page, detail);
-        return RestResult.success("", page);
+        // 余额、收益
+        BAccount bAccount = bAccountService.getByBid(detail.getBid());
+        Map<String, Object> map = new HashMap<>();
+        map.put("list", page);
+        map.put("totalIncome", bAccount.getTotalIncome());
+        map.put("todayIncome", businessService.getTodayIncome(bid));
+        return RestResult.success("", map);
     }
 
     /**
