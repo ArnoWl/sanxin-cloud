@@ -1,10 +1,17 @@
 package com.sanxin.cloud.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.CFeedbackLog;
+import com.sanxin.cloud.entity.CPushLog;
 import com.sanxin.cloud.mapper.CFeedbackLogMapper;
 import com.sanxin.cloud.service.CFeedbackLogService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +24,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class CFeedbackLogServiceImpl extends ServiceImpl<CFeedbackLogMapper, CFeedbackLog> implements CFeedbackLogService {
 
+    @Autowired
+    private CFeedbackLogMapper feedbackLogMapper;
+
+    @Override
+    public IPage<CFeedbackLog> queryFaultFeedback(SPage<CFeedbackLog> page, Integer bid) {
+        IPage<CFeedbackLog> list = feedbackLogMapper.selectPage(page, new QueryWrapper<CFeedbackLog>().eq("bid", bid));
+        return list;
+    }
 }

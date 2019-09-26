@@ -1,9 +1,8 @@
 package com.sanxin.cloud.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
-import com.sanxin.cloud.entity.CFeedbackLog;
 import com.sanxin.cloud.entity.CPushLog;
 
 /**
@@ -16,5 +15,5 @@ import com.sanxin.cloud.entity.CPushLog;
  */
 public interface CPushLogService extends IService<CPushLog>{
 
-    RestResult queryMyMessage(SPage<CPushLog> page, Integer token);
+    IPage<CPushLog> queryMyMessage(SPage<CPushLog> page, Integer token);
 }

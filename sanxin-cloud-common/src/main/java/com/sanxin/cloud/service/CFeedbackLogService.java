@@ -1,7 +1,11 @@
 package com.sanxin.cloud.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.CFeedbackLog;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CFeedbackLogService extends IService<CFeedbackLog> {
 
+    IPage<CFeedbackLog> queryFaultFeedback(SPage<CFeedbackLog> page, Integer bid);
 }
