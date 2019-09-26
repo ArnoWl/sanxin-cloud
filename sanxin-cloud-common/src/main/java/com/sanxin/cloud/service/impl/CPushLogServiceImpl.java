@@ -1,6 +1,7 @@
 package com.sanxin.cloud.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sanxin.cloud.entity.CFeedbackLog;
 import com.sanxin.cloud.mapper.CFeedbackLogMapper;
@@ -26,8 +27,8 @@ import java.util.List;
 public class CPushLogServiceImpl extends ServiceImpl<CPushLogMapper, CPushLog> implements CPushLogService{
 
     @Override
-    public RestResult queryMyMessage(SPage<CPushLog> page, Integer cid) {
-        List<CPushLog> logList = baseMapper.selectList(new QueryWrapper<CPushLog>().eq("cid", cid));
-        return RestResult.success(logList);
+    public IPage<CPushLog> queryMyMessage(SPage<CPushLog> page, Integer cid) {
+        IPage<CPushLog> iPage = baseMapper.selectPage(page, new QueryWrapper<CPushLog>().eq("cid", cid));
+        return iPage;
     }
 }
