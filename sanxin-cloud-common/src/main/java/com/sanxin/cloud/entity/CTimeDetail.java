@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.io.Serializable;
 
 /**
@@ -14,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Arno
- * @since 2019-09-20
+ * @since 2019-09-27
  */
 public class CTimeDetail implements Serializable {
 
@@ -61,7 +59,6 @@ public class CTimeDetail implements Serializable {
     /**
      * 创建时间
      */
-    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
     private Date createTime;
 
     /**

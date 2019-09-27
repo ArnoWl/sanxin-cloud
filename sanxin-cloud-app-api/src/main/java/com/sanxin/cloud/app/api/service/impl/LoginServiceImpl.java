@@ -188,6 +188,7 @@ public class LoginServiceImpl implements LoginService {
         homeVo.setToken(customer.getToken());
         homeVo.setIsValid(customer.getIsReal());
         homeVo.setHeadUrl(customer.getHeadUrl());
+        homeVo.setNickName(customer.getNickName());
         return homeVo;
     }
 
