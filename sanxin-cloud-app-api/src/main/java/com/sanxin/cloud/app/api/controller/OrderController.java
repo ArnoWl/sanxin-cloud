@@ -66,34 +66,32 @@ public class OrderController {
     }
 
     /**
-     * 查询订单列表(用户)
+     * 查询用户订单列表
      * @param page
-     * @param key 模糊查询订单编号
+     * @param orderStatus 订单状态
      * @return
      */
     @RequestMapping(value = OrderMapping.QUERY_USER_ORDER_LIST)
-    public RestResult queryUserOrderList(SPage<OrderMain> page, String key, Integer orderStatus) {
+    public RestResult queryUserOrderList(SPage<OrderMain> page, Integer orderStatus) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginCid(token);
-        businessService.validById(cid);
         OrderMain orderMain = new OrderMain();
-        orderMain.setBid(cid);
+        orderMain.setCid(cid);
         orderMain.setOrderStatus(orderStatus);
-        orderMain.setKey(key);
         SPage<OrderUserVo> pageInfo = orderService.queryUserOrderList(page, orderMain);
         return RestResult.success("", pageInfo);
     }
 
     /**
-     * 查询加盟商订单详情(用户)
+     * 查询用户订单详情
      * @param orderCode
      * @return
      */
     @RequestMapping(value = OrderMapping.GET_USER_ORDER_DETAIL)
     public RestResult getUserOrderDetail(String orderCode) {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginCid(token);
-        OrderUserDetailVo vo = orderService.getUserOrderDetail(bid, orderCode);
+        Integer cid = loginTokenService.validLoginCid(token);
+        OrderUserDetailVo vo = orderService.getUserOrderDetail(cid, orderCode);
         return RestResult.success("", vo);
     }
 }

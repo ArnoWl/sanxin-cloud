@@ -18,11 +18,13 @@ import com.sanxin.cloud.entity.OrderMain;
 import com.sanxin.cloud.enums.OrderStatusEnums;
 import com.sanxin.cloud.enums.PayTypeEnums;
 import com.sanxin.cloud.exception.ThrowJsonException;
+import com.sanxin.cloud.mapper.OrderMainMapper;
 import com.sanxin.cloud.service.BBusinessService;
 import com.sanxin.cloud.service.CCustomerService;
 import com.sanxin.cloud.service.OrderMainService;
 import net.bytebuddy.implementation.bytecode.Throw;
 import org.apache.commons.lang3.StringUtils;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,7 @@ import java.util.List;
 
 /**
  * 订单Service实现类
+ *
  * @author xiaoky
  * @date 2019-09-21
  */
@@ -41,6 +44,8 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderMainService orderMainService;
+    @Autowired
+    private OrderMainMapper orderMainMapper;
     @Autowired
     private CCustomerService customerService;
     @Autowired
@@ -50,8 +55,8 @@ public class OrderServiceImpl implements OrderService {
     public SPage<OrderBusVo> queryBusinessOrderList(SPage<OrderMain> page, OrderMain orderMain) {
         QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
         wrapper.eq("bid", orderMain.getBid()).eq("order_status", orderMain.getOrderStatus())
-            .like(StringUtils.isNotBlank(orderMain.getKey()), "order_code", orderMain.getKey());
-        orderMainService.page(page, wrapper);
+                .like(StringUtils.isNotBlank(orderMain.getKey()), "order_code", orderMain.getKey());
+        orderMainMapper.selectPage(page, wrapper);
         List<OrderBusVo> list = new ArrayList<>();
         for (OrderMain o : page.getRecords()) {
             OrderBusVo vo = new OrderBusVo();
@@ -73,8 +78,9 @@ public class OrderServiceImpl implements OrderService {
             }
             String useHour = DateUtil.dateDiff(o.getPayTime().getTime(), endTime.getTime());
             vo.setUseHour(useHour);
-            // TODO 预计租金(写死了)
-            vo.setEstimatedRentMoney(BigDecimal.ONE);
+            //预计租金
+            double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), o.getCreateTime()) / (60 * 60));
+            vo.setEstimatedRentMoney(new BigDecimal(time * 1));
             list.add(vo);
         }
         SPage<OrderBusVo> pageInfo = new SPage<>();
@@ -88,7 +94,7 @@ public class OrderServiceImpl implements OrderService {
         OrderMain order = orderMainService.getByOrderCode(orderCode);
         // 校验数据
         if (!FunctionUtils.isEquals(order.getBid(), bid)) {
-            throw  new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
+            throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
         }
         BBusiness business = bBusinessService.validById(bid);
         OrderBusDetailVo vo = new OrderBusDetailVo();
@@ -109,8 +115,9 @@ public class OrderServiceImpl implements OrderService {
         }
         String useHour = DateUtil.dateDiff(order.getPayTime().getTime(), endTime.getTime());
         vo.setUseHour(useHour);
-        // TODO 预计租金(写死了)
-        vo.setEstimatedRentMoney(BigDecimal.ONE);
+        //预计租金
+        double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), order.getCreateTime()) / (60 * 60));
+        vo.setEstimatedRentMoney(new BigDecimal(time * 1));
         // 支付方式
         vo.setPayTypeName(PayTypeEnums.getName(order.getPayType()));
         vo.setMoney(order.getPayMoney());
@@ -121,7 +128,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 查询加盟商订单列表(用户)
+     * 查询用户订单列表
+     *
      * @param page
      * @param orderMain
      * @return
@@ -129,21 +137,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public SPage<OrderUserVo> queryUserOrderList(SPage<OrderMain> page, OrderMain orderMain) {
         QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
-        wrapper.eq("cid", orderMain.getBid()).eq("order_status", orderMain.getOrderStatus())
-                .like(StringUtils.isNotBlank(orderMain.getKey()), "order_code", orderMain.getKey());
-        orderMainService.page(page, wrapper);
+        wrapper.eq("cid", orderMain.getCid()).eq("order_status", orderMain.getOrderStatus());
+        IPage<OrderMain> userPage = orderMainMapper.selectPage(page, wrapper);
         List<OrderUserVo> list = new ArrayList<>();
-        for (OrderMain o : page.getRecords()) {
+        for (OrderMain o : userPage.getRecords()) {
             OrderUserVo vo = new OrderUserVo();
             BeanUtils.copyProperties(o, vo);
             // 订单状态
             vo.setStatusName(OrderStatusEnums.getName(vo.getOrderStatus()));
-            // 租借人
-            CCustomer customer = customerService.getById(o.getCid());
-            if (customer != null) {
-                vo.setCusName(customer.getNickName());
-            }
-
+            // 订单编号
+            vo.setOrderCode(o.getOrderCode());
             Date endTime = new Date();
             // 使用时长
             if (!FunctionUtils.isEquals(o.getOrderStatus(), OrderStatusEnums.USING.getId())) {
@@ -153,24 +156,56 @@ public class OrderServiceImpl implements OrderService {
             }
             String useHour = DateUtil.dateDiff(o.getPayTime().getTime(), endTime.getTime());
             vo.setUseHour(useHour);
-            // TODO 预计租金(写死了)
-            vo.setEstimatedRentMoney(BigDecimal.ONE);
+            // 租借时间
+            vo.setRentTime(o.getCreateTime());
+            //预计租金
+            double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), o.getCreateTime()) / (60 * 60));
+            vo.setEstimatedRentMoney(new BigDecimal(time * 1));
             list.add(vo);
         }
         SPage<OrderUserVo> pageInfo = new SPage<>();
         BeanUtils.copyProperties(page, pageInfo);
         pageInfo.setRecords(list);
-        return null;
+        return pageInfo;
     }
 
     /**
-     * 查询加盟商订单详情(用户)
-     * @param bid
+     * 查询用户订单详情
+     *
+     * @param cid
      * @param orderCode
      * @return
      */
     @Override
-    public OrderUserDetailVo getUserOrderDetail(Integer bid, String orderCode) {
-        return null;
+    public OrderUserDetailVo getUserOrderDetail(Integer cid, String orderCode) {
+        OrderMain order = orderMainService.getByOrderCode(orderCode);
+        // 校验数据
+        if (!FunctionUtils.isEquals(order.getCid(), cid)) {
+            throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
+        }
+        OrderUserDetailVo vo = new OrderUserDetailVo();
+        BeanUtils.copyProperties(order, vo);
+        // 订单状态
+        vo.setStatusName(OrderStatusEnums.getName(vo.getOrderStatus()));
+
+        Date endTime = new Date();
+        // 使用时长
+        if (!FunctionUtils.isEquals(order.getOrderStatus(), OrderStatusEnums.USING.getId())) {
+            // 如果订单正在使用中，计算使用时长应该用当前时间和借出时间算
+            // 其它状态用归还时间算
+            endTime = order.getReturnTime();
+        }
+        String useHour = DateUtil.dateDiff(order.getPayTime().getTime(), endTime.getTime());
+        vo.setUseHour(useHour);
+        //预计租金
+        double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), order.getCreateTime()) / (60 * 60));
+        vo.setEstimatedRentMoney(new BigDecimal(time * 1));
+        // 支付方式
+        vo.setPayTypeName(PayTypeEnums.getName(order.getPayType()));
+        vo.setMoney(order.getPayMoney());
+        vo.setRentTime(order.getPayTime());
+        vo.setReturnTime(order.getPayTime());
+        vo.setAddressDetail(order.getReturnAddr());
+        return vo;
     }
 }

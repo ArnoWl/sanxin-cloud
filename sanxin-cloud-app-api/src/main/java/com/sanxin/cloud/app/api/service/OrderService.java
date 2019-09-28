@@ -30,17 +30,17 @@ public interface OrderService {
     OrderBusDetailVo getBusinessOrderDetail(Integer bid, String orderCode);
 
     /**
-     * 查询加盟商订单列表(用户)
+     * 查询用户订单列表
      * @param page
      * @param orderMain
      */
     SPage<OrderUserVo> queryUserOrderList(SPage<OrderMain> page, OrderMain orderMain);
 
     /**
-     * 查询加盟商订单详情(用户)
-     * @param bid
+     * 查询用户订单详情
+     * @param cid
      * @param orderCode
      * @return
      */
-    OrderUserDetailVo getUserOrderDetail(Integer bid, String orderCode);
+    OrderUserDetailVo getUserOrderDetail(Integer cid, String orderCode);
 }

@@ -46,6 +46,20 @@ public class DateUtil {
 
 	private static Map<String, Object> parsers = new HashMap<String, Object>();
 
+
+	private static DateUtil dateUtil = null;
+
+	public static DateUtil getInstance() {
+		if (dateUtil == null) {
+			synchronized (DateUtil.class) {
+				if (dateUtil == null) {
+					dateUtil = new DateUtil();
+				}
+			}
+		}
+		return dateUtil;
+	}
+
 	private static SimpleDateFormat getDateParser(String pattern) {
 		Object parser = parsers.get(pattern);
 		if (parser == null) {
@@ -819,6 +833,18 @@ public class DateUtil {
 			i += num;
 		}
 		return list;
+	}
+
+	/**
+	 * 两个日期返回秒
+	 * @param startDate
+	 * @return
+	 */
+	public int calLastedTime(Date startDate,Date endDate) {
+		long start = startDate.getTime();
+		long end = endDate.getTime();
+		int time = (int) ((start - end) / 1000);
+		return time;
 	}
 
 	public static void main(String[] args) {

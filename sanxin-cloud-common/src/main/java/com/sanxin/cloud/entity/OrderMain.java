@@ -6,6 +6,8 @@ import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -16,6 +18,7 @@ import java.io.Serializable;
  * @author xiaoky
  * @since 2019-09-21
  */
+@Data
 public class OrderMain implements Serializable {
 
     private static final long serialVersionUID = 1L;
