@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
             String useHour = DateUtil.dateDiff(o.getPayTime().getTime(), endTime.getTime());
             vo.setUseHour(useHour);
             //预计租金
-            double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), o.getCreateTime()) / (60 * 60));
+            double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), o.getCreateTime()) / (60 * 60) + 1);
             vo.setEstimatedRentMoney(new BigDecimal(time * 1));
             list.add(vo);
         }
