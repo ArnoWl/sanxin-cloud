@@ -5,6 +5,10 @@ server:
 spring:
   application:
     name: sanxin-cloud-images # 对外暴露的服务名称
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
   resources:
     static-locations: classpath:/files/,file:files/
   mvc:
@@ -21,7 +25,7 @@ eureka:
     prefer-ip-address: true    # 访问路径可显示ip地址
     lease-renewal-interval-in-seconds: 2
     lease-expiration-duration-in-seconds: 5
-    ip-address: 127.0.0.1
+    ip-address: 47.106.131.191
 # 使用actuator来展示项目的基本信息
 info:
   author.name: Arno

@@ -55,17 +55,8 @@ public class BaseController {
             return RestResult.fail("fail");
         }
         String path = "/" + DateUtil.toDateString(DateUtil.currentDate(), "yyyyMMdd");
-        JSONArray array = new JSONArray();
-        for (MultipartFile file : files) {
-            RestUploadFileInfo uploadFileInfo = imagesRemote.uploadImg(file, path);
-            if (!uploadFileInfo.isStatus()) {
-                throw new ThrowJsonException(uploadFileInfo.getDesc());
-            }
-            String url = uploadFileInfo.getServiceName() + uploadFileInfo.getFilePath() + uploadFileInfo.getFileName();
-            array.add(url);
-        }
-
-        return RestResult.success("success", array.toJSONString());
+        JSONArray urls = imagesRemote.uploadImgMultiple(files, path);
+        return RestResult.success("success", urls);
     }
 
     @RequestMapping(value = "/uploadQR")

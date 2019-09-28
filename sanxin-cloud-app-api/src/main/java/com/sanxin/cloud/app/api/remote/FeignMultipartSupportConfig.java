@@ -16,7 +16,7 @@ public class FeignMultipartSupportConfig {
     @Primary
     @Scope("prototype")
     public Encoder multipartFormEncoder() {
-        return new SpringFormEncoder();
+        return new FeignSpringFormEncoder();
     }
 
     @Bean

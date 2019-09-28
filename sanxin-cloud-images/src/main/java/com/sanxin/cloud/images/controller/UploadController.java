@@ -1,5 +1,6 @@
 package com.sanxin.cloud.images.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -85,15 +86,15 @@ public class UploadController {
      * @return
      */
     @PostMapping(value = "/uploadImgMultiple")
-    public String uploadImgMultiple(@RequestParam(value = "files") MultipartFile[] files, String path) throws FileNotFoundException {
-        String urls = "";
+    public JSONArray uploadImgMultiple(@RequestParam(value = "files") MultipartFile[] files, String path) throws FileNotFoundException {
+        JSONArray urls = new JSONArray();
         for (MultipartFile file : files) {
             RestUploadFileInfo uploadFileInfo = uploadImg(file, path);
             if (!uploadFileInfo.isStatus()) {
                 continue;
             }
             String url = uploadFileInfo.getServiceName() + uploadFileInfo.getFilePath() + uploadFileInfo.getFileName();
-            urls += url;
+            urls.add(url);
         }
         return urls;
     }

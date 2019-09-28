@@ -1,5 +1,6 @@
 package com.sanxin.cloud.app.api.remote;
 
+import com.alibaba.fastjson.JSONArray;
 import com.sanxin.cloud.config.image.RestUploadFileInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -24,7 +25,6 @@ public interface ImagesRemote {
      */
     @PostMapping(value = "/uploadImg",produces = {MediaType.APPLICATION_JSON_UTF8_VALUE}, consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
     RestUploadFileInfo uploadImg(@RequestPart(value = "file") MultipartFile file, @RequestParam(value = "path") String path);
-
     /**
      * 上传生成二维码
      * @param path
@@ -33,4 +33,13 @@ public interface ImagesRemote {
      */
     @PostMapping(value = "/uploadQR")
     RestUploadFileInfo uploadQR(@RequestParam(value = "path") String path, @RequestParam(value = "content") String content);
+
+    /**
+     * 多图上传
+     * @param files
+     * @param path
+     * @return
+     */
+    @PostMapping(value = "/uploadImgMultiple",produces = {MediaType.APPLICATION_JSON_UTF8_VALUE}, consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    JSONArray uploadImgMultiple(@RequestPart(value = "files") MultipartFile[] files, @RequestParam(value = "path") String path);
 }
