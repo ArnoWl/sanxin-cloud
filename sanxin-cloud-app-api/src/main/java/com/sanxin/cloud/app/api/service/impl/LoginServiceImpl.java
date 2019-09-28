@@ -3,6 +3,7 @@ package com.sanxin.cloud.app.api.service.impl;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserInfoShareResponse;
+import com.alipay.api.response.AlipayUserUserinfoShareResponse;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.app.api.service.BusinessService;
 import com.sanxin.cloud.app.api.service.LoginService;
@@ -128,7 +129,7 @@ public class LoginServiceImpl implements LoginService {
         try {
             AlipaySystemOauthTokenResponse accessTokenResponse = AliLoginUtil.getAccessToken(loginRegisterVo.getAuthCode());
             String accessToken = accessTokenResponse.getAccessToken();
-            AlipayUserInfoShareResponse aliUserInfo = AliLoginUtil.getAliUserInfo(accessToken);
+            AlipayUserUserinfoShareResponse aliUserInfo = AliLoginUtil.getAliUserInfo(accessToken);
             System.out.println("获取到的用户头像" + aliUserInfo.getAvatar());
             System.out.println("获取到的性别" + aliUserInfo.getGender());
             System.out.println("获取到的昵称" + aliUserInfo.getNickName());

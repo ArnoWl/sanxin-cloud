@@ -63,15 +63,17 @@ mybatis-plus:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:7001/eureka/
+      defaultZone: http://47.244.167.166:7001/eureka/,http://47.244.167.166:7002/eureka/
     healthcheck:
       enabled: true
   instance:
     instance-id: APP接口API  # 人性化显示出服务的信息
-    prefer-ip-address: false    # 访问路径可显示ip地址
+    prefer-ip-address: false    # 优先使用IP地址方式进行注册服务
     lease-renewal-interval-in-seconds: 2
     lease-expiration-duration-in-seconds: 5
-
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
 # 使用actuator来展示项目的基本信息
 info:
   author.name: Arno

@@ -11,17 +11,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.sanxin.cloud</groupId>
-    <artifactId>sanxin-cloud-app-api</artifactId>
+    <artifactId>sanxin-cloud-images</artifactId>
     <packaging>jar</packaging>
 
     <!-- 当前Module需要用到的依赖，按自己需求添加，版本号在父类已经定义了，这里不需要再次定义 -->
     <dependencies>
-        <!-- 引入自己定义的 com.sanxin.cloud.common 通用包 -->
-        <dependency>
-            <groupId>com.sanxin.cloud</groupId>
-            <artifactId>sanxin-cloud-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <!-- spring boot web 依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -41,58 +35,27 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
-        <!--服务调用者-->
+        <!--谷歌-->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-        <!-- 热加载-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-            <!--<scope>true</scope>-->
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.openfeign.form</groupId>
-            <artifactId>feign-form</artifactId>
-            <version>3.2.2</version>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
-            <groupId>io.github.openfeign.form</groupId>
-            <artifactId>feign-form-spring</artifactId>
-            <version>3.2.2</version>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.1.0</version>
         </dependency>
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.yml</include>
-                    <include>**/*.xml</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.yml</include>
-                    <include>**/*.xml</include>
-                </includes>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <!-- 指定该Main Class为全局的唯一入口 -->
-                    <mainClass>com.sanxin.cloud.app.api.AppApiServer</mainClass>
+                    <mainClass>com.sanxin.cloud.images.ImagesServer</mainClass>
                     <executable>true</executable>
                 </configuration>
                 <executions>
