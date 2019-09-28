@@ -8,6 +8,8 @@ import com.sanxin.cloud.config.login.LoginTokenService;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.OrderBusDetailVo;
 import com.sanxin.cloud.dto.OrderBusVo;
+import com.sanxin.cloud.dto.OrderUserDetailVo;
+import com.sanxin.cloud.dto.OrderUserVo;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.entity.OrderMain;
 import com.sanxin.cloud.service.BBusinessService;
@@ -32,7 +34,7 @@ public class OrderController {
     private OrderService orderService;
 
     /**
-     * 查询订单列表
+     * 查询订单列表(加盟商)
      * @param page
      * @param key 模糊查询订单编号
      * @return
@@ -40,7 +42,7 @@ public class OrderController {
     @RequestMapping(value = OrderMapping.QUERY_BUSINESS_ORDER_LIST)
     public RestResult queryBusinessOrderList(SPage<OrderMain> page, String key, Integer orderStatus) {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         businessService.validById(bid);
         OrderMain orderMain = new OrderMain();
         orderMain.setBid(bid);
@@ -51,15 +53,47 @@ public class OrderController {
     }
 
     /**
-     * 查询加盟商订单详情
+     * 查询加盟商订单详情(用户)
      * @param orderCode
      * @return
      */
     @RequestMapping(value = OrderMapping.GET_BUSINESS_ORDER_DETAIL)
     public RestResult getBusinessOrderDetail(String orderCode) {
         String token = BaseUtil.getUserToken();
-        Integer bid = loginTokenService.validLoginTid(token);
+        Integer bid = loginTokenService.validLoginBid(token);
         OrderBusDetailVo vo = orderService.getBusinessOrderDetail(bid, orderCode);
+        return RestResult.success("", vo);
+    }
+
+    /**
+     * 查询订单列表(用户)
+     * @param page
+     * @param key 模糊查询订单编号
+     * @return
+     */
+    @RequestMapping(value = OrderMapping.QUERY_USER_ORDER_LIST)
+    public RestResult queryUserOrderList(SPage<OrderMain> page, String key, Integer orderStatus) {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginCid(token);
+        businessService.validById(cid);
+        OrderMain orderMain = new OrderMain();
+        orderMain.setBid(cid);
+        orderMain.setOrderStatus(orderStatus);
+        orderMain.setKey(key);
+        SPage<OrderUserVo> pageInfo = orderService.queryUserOrderList(page, orderMain);
+        return RestResult.success("", pageInfo);
+    }
+
+    /**
+     * 查询加盟商订单详情(用户)
+     * @param orderCode
+     * @return
+     */
+    @RequestMapping(value = OrderMapping.GET_USER_ORDER_DETAIL)
+    public RestResult getUserOrderDetail(String orderCode) {
+        String token = BaseUtil.getUserToken();
+        Integer bid = loginTokenService.validLoginCid(token);
+        OrderUserDetailVo vo = orderService.getUserOrderDetail(bid, orderCode);
         return RestResult.success("", vo);
     }
 }

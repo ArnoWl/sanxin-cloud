@@ -16,8 +16,7 @@
         <module>../sanxin-cloud-admin-api</module>
         <module>../sanxin-cloud-app-api</module>
         <module>../sanxin-cloud-netty</module>
-<!--        <module>../sanxin-cloud-quartz</module>-->
-        <module>../sanxin-cloud-images</module>
+        <!--<module>../sanxin-cloud-quartz</module>-->
     </modules>
     <packaging>pom</packaging>
 

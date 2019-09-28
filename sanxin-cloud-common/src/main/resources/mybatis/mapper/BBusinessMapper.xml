@@ -27,7 +27,7 @@
 
     <!-- 根据经纬度分页查询周边商铺 -->
     <select id="findByShops" resultType="com.sanxin.cloud.dto.PowerBankListVo">
-        SELECT b.id,d.code, b.company_name,b.start_day,b.end_day,b.start_time,b.end_time,SUM(d.lend_port)  as lend_port,SUM(d.repay_port) as repay_port,b.address_detail,d.status,b.head_url,b.cover_url,
+        SELECT b.id,d.code, b.company_name,b.start_day,b.end_day,b.start_time,b.end_time,SUM(d.lend_port)  as lend_port,SUM(d.repay_port) as repay_port,b.address_detail,d.status,b.head_url,b.cover_url,b.lat_val,b.lon_val,
         round(
         6378.138 * 2 * asin(
         sqrt(

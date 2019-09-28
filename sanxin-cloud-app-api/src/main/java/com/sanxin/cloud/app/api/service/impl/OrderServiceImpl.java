@@ -1,6 +1,7 @@
 package com.sanxin.cloud.app.api.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.sanxin.cloud.app.api.service.OrderService;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.language.LanguageUtils;
@@ -9,6 +10,8 @@ import com.sanxin.cloud.common.times.DateUtil;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.OrderBusDetailVo;
 import com.sanxin.cloud.dto.OrderBusVo;
+import com.sanxin.cloud.dto.OrderUserDetailVo;
+import com.sanxin.cloud.dto.OrderUserVo;
 import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.entity.CCustomer;
 import com.sanxin.cloud.entity.OrderMain;
@@ -115,5 +118,59 @@ public class OrderServiceImpl implements OrderService {
         vo.setReturnTime(order.getPayTime());
         vo.setAddressDetail(business.getAddressDetail());
         return vo;
+    }
+
+    /**
+     * 查询加盟商订单列表(用户)
+     * @param page
+     * @param orderMain
+     * @return
+     */
+    @Override
+    public SPage<OrderUserVo> queryUserOrderList(SPage<OrderMain> page, OrderMain orderMain) {
+        QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
+        wrapper.eq("cid", orderMain.getBid()).eq("order_status", orderMain.getOrderStatus())
+                .like(StringUtils.isNotBlank(orderMain.getKey()), "order_code", orderMain.getKey());
+        orderMainService.page(page, wrapper);
+        List<OrderUserVo> list = new ArrayList<>();
+        for (OrderMain o : page.getRecords()) {
+            OrderUserVo vo = new OrderUserVo();
+            BeanUtils.copyProperties(o, vo);
+            // 订单状态
+            vo.setStatusName(OrderStatusEnums.getName(vo.getOrderStatus()));
+            // 租借人
+            CCustomer customer = customerService.getById(o.getCid());
+            if (customer != null) {
+                vo.setCusName(customer.getNickName());
+            }
+
+            Date endTime = new Date();
+            // 使用时长
+            if (!FunctionUtils.isEquals(o.getOrderStatus(), OrderStatusEnums.USING.getId())) {
+                // 如果订单正在使用中，计算使用时长应该用当前时间和借出时间算
+                // 其它状态用归还时间算
+                endTime = o.getReturnTime();
+            }
+            String useHour = DateUtil.dateDiff(o.getPayTime().getTime(), endTime.getTime());
+            vo.setUseHour(useHour);
+            // TODO 预计租金(写死了)
+            vo.setEstimatedRentMoney(BigDecimal.ONE);
+            list.add(vo);
+        }
+        SPage<OrderUserVo> pageInfo = new SPage<>();
+        BeanUtils.copyProperties(page, pageInfo);
+        pageInfo.setRecords(list);
+        return null;
+    }
+
+    /**
+     * 查询加盟商订单详情(用户)
+     * @param bid
+     * @param orderCode
+     * @return
+     */
+    @Override
+    public OrderUserDetailVo getUserOrderDetail(Integer bid, String orderCode) {
+        return null;
     }
 }
