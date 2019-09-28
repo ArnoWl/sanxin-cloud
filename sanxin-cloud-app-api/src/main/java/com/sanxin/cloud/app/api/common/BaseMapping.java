@@ -8,4 +8,6 @@ package com.sanxin.cloud.app.api.common;
 public class BaseMapping {
     /** 上传图片*/
     public static final String UPLOAD_IMG="/uploadImg";
+    /** 上传图片，多张*/
+    public static final String UPLOAD_IMG_MULTIPLE="/uploadImgMultiple";
 }

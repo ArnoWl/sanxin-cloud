@@ -1,12 +1,12 @@
 package com.sanxin.cloud.app.api.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.sanxin.cloud.app.api.common.BaseMapping;
 import com.sanxin.cloud.app.api.remote.ImagesRemote;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.common.times.DateUtil;
 import com.sanxin.cloud.config.image.RestUploadFileInfo;
 import com.sanxin.cloud.exception.ThrowJsonException;
-import jdk.nashorn.internal.scripts.JS;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +30,7 @@ public class BaseController {
      * @param file
      * @return
      */
-    @RequestMapping("/uploadImg")
+    @RequestMapping(value = BaseMapping.UPLOAD_IMG)
     public RestResult uploadImg(@RequestParam(value = "file")MultipartFile file) {
         if (file == null) {
             return RestResult.fail("fail");
@@ -49,7 +49,7 @@ public class BaseController {
      * @param files
      * @return
      */
-    @RequestMapping("/uploadImgMultiple")
+    @RequestMapping(value = BaseMapping.UPLOAD_IMG_MULTIPLE)
     public RestResult uploadImgMultiple(@RequestParam(value = "files")MultipartFile[] files) {
         if (files == null) {
             return RestResult.fail("fail");
