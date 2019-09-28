@@ -15,8 +15,8 @@ public enum PayTypeEnums {
 	VISA_CARD(2,"VISA Card"),
 	MASTER_CARD(3, "Master Card"),
 	GOOGLE_PAY(4, "Google Pay"),
-	APPLE_PAY(4, "Apple Pay"),
-	ALI_PAY(4, "Alipay Pay");
+	APPLE_PAY(5, "Apple Pay"),
+	ALI_PAY(6, "Alipay Pay");
 
 	private Integer id;
 
