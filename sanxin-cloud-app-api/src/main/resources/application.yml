@@ -68,9 +68,10 @@ eureka:
       enabled: true
   instance:
     instance-id: APP接口API  # 人性化显示出服务的信息
-    prefer-ip-address: false    # 优先使用IP地址方式进行注册服务
+    prefer-ip-address: true    # 优先使用IP地址方式进行注册服务
     lease-renewal-interval-in-seconds: 2
     lease-expiration-duration-in-seconds: 5
+    ip-address: 127.0.0.1
 ribbon:
   ReadTimeout: 60000
   ConnectTimeout: 60000
