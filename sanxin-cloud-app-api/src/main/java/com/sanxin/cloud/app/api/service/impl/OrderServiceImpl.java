@@ -119,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
         String useHour = DateUtil.dateDiff(order.getPayTime().getTime(), endTime.getTime());
         vo.setUseHour(useHour);
         //预计租金
-        double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), order.getCreateTime()) / (60 * 60));
+        double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), order.getCreateTime()) / (60 * 60) + 1);
         vo.setEstimatedRentMoney(new BigDecimal(time * 1));
         // 支付方式
         vo.setPayTypeName(PayTypeEnums.getName(order.getPayType()));
@@ -162,7 +162,7 @@ public class OrderServiceImpl implements OrderService {
             // 租借时间
             vo.setRentTime(o.getCreateTime());
             //预计租金
-            double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), o.getCreateTime()) / (60 * 60));
+            double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), o.getCreateTime()) / (60 * 60) + 1);
             vo.setEstimatedRentMoney(new BigDecimal(time * 1));
             list.add(vo);
         }
@@ -204,7 +204,7 @@ public class OrderServiceImpl implements OrderService {
         String useHour = DateUtil.dateDiff(order.getPayTime().getTime(), endTime.getTime());
         vo.setUseHour(useHour);
         //预计租金
-        double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), order.getCreateTime()) / (60 * 60));
+        double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), order.getCreateTime()) / (60 * 60) + 1);
         vo.setEstimatedRentMoney(new BigDecimal(time * 1));
         // 支付方式
         vo.setPayTypeName(PayTypeEnums.getName(order.getPayType()));
