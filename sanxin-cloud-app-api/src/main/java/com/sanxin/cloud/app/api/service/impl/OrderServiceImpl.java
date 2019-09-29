@@ -92,6 +92,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderBusDetailVo getBusinessOrderDetail(Integer bid, String orderCode) {
         OrderMain order = orderMainService.getByOrderCode(orderCode);
+        if (order == null) {
+            throw new ThrowJsonException(LanguageUtils.getMessage("order_not_exist"));
+        }
         // 校验数据
         if (!FunctionUtils.isEquals(order.getBid(), bid)) {
             throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
@@ -179,6 +182,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderUserDetailVo getUserOrderDetail(Integer cid, String orderCode) {
         OrderMain order = orderMainService.getByOrderCode(orderCode);
+        if (order == null) {
+            throw new ThrowJsonException(LanguageUtils.getMessage("order_not_exist"));
+        }
         // 校验数据
         if (!FunctionUtils.isEquals(order.getCid(), cid)) {
             throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
