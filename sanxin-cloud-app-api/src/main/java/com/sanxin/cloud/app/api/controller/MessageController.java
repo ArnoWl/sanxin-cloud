@@ -2,9 +2,12 @@ package com.sanxin.cloud.app.api.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sanxin.cloud.app.api.service.LoginService;
 import com.sanxin.cloud.app.api.service.MessageService;
+import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.config.login.LoginTokenService;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.AAdvertContent;
 import com.sanxin.cloud.entity.CFeedbackLog;
@@ -30,6 +33,8 @@ public class MessageController {
     private CFeedbackLogService cFeedbackLogService;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private LoginTokenService loginTokenService;
 
     /**
      * 故障反馈
@@ -38,7 +43,9 @@ public class MessageController {
   * @return
      */
     @PostMapping(value = "/addFeedbackMessage")
-    public RestResult addFeedbackMessage(Integer bid, String content, List<String> backUrl) {
+    public RestResult addFeedbackMessage(String content, List<String> backUrl) {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginBid(token);
         if (StringUtils.isBlank(content)) {
             return RestResult.fail(LanguageUtils.getMessage("content_empty"));
         }
@@ -49,7 +56,7 @@ public class MessageController {
             return RestResult.fail(LanguageUtils.getMessage("img_to_long"));
         }
         CFeedbackLog feedbackLog = new CFeedbackLog();
-        feedbackLog.setBid(bid);
+        feedbackLog.setCid(cid);
         feedbackLog.setContent(content);
         feedbackLog.setBackUrl(JSONArray.toJSONString(backUrl));
         boolean result = cFeedbackLogService.save(feedbackLog);
