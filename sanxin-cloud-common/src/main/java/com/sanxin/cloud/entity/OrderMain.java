@@ -116,6 +116,10 @@ public class OrderMain implements Serializable {
     private Date payTime;
 
     /**
+     * 弹出充电宝时间
+     */
+    private Date rentTime;
+    /**
      * 归还时间
      */
     private Date returnTime;

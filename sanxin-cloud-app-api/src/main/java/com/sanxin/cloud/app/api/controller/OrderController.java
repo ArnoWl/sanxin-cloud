@@ -34,6 +34,19 @@ public class OrderController {
     private OrderService orderService;
 
     /**
+     * 借充电宝
+     * @param terminalId 充电宝ID
+     * @return
+     */
+    @RequestMapping(value = OrderMapping.GET_BORROW_POWER_BANK)
+    public RestResult getBorrowPowerBank(String terminalId) {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginCid(token);
+        orderService.getBorrowPowerBank(cid, terminalId);
+        return RestResult.success("");
+    }
+
+    /**
      * 查询订单列表(加盟商)
      * @param page
      * @param key 模糊查询订单编号

@@ -12,13 +12,11 @@ import com.sanxin.cloud.dto.OrderBusDetailVo;
 import com.sanxin.cloud.dto.OrderBusVo;
 import com.sanxin.cloud.dto.OrderUserDetailVo;
 import com.sanxin.cloud.dto.OrderUserVo;
-import com.sanxin.cloud.entity.BBusiness;
-import com.sanxin.cloud.entity.CCustomer;
-import com.sanxin.cloud.entity.OrderMain;
+import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.enums.OrderStatusEnums;
 import com.sanxin.cloud.enums.PayTypeEnums;
 import com.sanxin.cloud.exception.ThrowJsonException;
-import com.sanxin.cloud.mapper.OrderMainMapper;
+import com.sanxin.cloud.mapper.*;
 import com.sanxin.cloud.service.BBusinessService;
 import com.sanxin.cloud.service.CCustomerService;
 import com.sanxin.cloud.service.OrderMainService;
@@ -49,7 +47,50 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private CCustomerService customerService;
     @Autowired
+    private CCustomerMapper customerMapper;
+    @Autowired
     private BBusinessService bBusinessService;
+    @Autowired
+    private BDeviceTerminalMapper deviceTerminalMapper;
+    @Autowired
+    private BDeviceMapper deviceMapper;
+    @Autowired
+    private CAccountMapper accountMapper;
+
+
+    /**
+     * 借充电宝
+     * @param cid
+     * @param terminalId
+     */
+    @Override
+    public void getBorrowPowerBank(Integer cid, String terminalId) {
+        //用户信息
+        CCustomer customer = customerMapper.selectById(cid);
+        if (customer == null) {
+            return;
+        }
+        //用户账户
+        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
+        if (account.getDeposit().compareTo(new BigDecimal(99)) != -1) {
+            return;
+        }
+        //充电宝
+        BDeviceTerminal terminal = deviceTerminalMapper.selectOne(new QueryWrapper<BDeviceTerminal>().eq("terminal_id", terminalId));
+        //机柜
+        BDevice code = deviceMapper.selectOne(new QueryWrapper<BDevice>().eq("code", terminal.getdCode()));
+
+        if (terminal == null) {
+            return;
+        }
+        OrderMain orderMain=new OrderMain();
+        orderMain.setCid(cid);
+        orderMain.setBid(code.getBid());
+
+
+
+
+    }
 
     @Override
     public SPage<OrderBusVo> queryBusinessOrderList(SPage<OrderMain> page, OrderMain orderMain) {

@@ -6,6 +6,8 @@ package com.sanxin.cloud.app.api.common;
  * @date 2019-09-21
  */
 public class OrderMapping {
+    /** 借充电宝*/
+    public static final String GET_BORROW_POWER_BANK = "/getBorrowPowerBank";
     /** 查询加盟商订单列表*/
     public static final String QUERY_BUSINESS_ORDER_LIST = "/queryBusinessOrderList";
     /** 查询加盟商订单详情*/

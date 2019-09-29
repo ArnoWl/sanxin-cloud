@@ -15,6 +15,13 @@ import com.sanxin.cloud.entity.OrderMain;
 public interface OrderService {
 
     /**
+     * 借充电宝
+     * @param cid
+     * @param terminalId
+     */
+    void getBorrowPowerBank(Integer cid, String terminalId);
+
+    /**
      * 查询加盟商订单列表(加盟商)
      * @param page
      * @param orderMain
@@ -43,4 +50,6 @@ public interface OrderService {
      * @return
      */
     OrderUserDetailVo getUserOrderDetail(Integer cid, String orderCode);
+
+
 }
