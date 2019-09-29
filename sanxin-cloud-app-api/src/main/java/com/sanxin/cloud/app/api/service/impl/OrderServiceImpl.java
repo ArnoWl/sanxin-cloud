@@ -80,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
             vo.setUseHour(useHour);
             //预计租金
             double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), o.getCreateTime()) / (60 * 60) + 1);
-            vo.setEstimatedRentMoney(new BigDecimal(time * 1));
+            vo.setEstimatedRentMoney(new BigDecimal(time));
             list.add(vo);
         }
         SPage<OrderBusVo> pageInfo = new SPage<>();
@@ -120,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
         vo.setUseHour(useHour);
         //预计租金
         double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), order.getCreateTime()) / (60 * 60) + 1);
-        vo.setEstimatedRentMoney(new BigDecimal(time * 1));
+        vo.setEstimatedRentMoney(new BigDecimal(time));
         // 支付方式
         vo.setPayTypeName(PayTypeEnums.getName(order.getPayType()));
         vo.setMoney(order.getPayMoney());
@@ -163,7 +163,7 @@ public class OrderServiceImpl implements OrderService {
             vo.setRentTime(o.getCreateTime());
             //预计租金
             double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), o.getCreateTime()) / (60 * 60) + 1);
-            vo.setEstimatedRentMoney(new BigDecimal(time * 1));
+            vo.setEstimatedRentMoney(new BigDecimal(time));
             list.add(vo);
         }
         SPage<OrderUserVo> pageInfo = new SPage<>();
@@ -205,7 +205,7 @@ public class OrderServiceImpl implements OrderService {
         vo.setUseHour(useHour);
         //预计租金
         double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), order.getCreateTime()) / (60 * 60) + 1);
-        vo.setEstimatedRentMoney(new BigDecimal(time * 1));
+        vo.setEstimatedRentMoney(new BigDecimal(time));
         // 支付方式
         vo.setPayTypeName(PayTypeEnums.getName(order.getPayType()));
         vo.setMoney(order.getPayMoney());
