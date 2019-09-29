@@ -7,6 +7,7 @@ import com.sanxin.cloud.config.login.LoginDto;
 import com.sanxin.cloud.config.login.LoginTokenService;
 import com.sanxin.cloud.config.redis.RedisCacheManage;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
+import com.sanxin.cloud.exception.LoginOutException;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         String token = BaseUtil.getUserToken();
         if (StringUtils.isEmpty(token)) {
             this.setHead(response);
-            throw new ThrowJsonException("登录过期，请重新登录");
+            throw new LoginOutException("登录过期，请重新登录");
         }
 
         Integer tid = loginTokenService.validLoginTid(token);
