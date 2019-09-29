@@ -1,10 +1,9 @@
 package com.sanxin.cloud.app.api.controller;
 
 import com.sanxin.cloud.app.api.service.ApplyService;
-import com.sanxin.cloud.app.api.service.MessageService;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.rest.RestResult;
-import com.sanxin.cloud.config.login.LoginTokenService;
+import com.sanxin.cloud.service.system.login.LoginTokenService;
 import com.sanxin.cloud.entity.AAdvert;
 import com.sanxin.cloud.entity.AgAgent;
 import com.sanxin.cloud.entity.BBusiness;

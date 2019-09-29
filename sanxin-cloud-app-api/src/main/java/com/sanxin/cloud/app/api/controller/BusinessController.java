@@ -7,7 +7,7 @@ import com.sanxin.cloud.app.api.service.BusinessService;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.rest.RestResult;
-import com.sanxin.cloud.config.login.LoginTokenService;
+import com.sanxin.cloud.service.system.login.LoginTokenService;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.BusinessBaseVo;
 import com.sanxin.cloud.dto.BusinessDetailVo;

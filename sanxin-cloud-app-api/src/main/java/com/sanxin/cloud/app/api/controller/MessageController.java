@@ -1,20 +1,17 @@
 package com.sanxin.cloud.app.api.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.sanxin.cloud.app.api.service.LoginService;
 import com.sanxin.cloud.app.api.service.MessageService;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
-import com.sanxin.cloud.config.login.LoginTokenService;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.AAdvertContent;
 import com.sanxin.cloud.entity.CFeedbackLog;
 import com.sanxin.cloud.service.CFeedbackLogService;
+import com.sanxin.cloud.service.system.login.LoginTokenService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

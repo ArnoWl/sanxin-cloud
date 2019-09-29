@@ -2,13 +2,8 @@ package com.sanxin.cloud.app.api.interceptor;
 
 
 import com.sanxin.cloud.common.BaseUtil;
-import com.sanxin.cloud.common.Constant;
-import com.sanxin.cloud.config.login.LoginDto;
-import com.sanxin.cloud.config.login.LoginTokenService;
-import com.sanxin.cloud.config.redis.RedisCacheManage;
-import com.sanxin.cloud.config.redis.RedisUtilsService;
+import com.sanxin.cloud.service.system.login.LoginTokenService;
 import com.sanxin.cloud.exception.LoginOutException;
-import com.sanxin.cloud.exception.ThrowJsonException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

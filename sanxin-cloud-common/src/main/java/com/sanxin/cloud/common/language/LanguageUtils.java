@@ -44,7 +44,7 @@ public class LanguageUtils {
             ResourceBundle rb = ResourceBundle.getBundle(fileName);
             result = rb.getString(code);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            result = code;
         }
         return result;
     }
@@ -62,6 +62,7 @@ public class LanguageUtils {
             result = rb.getString(code);
             result = MessageFormat.format(result, params);
         } catch (Exception e) {
+            result = code;
         }
         return result;
     }

@@ -5,14 +5,11 @@ import com.sanxin.cloud.app.api.common.MappingUtils;
 import com.sanxin.cloud.app.api.service.LoginService;
 import com.sanxin.cloud.app.api.service.RegistService;
 import com.sanxin.cloud.common.BaseUtil;
-import com.sanxin.cloud.common.language.LanguageUtils;
-import com.sanxin.cloud.common.properties.PropertiesUtil;
 import com.sanxin.cloud.common.rest.RestResult;
-import com.sanxin.cloud.config.login.LoginTokenService;
+import com.sanxin.cloud.service.system.login.LoginTokenService;
 import com.sanxin.cloud.dto.CustomerHomeVo;
 import com.sanxin.cloud.dto.LoginRegisterVo;
 import com.sanxin.cloud.entity.CCustomer;
-import com.sanxin.cloud.service.CCustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

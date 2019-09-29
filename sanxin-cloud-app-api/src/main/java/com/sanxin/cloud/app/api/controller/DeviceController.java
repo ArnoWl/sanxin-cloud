@@ -5,7 +5,7 @@ import com.sanxin.cloud.app.api.service.DeviceService;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.rest.RestResult;
-import com.sanxin.cloud.config.login.LoginTokenService;
+import com.sanxin.cloud.service.system.login.LoginTokenService;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.DeviceDetailVo;
 import com.sanxin.cloud.entity.BDevice;

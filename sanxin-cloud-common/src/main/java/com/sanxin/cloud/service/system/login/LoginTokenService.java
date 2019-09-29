@@ -1,4 +1,4 @@
-package com.sanxin.cloud.config.login;
+package com.sanxin.cloud.service.system.login;
 
 import com.alibaba.fastjson.JSONObject;
 import com.sanxin.cloud.common.FunctionUtils;
