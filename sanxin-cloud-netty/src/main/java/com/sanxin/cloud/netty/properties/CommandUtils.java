@@ -136,6 +136,8 @@ public class CommandUtils {
                         String terminalId = String.join("", Arrays.copyOfRange(hex_arr, 11, hex_arr.length));
                         terminalId = getTerminalId(terminalId);
                         System.out.println("借充电宝响应  充电宝Id"+terminalId);
+                        boxId = NettySocketHolder.get(ctx);
+                        System.out.println("借出充电宝的机柜id");
                         if (Integer.parseInt(result, 16) == 1) {
                             // 借充电宝成功
                             // handleService.handleLendSuccess(terminalId);

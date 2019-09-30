@@ -31,7 +31,7 @@ public class HandleServiceImpl implements HandleService {
     private BDeviceService bDeviceService;
 
     @Override
-    public String handleReturnTerminal(String slot, String terminalId, ChannelHandlerContext ctx) {
+    public String handleReturnTerminal(String boxId, String slot, String terminalId, ChannelHandlerContext ctx) {
         BDeviceTerminal terminal = bDeviceTerminalService.getTerminalById(terminalId);
         // 非法充电宝 ID
         if (terminal == null) {
@@ -47,7 +47,6 @@ public class HandleServiceImpl implements HandleService {
         }
 
         // 判断当前槽位是否已有其它充电宝了——需要去机柜查数据（如果有其它充电宝-返回05）
-        String boxId = NettySocketHolder.get(ctx);
         QueryWrapper<BDeviceTerminal> wrapper = new QueryWrapper<>();
         wrapper.eq("d_code", boxId).eq("slot", slot);
         System.out.println("归还充电宝 操作-机柜编号"+boxId);

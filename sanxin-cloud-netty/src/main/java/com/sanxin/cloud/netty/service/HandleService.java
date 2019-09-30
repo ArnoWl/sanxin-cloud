@@ -12,11 +12,12 @@ public interface HandleService {
 
     /**
      * 处理归还充电宝
+     * @param boxId 机柜编号
      * @param slot 槽位
      * @param terminalId 充电宝Id
      * @return
      */
-    String handleReturnTerminal(String slot, String terminalId, ChannelHandlerContext ctx);
+    String handleReturnTerminal(String boxId, String slot, String terminalId, ChannelHandlerContext ctx);
 
     /**
      * 操作-更新充电宝数据
