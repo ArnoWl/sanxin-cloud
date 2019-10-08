@@ -62,7 +62,10 @@ public class CCustomer implements Serializable {
      * 头像
      */
     private String headUrl;
-
+    /**
+     * 支付宝userId
+     */
+    private String userId;
     /**
      * 国家区号
      */
@@ -220,6 +223,14 @@ public class CCustomer implements Serializable {
 
     public void setVerCode(String verCode) {
         this.verCode = verCode;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Override

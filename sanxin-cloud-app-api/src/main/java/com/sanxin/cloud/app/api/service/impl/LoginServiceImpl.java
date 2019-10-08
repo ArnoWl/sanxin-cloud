@@ -82,7 +82,7 @@ public class LoginServiceImpl implements LoginService {
             // 小程序应该授权登录
             RestResult result = null;
             if (FunctionUtils.isEquals(loginRegisterVo.getChannel(), LoginChannelEnums.ALI_PROGRAM.getChannel())) {
-                result = aliProgramLogin(loginRegisterVo);
+                result = aliProgramLogin(loginRegisterVo, loginDto);
             } else {
                 result = appCustomerLogin(loginRegisterVo, loginDto, passWord, phone);
             }
@@ -119,24 +119,42 @@ public class LoginServiceImpl implements LoginService {
         return RestResult.fail("fail");
     }
 
-    private RestResult aliProgramLogin(LoginRegisterVo loginRegisterVo) {
+    private RestResult aliProgramLogin(LoginRegisterVo loginRegisterVo, LoginDto loginDto) {
         if (StringUtils.isBlank(loginRegisterVo.getAuthCode())) {
             return RestResult.fail("授权失败");
         }
         try {
-            AlipaySystemOauthTokenResponse accessTokenResponse = AliLoginUtil.getAccessToken(loginRegisterVo.getAuthCode());
-            String accessToken = accessTokenResponse.getAccessToken();
-            AlipayUserUserinfoShareResponse aliUserInfo = AliLoginUtil.getAliUserInfo(accessToken);
-            System.out.println("获取到的用户头像" + aliUserInfo.getAvatar());
-            System.out.println("获取到的性别" + aliUserInfo.getGender());
-            System.out.println("获取到的昵称" + aliUserInfo.getNickName());
-            System.out.println("获取到的手机" + aliUserInfo.getPhone());
-            System.out.println("获取到的用户Id" + aliUserInfo.getUserId());
-        } catch (AlipayApiException e) {
+            // AlipaySystemOauthTokenResponse accessTokenResponse = AliLoginUtil.getAccessToken(loginRegisterVo.getAuthCode());
+            // String accessToken = accessTokenResponse.getAccessToken();
+            // AlipayUserUserinfoShareResponse aliUserInfo = AliLoginUtil.getAliUserInfo(accessToken);
+            // System.out.println("获取到的用户头像" + aliUserInfo.getAvatar());
+            // System.out.println("获取到的性别" + aliUserInfo.getGender());
+            // System.out.println("获取到的昵称" + aliUserInfo.getNickName());
+            // System.out.println("获取到的手机" + aliUserInfo.getPhone());
+            // System.out.println("获取到的用户Id" + aliUserInfo.getUserId());
+            // 查询用户
+            // TODO 默认18627315127这个用户
+            CCustomer customer = customerService.getOne(new QueryWrapper<CCustomer>().eq("user_id", "123456789"));
+            if (customer == null) {
+                throw new ThrowJsonException("register_user_empty");
+            }
+            //加密 封装 存入redis
+            loginDto.setChannel(loginRegisterVo.getChannel());
+            loginDto.setTid(customer.getId());
+            loginDto.setType(StaticUtils.LOGIN_CUSTOMER);
+            loginDto.setUserId(customer.getUserId());
+            // 生成token
+            RestResult result = loginTokenService.getLoginToken(loginDto, LoginChannelEnums.getLoginEnum(loginRegisterVo.getChannel()));
+            if (!result.status) {
+                return result;
+            }
+            CustomerHomeVo vo = personalInform(customer.getId());
+            vo.setToken(result.getData().toString());
+            return RestResult.success("success", vo);
+        } catch (Exception e) {
             e.printStackTrace();
             return RestResult.fail("授权失败");
         }
-        return RestResult.success("success");
     }
 
 
@@ -298,8 +316,8 @@ public class LoginServiceImpl implements LoginService {
      * 找回密码
      *
      * @param phone
-     * @param passWord
-     * @param validCode
+     * @param password
+     * @param verCode
      * @return
      */
     @Override

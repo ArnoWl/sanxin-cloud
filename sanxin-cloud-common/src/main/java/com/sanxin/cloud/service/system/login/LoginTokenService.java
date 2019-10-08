@@ -67,7 +67,7 @@ public class LoginTokenService {
             case ALI_PROGRAM:
                 if (StringUtils.isBlank(loginDto.getUserId())
                         && FunctionUtils.isEquals(StaticUtils.LOGIN_CUSTOMER, loginDto.getType())) {
-                    return RestResult.fail("Small program OpenID can't be Null");
+                    return RestResult.fail("Small program UserID can't be Null");
                 }
                 redisUtilsService.setKey(token, object);
                 redisUtilsService.setKey(key, token);

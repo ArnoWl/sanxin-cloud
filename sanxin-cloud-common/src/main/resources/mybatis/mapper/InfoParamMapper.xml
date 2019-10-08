@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanxin.cloud.mapper.InfoParamMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sanxin.cloud.entity.InfoParam">
+        <id column="id" property="id" />
+        <result column="kcode" property="kcode" />
+        <result column="kvalue" property="kvalue" />
+        <result column="remark" property="remark" />
+        <result column="type" property="type" />
+    </resultMap>
+
+</mapper>
