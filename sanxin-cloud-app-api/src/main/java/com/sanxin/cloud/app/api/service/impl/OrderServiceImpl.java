@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.sanxin.cloud.app.api.service.OrderService;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.language.LanguageUtils;
-import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.common.times.DateUtil;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.OrderBusDetailVo;
@@ -20,9 +19,7 @@ import com.sanxin.cloud.mapper.*;
 import com.sanxin.cloud.service.BBusinessService;
 import com.sanxin.cloud.service.CCustomerService;
 import com.sanxin.cloud.service.OrderMainService;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.apache.commons.lang3.StringUtils;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -95,8 +92,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public SPage<OrderBusVo> queryBusinessOrderList(SPage<OrderMain> page, OrderMain orderMain) {
         QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
-        wrapper.eq("bid", orderMain.getBid()).eq("order_status", orderMain.getOrderStatus())
-                .like(StringUtils.isNotBlank(orderMain.getKey()), "order_code", orderMain.getKey());
+        wrapper.eq("bid", orderMain.getBid()).like(StringUtils.isNotBlank(orderMain.getKey()), "order_code", orderMain.getKey());
+        if (orderMain.getOrderStatus() != null) {
+            wrapper.eq("order_status", orderMain.getOrderStatus());
+        }
+        wrapper.orderByDesc("create_time");
         orderMainMapper.selectPage(page, wrapper);
         List<OrderBusVo> list = new ArrayList<>();
         for (OrderMain o : page.getRecords()) {
@@ -121,7 +121,7 @@ public class OrderServiceImpl implements OrderService {
                 double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), o.getCreateTime()) / (60 * 60) + 1);
                 vo.setRealMoney(new BigDecimal(time));
             }
-            String useHour = DateUtil.dateDiff(o.getPayTime().getTime(), endTime.getTime());
+            String useHour = DateUtil.dateDiff(o.getRentTime().getTime(), endTime.getTime());
             vo.setUseHour(useHour);
             list.add(vo);
         }
@@ -162,12 +162,11 @@ public class OrderServiceImpl implements OrderService {
             double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), order.getCreateTime()) / (60 * 60) + 1);
             vo.setRealMoney(new BigDecimal(time));
         }
-        String useHour = DateUtil.dateDiff(order.getPayTime().getTime(), endTime.getTime());
+        String useHour = DateUtil.dateDiff(order.getRentTime().getTime(), endTime.getTime());
         vo.setUseHour(useHour);
         // 支付方式
         vo.setPayTypeName(PayTypeEnums.getName(order.getPayType()));
         vo.setMoney(order.getPayMoney());
-        vo.setRentTime(order.getPayTime());
         vo.setReturnTime(order.getPayTime());
         vo.setAddressDetail(business.getAddressDetail());
         return vo;
@@ -204,7 +203,7 @@ public class OrderServiceImpl implements OrderService {
                 double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), o.getCreateTime()) / (60 * 60) + 1);
                 vo.setRealMoney(new BigDecimal(time));
             }
-            String useHour = DateUtil.dateDiff(o.getPayTime().getTime(), endTime.getTime());
+            String useHour = DateUtil.dateDiff(o.getRentTime().getTime(), endTime.getTime());
             vo.setUseHour(useHour);
             // 租借时间
             vo.setRentTime(o.getCreateTime());
@@ -249,12 +248,11 @@ public class OrderServiceImpl implements OrderService {
             double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), order.getCreateTime()) / (60 * 60) + 1);
             vo.setRealMoney(new BigDecimal(time));
         }
-        String useHour = DateUtil.dateDiff(order.getPayTime().getTime(), endTime.getTime());
+        String useHour = DateUtil.dateDiff(order.getRentTime().getTime(), endTime.getTime());
         vo.setUseHour(useHour);
         // 支付方式
         vo.setPayTypeName(PayTypeEnums.getName(order.getPayType()));
         vo.setMoney(order.getPayMoney());
-        vo.setRentTime(order.getPayTime());
         vo.setReturnTime(order.getPayTime());
         vo.setAddressDetail(order.getReturnAddr());
         vo.setPayTime(order.getPayTime());

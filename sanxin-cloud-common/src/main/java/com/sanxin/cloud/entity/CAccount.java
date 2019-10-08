@@ -49,7 +49,7 @@ public class CAccount implements Serializable {
     /**
      * 0输入密码 1免输密码
      */
-    private Integer password;
+    private Integer freeSecret;
 
     @TableField(exist = false)
     private Integer card;
@@ -102,12 +102,12 @@ public class CAccount implements Serializable {
         this.version = version;
     }
 
-    public Integer getPassword() {
-        return password;
+    public Integer getFreeSecret() {
+        return freeSecret;
     }
 
-    public void setPassword(Integer password) {
-        this.password = password;
+    public void setFreeSecret(Integer freeSecret) {
+        this.freeSecret = freeSecret;
     }
 
     public Integer getCard() {
@@ -127,7 +127,7 @@ public class CAccount implements Serializable {
                 ", hour=" + hour +
                 ", deposit=" + deposit +
                 ", version=" + version +
-                ", password=" + password +
+                ", freeSecret=" + freeSecret +
                 ", card=" + card +
                 '}';
     }

@@ -16,4 +16,21 @@
     <select id="sumDepositMoney" resultType="java.math.BigDecimal">
         SELECT IFNULL(sum(deposit), 0) from c_account
     </select>
+
+    <!-- 乐观锁修改金额 -->
+    <update id="updateLockVersion" parameterType="com.sanxin.cloud.entity.CAccount">
+        update c_account set
+        <if test="money != null">
+            money = #{money,jdbcType=DECIMAL},
+        </if>
+        <if test="hour != null">
+            hour = #{hour,jdbcType=DECIMAL},
+        </if>
+        <if test="deposit != null">
+            deposit = #{deposit, jdbcType=DECIMAL},
+        </if>
+        version = version+1
+        where cid = #{cid,jdbcType=INTEGER}
+        and version=#{version,jdbcType=INTEGER}
+    </update>
 </mapper>

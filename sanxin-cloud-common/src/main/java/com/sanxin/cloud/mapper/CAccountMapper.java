@@ -20,4 +20,11 @@ public interface CAccountMapper extends BaseMapper<CAccount> {
      * @return
      */
     BigDecimal sumDepositMoney();
+
+    /**
+     * 修改账户
+     * @param account
+     * @return
+     */
+    int updateLockVersion(CAccount account);
 }

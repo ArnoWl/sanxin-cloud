@@ -11,12 +11,13 @@ import java.util.List;
  * @date 2019-09-04
  */
 public enum PayTypeEnums {
-	PROMPT_PAY(1,"Prompt Pay"),
-	VISA_CARD(2,"VISA Card"),
-	MASTER_CARD(3, "Master Card"),
-	GOOGLE_PAY(4, "Google Pay"),
-	APPLE_PAY(5, "Apple Pay"),
-	ALI_PAY(6, "Alipay Pay");
+	MONEY(1, "Balance"),
+	PROMPT_PAY(2,"Prompt Pay"),
+	VISA_CARD(3,"VISA Card"),
+	MASTER_CARD(4, "Master Card"),
+	GOOGLE_PAY(5, "Google Pay"),
+	APPLE_PAY(6, "Apple Pay"),
+	ALI_PAY(7, "Alipay Pay");
 
 	private Integer id;
 

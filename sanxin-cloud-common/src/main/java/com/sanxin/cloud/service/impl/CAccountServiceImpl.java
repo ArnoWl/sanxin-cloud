@@ -2,6 +2,7 @@ package com.sanxin.cloud.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.CMarginVO;
@@ -10,12 +11,10 @@ import com.sanxin.cloud.dto.UserTimeVO;
 import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.mapper.*;
 import com.sanxin.cloud.service.CAccountService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * <p>
@@ -29,8 +28,6 @@ import java.util.List;
 public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> implements CAccountService {
     @Autowired
     private CMarginDetailMapper marginDetailMapper;
-    @Autowired
-    private CAccountMapper accountMapper;
     @Autowired
     private BankDetailMapper bankDetailMapper;
     @Autowired
@@ -56,7 +53,7 @@ public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> i
     public RestResult queryMyDeposit(SPage<CMarginDetail> page, Integer cid) {
         CMarginVO marginVO=new CMarginVO();
         Page<CMarginDetail> list = marginDetailMapper.queryMyDepositList(page, cid);
-        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
+        CAccount account = baseMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
         marginVO.setList(list);
         marginVO.setMargin(account.getDeposit());
         return RestResult.success(marginVO);
@@ -69,7 +66,7 @@ public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> i
      */
     @Override
     public RestResult queryMyPurse(Integer cid) {
-        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
+        CAccount account = baseMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
         Integer count = bankDetailMapper.selectCount(new QueryWrapper<BankDetail>().eq("target_id", cid));
         account.setCard(count);
         return RestResult.success(account);
@@ -84,7 +81,7 @@ public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> i
     public RestResult queryBalanceDetail(SPage<CMoneyDetail> page, Integer cid) {
         MoneyDetailVO moneyDetailVO=new MoneyDetailVO();
         Page<CMoneyDetail> list = moneyDetailMapper.queryBalanceDetail(page,cid);
-        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
+        CAccount account = baseMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
         moneyDetailVO.setList(list);
         moneyDetailVO.setBalance(account.getMoney());
         return RestResult.success(moneyDetailVO);
@@ -97,7 +94,7 @@ public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> i
      */
     @Override
     public RestResult getBalance(Integer cid) {
-        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
+        CAccount account = baseMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
         return RestResult.success(account.getMoney());
     }
 
@@ -116,7 +113,7 @@ public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> i
     public RestResult queryTimeDetail(SPage<CTimeDetail> page, Integer cid) {
         UserTimeVO userTimeVO=new UserTimeVO();
         SPage<CTimeDetail> list = timeDetailMapper.queryTimeDetail(page, cid);
-        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
+        CAccount account = baseMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
         userTimeVO.setList(list);
         userTimeVO.setTime(account.getHour());
         return RestResult.success(userTimeVO);
@@ -129,7 +126,7 @@ public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> i
      */
     @Override
     public RestResult getTime(Integer cid) {
-        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
+        CAccount account = baseMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
         return RestResult.success(account.getHour());
     }
 

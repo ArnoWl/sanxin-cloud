@@ -4,19 +4,20 @@ import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.StaticUtils;
 
 import java.io.Serializable;
 
 /**
  * <p>
- * 用户商余额明细
+ * 时长明细表
  * </p>
  *
  * @author Arno
- * @since 2019-09-20
+ * @since 2019-10-08
  */
-public class CMoneyDetail implements Serializable {
+public class CHourDetail implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,22 +47,21 @@ public class CMoneyDetail implements Serializable {
     /**
      * 上一次金额
      */
-    private BigDecimal original;
+    private Integer original;
 
     /**
      * 本次操作金额
      */
-    private BigDecimal cost;
+    private Integer cost;
 
     /**
      * 最后结余
      */
-    private BigDecimal last;
+    private Integer last;
 
     /**
      * 创建时间
      */
-    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
     private Date createTime;
 
     /**
@@ -69,7 +69,7 @@ public class CMoneyDetail implements Serializable {
      */
     private String remark;
 
-    public CMoneyDetail(Integer cid, Integer type, Integer isout, String payCode, BigDecimal cost, String remark) {
+    public CHourDetail(Integer cid, Integer type, Integer isout, String payCode, Integer cost, String remark) {
         this.cid = cid;
         this.type = type;
         this.isout = isout;
@@ -113,25 +113,25 @@ public class CMoneyDetail implements Serializable {
     public void setIsout(Integer isout) {
         this.isout = isout;
     }
-    public BigDecimal getOriginal() {
+    public Integer getOriginal() {
         return original;
     }
 
-    public void setOriginal(BigDecimal original) {
+    public void setOriginal(Integer original) {
         this.original = original;
     }
-    public BigDecimal getCost() {
+    public Integer getCost() {
         return cost;
     }
 
-    public void setCost(BigDecimal cost) {
+    public void setCost(Integer cost) {
         this.cost = cost;
     }
-    public BigDecimal getLast() {
+    public Integer getLast() {
         return last;
     }
 
-    public void setLast(BigDecimal last) {
+    public void setLast(Integer last) {
         this.last = last;
     }
     public Date getCreateTime() {
@@ -151,7 +151,7 @@ public class CMoneyDetail implements Serializable {
 
     @Override
     public String toString() {
-        return "CMoneyDetail{" +
+        return "CHourDetail{" +
         "id=" + id +
         ", cid=" + cid +
         ", payCode=" + payCode +

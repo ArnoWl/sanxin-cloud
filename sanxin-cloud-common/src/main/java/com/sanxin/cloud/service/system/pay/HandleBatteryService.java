@@ -7,13 +7,18 @@ import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.common.times.DateUtil;
 import com.sanxin.cloud.entity.*;
+import com.sanxin.cloud.enums.HandleTypeEnums;
 import com.sanxin.cloud.enums.OrderStatusEnums;
+import com.sanxin.cloud.enums.PayTypeEnums;
 import com.sanxin.cloud.enums.TerminalStatusEnums;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.service.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +39,12 @@ public class HandleBatteryService {
     private BBusinessService businessService;
     @Autowired
     private OrderMainService orderMainService;
+    @Autowired
+    private InfoParamService infoParamService;
+    @Autowired
+    private CAccountService cAccountService;
+    @Autowired
+    private HandleAccountChangeService handleAccountChangeService;
 
     /**
      * 借充电宝逻辑处理
@@ -104,8 +115,6 @@ public class HandleBatteryService {
         orderMain.setPayCode(payCode);
         orderMain.setTerminalId(terminalId);
         orderMain.setCreateTime(DateUtil.currentDate());
-        // TODO 确认去支付时间
-        // orderMain.setConfirmTime();
         orderMain.setRentTime(DateUtil.currentDate());
         orderMain.setFromChannel(fromChannel);
         orderMain.setRentAddr(business.getAddressDetail());
@@ -124,22 +133,15 @@ public class HandleBatteryService {
      * @return
      */
     public RestResult handleReturnBattery(String boxId, String slot, String terminalId) {
-        String code = "";
-        try {
-            code = handleReturnTerminal(boxId, slot, terminalId);
-        } catch (Exception e) {
-            code = "00";
-            throw new ThrowJsonException(e.getMessage());
+        RestResult result = handleReturnTerminal(boxId, slot, terminalId);
+        if (!result.status) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
-        // 处理不成功
-        if (!"01".equals(code)) {
-            throw new ThrowJsonException(code);
-        }
-        return RestResult.success("success", code);
+        return result;
     }
 
     /**
-     * 更新机柜信息
+     * 借出——更新机柜信息
      * @param device
      * @return
      */
@@ -147,6 +149,19 @@ public class HandleBatteryService {
         // 可归还口和可借出口数量操作
         device.setLendPort(device.getLendPort()-1);
         device.setRepayPort(device.getRepayPort()+1);
+        boolean result = bDeviceService.updateById(device);
+        return result;
+    }
+
+    /**
+     * 归还——更新机柜信息
+     * @param device
+     * @return
+     */
+    private boolean handleReturnDeviceMsg(BDevice device) {
+        // 可归还口和可借出口数量操作
+        device.setLendPort(device.getLendPort()+1);
+        device.setRepayPort(device.getRepayPort()-1);
         boolean result = bDeviceService.updateById(device);
         return result;
     }
@@ -175,24 +190,24 @@ public class HandleBatteryService {
      * @return
      * @return
      */
-    private String handleReturnTerminal(String boxId, String slot, String terminalId) {
+    private RestResult handleReturnTerminal(String boxId, String slot, String terminalId) {
         BDeviceTerminal terminal = bDeviceTerminalService.getTerminalById(terminalId);
         // 非法充电宝 ID
         if (terminal == null) {
-            return "04";
+            return RestResult.fail("fail", "04");
         }
         // 充电宝状态异常(当数据库充电宝不是借出状态)
         if (!FunctionUtils.isEquals(terminal.getStatus(), TerminalStatusEnums.LENT.getStatus())) {
             // 如果充电宝当前状态是充电中-重复归还
             if (FunctionUtils.isEquals(terminal.getStatus(), TerminalStatusEnums.CHARGING.getStatus())) {
-                return "03";
+                return RestResult.fail("fail", "03");
             }
-            return "02";
+            return RestResult.fail("fail", "02");
         }
 
         BDevice device = bDeviceService.getByCode(boxId);
         if (device == null) {
-            return "00";
+            return RestResult.fail("fail", "00");
         }
 
         // 判断当前槽位是否已有其它充电宝了——需要去机柜查数据（如果有其它充电宝-返回05）
@@ -204,7 +219,7 @@ public class HandleBatteryService {
         System.out.println("归还充电宝 操作-槽位结果集"+ terminalList);
         System.out.println("归还充电宝 操作-槽位结果集"+ terminalList.toString());
         if (terminalList != null && terminalList.size()>=1) {
-            return "05";
+            return RestResult.fail("fail", "05");
         }
         // 无误，操作充电宝数据
         terminal.setSlot(slot);
@@ -216,7 +231,13 @@ public class HandleBatteryService {
         System.out.println("归还充电宝——操作充电宝数据——结果"+result);
         if (!result) {
             // 数据操作失败
-            return "00";
+            return RestResult.fail("fail", "00");
+        }
+        // 归还-更新机柜信息
+        result = handleReturnDeviceMsg(device);
+        if (!result) {
+            // 数据操作失败
+            return RestResult.fail("fail", "00");
         }
         BBusiness business = businessService.validById(device.getBid());
         // 操作订单数据
@@ -224,20 +245,84 @@ public class HandleBatteryService {
         wrapperOrder.eq("terminal_id", terminalId).eq("order_status", OrderStatusEnums.USING.getId());
         List<OrderMain> list = orderMainService.list(wrapperOrder);
         if (list == null || list.size()!=1) {
-            throw new ThrowJsonException("数据异常");
+            return RestResult.fail("fail", "00");
         }
         OrderMain orderMain = list.get(0);
-        // TODO 时长-金额等处理
-
-        orderMain.setOrderStatus(OrderStatusEnums.CONFIRMED.getId());
+        // 计算一共使用了多少个小时
         orderMain.setReturnTime(DateUtil.currentDate());
+        // 操作时长-余额
+        int hour = DateUtil.dateDiffHour(orderMain.getRentTime(), orderMain.getReturnTime());
+        // 查询是否有时长
+        CAccount account = cAccountService.getByCid(orderMain.getCid());
+        if (account == null) {
+            return RestResult.fail("fail", "00");
+        }
+
+        Integer orderStatus = OrderStatusEnums.CONFIRMED.getId();
+        String valueStr = infoParamService.getValueByCode("useHourMoney");
+        // 一小时多少钱
+        BigDecimal value = FunctionUtils.getValueByClass(BigDecimal.class, valueStr);
+        // 租金总额
+        BigDecimal rentMoney = FunctionUtils.div(value, new BigDecimal(hour), 2);
+        // 实际扣除时长
+        Integer realHour = hour;
+        // 实际扣除余额
+        BigDecimal payMoney = BigDecimal.ZERO;
+        // 有时长，先扣时长
+        if (account.getHour() > 0) {
+            // 计算能扣多少时长-如果有这么多时长直接扣，时长不足就有多少扣多少
+            if (account.getHour()<hour) {
+                // 时长不足
+                realHour = account.getHour();
+                // 计算应该扣多少余额
+                payMoney = new BigDecimal(hour - realHour);
+                payMoney = FunctionUtils.div(value, payMoney, 2);
+            } else {
+                orderMain.setPayType(PayTypeEnums.MONEY.getId());
+                orderMain.setOverTime(DateUtil.currentDate());
+                orderStatus = OrderStatusEnums.OVER.getId();
+            }
+        }
+
+        String msg = "";
+        // 统一扣除时长
+        if (realHour > 0) {
+            msg = handleAccountChangeService.insertCHourDetail(new CHourDetail(orderMain.getCid(), HandleTypeEnums.ORDER.getId(),
+                    StaticUtils.PAY_OUT, orderMain.getPayCode(), realHour, HandleTypeEnums.getName(HandleTypeEnums.ORDER.getId())));
+        }
+        if (StringUtils.isNotEmpty(msg)) {
+            return RestResult.fail("fail", "00");
+        }
+
+        // 判断是否需要余额支付和是否开启免密支付
+        if (payMoney.compareTo(BigDecimal.ZERO) > 0
+                && FunctionUtils.isEquals(StaticUtils.STATUS_SUCCESS, account.getFreeSecret())) {
+            msg = handleAccountChangeService.insertCMoneyDetail(new CMoneyDetail(orderMain.getCid(), HandleTypeEnums.ORDER.getId(),
+                    StaticUtils.PAY_OUT, orderMain.getPayCode(), payMoney, HandleTypeEnums.getName(HandleTypeEnums.ORDER.getId())));
+            if (StringUtils.isEmpty(msg)) {
+                orderMain.setPayType(PayTypeEnums.MONEY.getId());
+                orderMain.setOverTime(DateUtil.currentDate());
+                orderStatus = OrderStatusEnums.OVER.getId();
+            } else {
+                // 余额不足或其它情况
+                return RestResult.success("success", "01", 1);
+            }
+        }
+        // 操作赋值
+        BigDecimal realMoney = payMoney;
+        orderMain.setRentMoney(rentMoney);
+        orderMain.setRealMoney(realMoney);
+        orderMain.setPayMoney(payMoney);
+        orderMain.setHour(realHour);
+        orderMain.setOrderStatus(orderStatus);
         orderMain.setReturnAddr(business.getAddressDetail());
         result = orderMainService.updateById(orderMain);
         if (!result) {
             // 数据操作失败
-            return "00";
+            return RestResult.fail("fail", "00");
         }
         // 成功
-        return "01";
+        return RestResult.success("success", "01");
     }
+
 }

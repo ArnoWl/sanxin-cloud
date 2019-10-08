@@ -394,6 +394,8 @@ public class DateUtil {
 	 * @return
 	 */
 	public static int dateDiffHour(Date startDate, Date endDate) {
+		startDate = toDate(getDateParser("yyyy-MM-dd HH:mm").format(startDate), "yyyy-MM-dd HH:mm");
+		endDate = toDate(getDateParser("yyyy-MM-dd HH:mm").format(endDate), "yyyy-MM-dd HH:mm");
 		long nh = 1000 * 60 * 60;
 		// 获得两个时间的毫秒时间差异
 		long diff = endDate.getTime()-startDate.getTime() ;
@@ -868,8 +870,8 @@ public class DateUtil {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Date startDate = toDate("2019-10-08 11:03", "yyyy-MM-dd HH:mm");
-		Date endDate = toDate("2019-10-09 12:03", "yyyy-MM-dd HH:mm");
+		Date startDate = toDate("2019-10-08 11:03:07", "yyyy-MM-dd HH:mm:ss");
+		Date endDate = toDate("2019-10-08 12:03:08", "yyyy-MM-dd HH:mm:ss");
 		System.out.println(dateDiffHour(startDate, endDate));
 	}
 }
