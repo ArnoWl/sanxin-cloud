@@ -253,6 +253,8 @@ public class OrderServiceImpl implements OrderService {
         vo.setRentTime(order.getPayTime());
         vo.setReturnTime(order.getPayTime());
         vo.setAddressDetail(order.getReturnAddr());
+        vo.setPayTime(order.getPayTime());
+        vo.setHour(order.getHour());
         return vo;
     }
 }
