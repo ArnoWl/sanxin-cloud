@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -39,10 +40,10 @@ public class MessageController {
      * @param backUrl 反馈图片 1~3张
   * @return
      */
-    @PostMapping(value = "/addFeedbackMessage")
-    public RestResult addFeedbackMessage(String content, List<String> backUrl) {
+    @RequestMapping("/addFeedbackMessage")
+    public RestResult addFeedbackMessage(String content,@RequestParam(value = "backUrl") List<String> backUrl) {
         String token = BaseUtil.getUserToken();
-        Integer cid = loginTokenService.validLoginBid(token);
+        Integer cid = loginTokenService.validLoginCid(token);
         if (StringUtils.isBlank(content)) {
             return RestResult.fail(LanguageUtils.getMessage("content_empty"));
         }
@@ -58,9 +59,9 @@ public class MessageController {
         feedbackLog.setBackUrl(JSONArray.toJSONString(backUrl));
         boolean result = cFeedbackLogService.save(feedbackLog);
         if (result) {
-            return RestResult.success(LanguageUtils.getMessage("fail"));
+            return RestResult.success(LanguageUtils.getMessage("success"));
         }
-        return RestResult.success(LanguageUtils.getMessage("success"));
+        return RestResult.fail(LanguageUtils.getMessage("fail"));
     }
 
     /**
