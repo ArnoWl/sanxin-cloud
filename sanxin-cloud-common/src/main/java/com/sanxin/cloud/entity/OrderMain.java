@@ -64,7 +64,7 @@ public class OrderMain implements Serializable {
     /**
      * 扣除时长
      */
-    private BigDecimal hour;
+    private Integer hour;
 
     /**
      * 支付金额
@@ -216,11 +216,11 @@ public class OrderMain implements Serializable {
     public void setRentMoney(BigDecimal rentMoney) {
         this.rentMoney = rentMoney;
     }
-    public BigDecimal getHour() {
+    public Integer getHour() {
         return hour;
     }
 
-    public void setHour(BigDecimal hour) {
+    public void setHour(Integer hour) {
         this.hour = hour;
     }
     public BigDecimal getPayMoney() {

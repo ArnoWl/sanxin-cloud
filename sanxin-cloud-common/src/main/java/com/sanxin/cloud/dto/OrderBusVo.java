@@ -1,6 +1,7 @@
 package com.sanxin.cloud.dto;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -40,7 +41,7 @@ public class OrderBusVo {
     /**
      * 预计租金
      */
-    private BigDecimal estimatedRentMoney;
+    private BigDecimal realMoney;
 
     /**
      * 是否购买充电宝 1购买了 0未购买(正常借还)
@@ -58,6 +59,7 @@ public class OrderBusVo {
     /**
      * 租借时间
      */
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
     private Date rentTime;
     /**
      * 租借地点

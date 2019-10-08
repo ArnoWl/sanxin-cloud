@@ -8,14 +8,14 @@ import java.math.BigDecimal;
 
 @Data
 public class UserTimeVO {
-    private BigDecimal time;
+    private Integer time;
     private Page<CTimeDetail> list;
 
-    public BigDecimal getTime() {
+    public Integer getTime() {
         return time;
     }
 
-    public void setTime(BigDecimal time) {
+    public void setTime(Integer time) {
         this.time = time;
     }
 

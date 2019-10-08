@@ -298,6 +298,25 @@ public class FunctionUtils {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static  <T> T getValueByClass(Class<T> clazz, String value) {
+		Object obj = null;
+		try {
+			if (clazz == BigDecimal.class) {
+				obj = new BigDecimal(value);
+			} else if (clazz == Integer.class || clazz == int.class) {
+				obj = Integer.parseInt(value);
+			} else if (clazz == String.class) {
+				obj = String.valueOf(value);
+			} else {
+				return null;
+			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+		return (T) obj;
+	}
+
 	public static void main(String[] args) {
 		System.out.println(validLoginPwd("123456789101111111111a"));
 	}

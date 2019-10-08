@@ -39,6 +39,14 @@ public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> i
     private CTimeDetailMapper timeDetailMapper;
 
 
+    @Override
+    public CAccount getByCid(Integer cid) {
+        QueryWrapper<CAccount> wrapper = new QueryWrapper<>();
+        wrapper.eq("cid", cid);
+        CAccount cAccount = super.getOne(wrapper);
+        return cAccount;
+    }
+
     /**
      * 我的押金
      * @param cid

@@ -1,5 +1,6 @@
 package com.sanxin.cloud.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -26,7 +27,7 @@ public class OrderBusDetailVo extends OrderBusVo{
     /**
      * 租借时长
      */
-    private BigDecimal hour;
+    private Integer hour;
 
     /**
      * 扣除余额
@@ -36,6 +37,7 @@ public class OrderBusDetailVo extends OrderBusVo{
     /**
      * 归还时间
      */
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
     private Date returnTime;
 
     /**
@@ -49,13 +51,9 @@ public class OrderBusDetailVo extends OrderBusVo{
     private String payTypeName;
 
     /**
-     * 实际支付
-     */
-    private BigDecimal realMoney;
-
-    /**
      * 支付时间
      */
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
     private Date payTime;
 
     /**

@@ -39,7 +39,7 @@ public class OrderUserVo {
     /**
      * 预计租金
      */
-    private BigDecimal estimatedRentMoney;
+    private BigDecimal realMoney;
 
     /**
      * 是否购买充电宝 1购买了 0未购买(正常借还)

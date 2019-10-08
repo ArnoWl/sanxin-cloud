@@ -21,6 +21,13 @@ import java.math.BigDecimal;
 public interface CAccountService extends IService<CAccount> {
 
     /**
+     * 通过cid查询用户账户信息
+     * @param cid
+     * @return
+     */
+    CAccount getByCid(Integer cid);
+
+    /**
      * 我的押金明细
      * @param cid
      * @return

@@ -34,7 +34,7 @@ public class CAccount implements Serializable {
     /**
      * 时长
      */
-    private BigDecimal hour;
+    private Integer hour;
 
     /**
      * 押金
@@ -78,11 +78,11 @@ public class CAccount implements Serializable {
         this.money = money;
     }
 
-    public BigDecimal getHour() {
+    public Integer getHour() {
         return hour;
     }
 
-    public void setHour(BigDecimal hour) {
+    public void setHour(Integer hour) {
         this.hour = hour;
     }
 

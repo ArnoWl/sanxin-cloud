@@ -386,6 +386,26 @@ public class DateUtil {
 	    }
 	 	return msg;
 	}
+
+	/**
+	 * 获取两个时间相差多少个小时
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public static int dateDiffHour(Date startDate, Date endDate) {
+		long nh = 1000 * 60 * 60;
+		// 获得两个时间的毫秒时间差异
+		long diff = endDate.getTime()-startDate.getTime() ;
+		// 计算差多少小时
+		Long hour = diff / nh;
+		long remainder = diff % nh;
+		if (remainder > 0) {
+			hour += 1;
+		}
+		return hour.intValue();
+	}
+
 	/**
 	 * 根据时间段获取日期
 	 * @param s1
@@ -847,7 +867,9 @@ public class DateUtil {
 		return time;
 	}
 
-	public static void main(String[] args) {
-		System.out.println(toDateString("2018-09-08", "MM.dd"));
+	public static void main(String[] args) throws Exception {
+		Date startDate = toDate("2019-10-08 11:03", "yyyy-MM-dd HH:mm");
+		Date endDate = toDate("2019-10-09 12:03", "yyyy-MM-dd HH:mm");
+		System.out.println(dateDiffHour(startDate, endDate));
 	}
 }

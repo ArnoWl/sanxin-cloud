@@ -116,12 +116,13 @@ public class OrderServiceImpl implements OrderService {
                 // 如果订单正在使用中，计算使用时长应该用当前时间和借出时间算
                 // 其它状态用归还时间算
                 endTime = o.getReturnTime();
+            } else {
+                //预计租金
+                double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), o.getCreateTime()) / (60 * 60) + 1);
+                vo.setRealMoney(new BigDecimal(time));
             }
             String useHour = DateUtil.dateDiff(o.getPayTime().getTime(), endTime.getTime());
             vo.setUseHour(useHour);
-            //预计租金
-            double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), o.getCreateTime()) / (60 * 60) + 1);
-            vo.setEstimatedRentMoney(new BigDecimal(time));
             list.add(vo);
         }
         SPage<OrderBusVo> pageInfo = new SPage<>();
@@ -156,12 +157,13 @@ public class OrderServiceImpl implements OrderService {
             // 如果订单正在使用中，计算使用时长应该用当前时间和借出时间算
             // 其它状态用归还时间算
             endTime = order.getReturnTime();
+        } else {
+            //预计租金
+            double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), order.getCreateTime()) / (60 * 60) + 1);
+            vo.setRealMoney(new BigDecimal(time));
         }
         String useHour = DateUtil.dateDiff(order.getPayTime().getTime(), endTime.getTime());
         vo.setUseHour(useHour);
-        //预计租金
-        double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), order.getCreateTime()) / (60 * 60) + 1);
-        vo.setEstimatedRentMoney(new BigDecimal(time));
         // 支付方式
         vo.setPayTypeName(PayTypeEnums.getName(order.getPayType()));
         vo.setMoney(order.getPayMoney());
@@ -197,14 +199,15 @@ public class OrderServiceImpl implements OrderService {
                 // 如果订单正在使用中，计算使用时长应该用当前时间和借出时间算
                 // 其它状态用归还时间算
                 endTime = o.getReturnTime();
+            } else {
+                //预计租金
+                double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), o.getCreateTime()) / (60 * 60) + 1);
+                vo.setRealMoney(new BigDecimal(time));
             }
             String useHour = DateUtil.dateDiff(o.getPayTime().getTime(), endTime.getTime());
             vo.setUseHour(useHour);
             // 租借时间
             vo.setRentTime(o.getCreateTime());
-            //预计租金
-            double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), o.getCreateTime()) / (60 * 60) + 1);
-            vo.setEstimatedRentMoney(new BigDecimal(time));
             list.add(vo);
         }
         SPage<OrderUserVo> pageInfo = new SPage<>();
@@ -241,12 +244,13 @@ public class OrderServiceImpl implements OrderService {
             // 如果订单正在使用中，计算使用时长应该用当前时间和借出时间算
             // 其它状态用归还时间算
             endTime = order.getReturnTime();
+        } else {
+            //预计租金
+            double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), order.getCreateTime()) / (60 * 60) + 1);
+            vo.setRealMoney(new BigDecimal(time));
         }
         String useHour = DateUtil.dateDiff(order.getPayTime().getTime(), endTime.getTime());
         vo.setUseHour(useHour);
-        //预计租金
-        double time = Math.ceil(DateUtil.getInstance().calLastedTime(new Date(), order.getCreateTime()) / (60 * 60) + 1);
-        vo.setEstimatedRentMoney(new BigDecimal(time));
         // 支付方式
         vo.setPayTypeName(PayTypeEnums.getName(order.getPayType()));
         vo.setMoney(order.getPayMoney());
