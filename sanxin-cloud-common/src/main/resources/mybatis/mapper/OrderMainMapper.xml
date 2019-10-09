@@ -27,4 +27,52 @@
         <result column="over_time" property="overTime" />
     </resultMap>
 
+
+    <select id="queryOrderList"  resultType="com.sanxin.cloud.entity.OrderMain">
+        select a.*, b.phone as phone, b.nick_name as cNickName, c.nick_name as bNickName
+        from order_main a
+        LEFT JOIN c_customer b on a.cid = b.id
+        LEFT JOIN b_business c on a.bid = c.id
+        <where>
+            <if test="order.cid != null">
+                a.cid = #{order.cid, jdbcType=INTEGER }
+            </if>
+            <if test="order.bid != null">
+                and a.bid = #{order.bid, jdbcType=INTEGER }
+            </if>
+            <if test="order.orderCode != null and order.orderCode != ''">
+                and a.order_code = #{order.orderCode, jdbcType=VARCHAR }
+            </if>
+            <if test="order.phone != null and order.phone !=''">
+                and b.phone like concat('%',#{order.phone, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="order.cNickName != null and order.cNickName !=''">
+                and b.nick_name like concat('%',#{order.cNickName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="order.bNickName != null and order.bNickName !=''">
+                and c.nick_name like concat('%',#{order.bNickName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="order.terminalId != null and order.terminalId !=''">
+                and a.terminal_id like concat('%',#{order.terminalId, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="order.del != null">
+                and a.del = #{order.del, jdbcType=INTEGER }
+            </if>
+            <if test="order.payCode != null and order.payCode != ''">
+                and a.pay_code = #{order.payCode, jdbcType=VARCHAR }
+            </if>
+            <if test="order.payType != null">
+                and a.pay_type = #{order.payType, jdbcType=INTEGER }
+            </if>
+            <if test="order.orderStatus != null">
+                and a.order_status = #{order.orderStatus, jdbcType=INTEGER }
+            </if>
+            <if test="order.fromChannel != null">
+                and a.from_channel = #{order.fromChannel, jdbcType=INTEGER }
+            </if>
+        </where>
+        group by a.id,a.order_code
+        order by a.create_time desc
+    </select>
+
 </mapper>

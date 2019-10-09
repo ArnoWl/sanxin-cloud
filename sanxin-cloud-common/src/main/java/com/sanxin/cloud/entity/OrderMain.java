@@ -96,6 +96,14 @@ public class OrderMain implements Serializable {
     private Integer payType;
 
     /**
+     * 支付类型名称
+     */
+    @TableField(exist = false)
+    private String payTypeName;
+
+    /**
+
+    /**
      * 下单时间
      */
     private Date createTime;
@@ -128,6 +136,13 @@ public class OrderMain implements Serializable {
      * 订单来源渠道 见枚举LoginChannelEnums
      */
     private Integer fromChannel;
+
+    /**
+     * 订单来源渠道名称
+     */
+    @TableField(exist = false)
+    private String orderFromChannel;
+
     /**
      * 购买充电宝价格
      */
@@ -159,6 +174,63 @@ public class OrderMain implements Serializable {
      */
     @TableField(exist = false)
     private String key;
+
+    /**
+     * 会员账号
+     */
+    @TableField(exist = false)
+    private String phone;
+
+    /**
+     * 会员昵称
+     */
+    @TableField(exist = false)
+    private String cNickName;
+    /**
+     * 店铺名称
+     */
+    @TableField(exist = false)
+    private String bNickName;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPayTypeName() {
+        return payTypeName;
+    }
+
+    public void setPayTypeName(String payTypeName) {
+        this.payTypeName = payTypeName;
+    }
+
+    public String getOrderFromChannel() {
+        return orderFromChannel;
+    }
+
+    public void setOrderFromChannel(String orderFromChannel) {
+        this.orderFromChannel = orderFromChannel;
+    }
+
+    public String getcNickName() {
+        return cNickName;
+    }
+
+    public void setcNickName(String cNickName) {
+        this.cNickName = cNickName;
+    }
+
+    public String getbNickName() {
+        return bNickName;
+    }
+
+    public void setbNickName(String bNickName) {
+        this.bNickName = bNickName;
+    }
 
     public Integer getId() {
         return id;

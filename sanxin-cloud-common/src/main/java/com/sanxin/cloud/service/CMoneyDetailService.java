@@ -1,5 +1,6 @@
 package com.sanxin.cloud.service;
 
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.CMoneyDetail;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CMoneyDetailService extends IService<CMoneyDetail> {
 
+    /**
+     * 用户金额明细列表
+     * @param page
+     * @param cMoneyDetail
+     */
+    void queryCustomerAmountDetails(SPage<CMoneyDetail> page, CMoneyDetail cMoneyDetail);
 }

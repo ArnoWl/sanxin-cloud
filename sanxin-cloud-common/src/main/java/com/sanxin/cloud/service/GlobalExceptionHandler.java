@@ -106,7 +106,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value =  Exception.class)
     @ResponseBody
     public RestResult errorResponse(HttpServletRequest req,Exception e) {
-		return RestResult.fail("请求错误");
+		return RestResult.fail("");
     }
 
 }
