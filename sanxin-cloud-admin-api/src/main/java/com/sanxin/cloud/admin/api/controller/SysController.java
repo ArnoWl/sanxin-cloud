@@ -2,6 +2,8 @@ package com.sanxin.cloud.admin.api.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.netflix.discovery.converters.Auto;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.FunctionUtils;
@@ -10,6 +12,7 @@ import com.sanxin.cloud.common.language.AdminLanguageStatic;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.pwd.DESEncode;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.LanguageVo;
 import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.enums.LanguageEnums;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -46,6 +50,79 @@ public class SysController {
     private BDeviceService bDeviceService;
     @Autowired
     private BDeviceTerminalService bDeviceTerminalService;
+    @Autowired
+    private CFeedbackLogService cFeedbackLogService;
+    @Autowired
+    private BBusinessService bBusinessService;
+    @Autowired
+    private CCustomerService cCustomerService;
+
+
+    /**
+     * 查询故障描述列表
+     * @param page 分页数据
+     * @param cFeedbackLog 查询数据
+     * @return 分页数据
+     */
+    @GetMapping(value = "/feedbackList")
+    public RestResult queryFeedbackList(SPage<CFeedbackLog> page, CFeedbackLog cFeedbackLog) {
+        QueryWrapper<CFeedbackLog> wrapper = new QueryWrapper<>();
+        if (cFeedbackLog.getStatus() != null) {
+            wrapper.eq("status", cFeedbackLog.getStatus());
+        }
+        cFeedbackLogService.page(page, wrapper);
+        for (CFeedbackLog c:page.getRecords()) {
+            if(c.getBid() != null){
+                BBusiness bBusiness = bBusinessService.getById(c.getBid());
+                c.setBussinessName(bBusiness.getNickName());
+            }
+            if(c.getCid() != null){
+                CCustomer customer = cCustomerService.getById(c.getCid());
+                c.setRealName(customer.getNickName());
+            }
+        }
+        return  RestResult.success("", page);
+    }
+
+    /**
+     * 查询广告故障详情
+     * @param id
+     * @return com.sanxin.cloud.common.rest.RestResult
+     */
+    @GetMapping(value = "/getFeedbackDetail")
+    public RestResult getFeedbackDetail(Integer id) {
+        CFeedbackLog cFeedbackLog = cFeedbackLogService.getById(id);
+        if(cFeedbackLog.getBid() != null){
+            BBusiness bBusiness = bBusinessService.getById(cFeedbackLog.getBid());
+            cFeedbackLog.setBussinessName(bBusiness.getNickName());
+        }
+        if(cFeedbackLog.getCid() != null){
+            CCustomer customer = cCustomerService.getById(cFeedbackLog.getCid());
+            cFeedbackLog.setRealName(customer.getNickName());
+        }
+        return RestResult.success("", cFeedbackLog);
+    }
+
+    /**
+     * 操作故障反馈状态
+     * @param id
+     * @param status 状态
+     * @return
+     */
+    @PostMapping(value = "/handleFeedbackStatus")
+    public RestResult handleAdvertContentStatus(Integer id, Integer status) {
+        CFeedbackLog cFeedbackLog = cFeedbackLogService.getById(id);
+        if (status != null && FunctionUtils.isEquals(cFeedbackLog.getStatus(), status)) {
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_REPEAT_SUBMIT));
+        }
+        cFeedbackLog.setStatus(status);
+        boolean result = cFeedbackLogService.updateById(cFeedbackLog);
+        if (!result) {
+            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+        }
+        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+    }
+
 
     /**
      * 查询系统协议列表
@@ -188,6 +265,12 @@ public class SysController {
         return RestResult.success("", list);
     }
 
+
+    /**
+     * 删除时长礼包
+     * @param id
+     * @return
+     */
     @DeleteMapping("/deleteGiftHour")
     public RestResult deleteGiftHour(Integer id) {
         boolean result = giftHourService.removeById(id);
@@ -197,6 +280,12 @@ public class SysController {
         return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
     }
 
+
+    /**
+     * 编辑时长礼包
+     * @param hour
+     * @return
+     */
     @PostMapping("/updateGiftHour")
     public RestResult updateGiftHour(GiftHour hour) {
         if (hour.getMoney() == null) {

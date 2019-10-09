@@ -1,7 +1,12 @@
 package com.sanxin.cloud.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.OrderMain;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +18,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface OrderMainMapper extends BaseMapper<OrderMain> {
 
+    /**
+     * 多条件查询订单
+     * @param orderMain
+     * @return
+     */
+    IPage<OrderMain> queryOrderList(SPage<OrderMain> page, @Param("order") OrderMain orderMain);
 }

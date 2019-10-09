@@ -3,6 +3,8 @@ package com.sanxin.cloud.entity;
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
@@ -65,6 +67,21 @@ public class CTimeDetail implements Serializable {
      * 描述
      */
     private String remark;
+
+    /**
+     * 昵称
+     */
+    @TableField(exist = false)
+    private String nickName;
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
 
     public Integer getId() {
         return id;

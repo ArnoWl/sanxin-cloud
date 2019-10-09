@@ -1,5 +1,6 @@
 package com.sanxin.cloud.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.math.BigDecimal;
@@ -58,6 +59,20 @@ public class CMarginDetail implements Serializable {
      * 描述
      */
     private String remark;
+
+    /**
+     * 昵称
+     */
+    @TableField(exist = false)
+    private String nickName;
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
 
     public Integer getId() {
         return id;
@@ -119,14 +134,14 @@ public class CMarginDetail implements Serializable {
     @Override
     public String toString() {
         return "CMarginDetail{" +
-        "id=" + id +
-        ", cid=" + cid +
-        ", payCode=" + payCode +
-        ", isout=" + isout +
-        ", type=" + type +
-        ", cost=" + cost +
-        ", createTime=" + createTime +
-        ", remark=" + remark +
-        "}";
+                "id=" + id +
+                ", cid=" + cid +
+                ", payCode=" + payCode +
+                ", isout=" + isout +
+                ", type=" + type +
+                ", cost=" + cost +
+                ", createTime=" + createTime +
+                ", remark=" + remark +
+                "}";
     }
 }

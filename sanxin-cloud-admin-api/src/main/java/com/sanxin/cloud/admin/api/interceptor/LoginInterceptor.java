@@ -91,6 +91,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 strs.add("/home/labelMsg");
                 strs.add("/home/queryCashStatistics");
                 strs.add("/system/importTerminalSn");
+                strs.add("/system/feedbackList");
+                strs.add("/customer/amountDetails");
+                strs.add("/customer/depositDetails");
+                strs.add("/customer/timeDetails");
+                strs.add("/order/list");
+                strs.add("/order/detail");
                 System.out.println("returnUrl：："+returnUrl);
                 boolean bool = strs.contains(returnUrl);
                 if(!bool) {

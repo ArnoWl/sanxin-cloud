@@ -1,5 +1,6 @@
 package com.sanxin.cloud.service;
 
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.CTimeDetail;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CTimeDetailService extends IService<CTimeDetail> {
 
+    /**
+     * 时长明细列表
+     * @param page
+     * @param cTimeDetail
+     */
+    void queryCustomeTimeDetails(SPage<CTimeDetail> page, CTimeDetail cTimeDetail);
 }

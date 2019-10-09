@@ -1,5 +1,6 @@
 package com.sanxin.cloud.service;
 
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.CMarginDetail;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CMarginDetailService extends IService<CMarginDetail> {
 
+    /**
+     * 用户押金明细列表
+     * @param page
+     * @param cMarginDetail
+     */
+    void queryCustomerDepositDetails(SPage<CMarginDetail> page, CMarginDetail cMarginDetail);
 }
