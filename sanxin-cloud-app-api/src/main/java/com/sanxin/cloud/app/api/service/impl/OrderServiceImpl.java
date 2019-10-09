@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     /**
-     * 借充电宝
+     * 借充电宝逻辑
      * @param cid
      * @param terminalId
      */
@@ -83,7 +83,6 @@ public class OrderServiceImpl implements OrderService {
         OrderMain orderMain=new OrderMain();
         orderMain.setCid(cid);
         orderMain.setBid(code.getBid());
-
 
 
 

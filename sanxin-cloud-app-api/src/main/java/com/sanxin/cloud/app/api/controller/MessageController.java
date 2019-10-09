@@ -56,7 +56,7 @@ public class MessageController {
         CFeedbackLog feedbackLog = new CFeedbackLog();
         feedbackLog.setCid(cid);
         feedbackLog.setContent(content);
-        feedbackLog.setBackUrl(JSONArray.toJSONString(backUrl));
+        feedbackLog.setBackUrl(backUrl.toString());
         boolean result = cFeedbackLogService.save(feedbackLog);
         if (result) {
             return RestResult.success(LanguageUtils.getMessage("success"));
