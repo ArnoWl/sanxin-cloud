@@ -66,6 +66,17 @@ public class CMarginDetail implements Serializable {
     @TableField(exist = false)
     private String nickName;
 
+    public CMarginDetail(){}
+
+    public CMarginDetail(Integer cid, Integer type, Integer isout, String payCode, BigDecimal cost, String remark) {
+        this.cid = cid;
+        this.type = type;
+        this.isout = isout;
+        this.payCode = payCode;
+        this.cost = cost;
+        this.remark = remark;
+    }
+
     public String getNickName() {
         return nickName;
     }

@@ -50,6 +50,10 @@ public class CAccount implements Serializable {
      * 0输入密码 1免输密码
      */
     private Integer freeSecret;
+    /**
+     * 是否充值押金  0 否  1 是
+     */
+    private Integer rechargeDeposit;
 
     @TableField(exist = false)
     private Integer card;
@@ -116,6 +120,14 @@ public class CAccount implements Serializable {
 
     public void setCard(Integer card) {
         this.card = card;
+    }
+
+    public Integer getRechargeDeposit() {
+        return rechargeDeposit;
+    }
+
+    public void setRechargeDeposit(Integer rechargeDeposit) {
+        this.rechargeDeposit = rechargeDeposit;
     }
 
     @Override

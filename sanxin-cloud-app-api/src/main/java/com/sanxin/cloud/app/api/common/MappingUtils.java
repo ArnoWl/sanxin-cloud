@@ -36,28 +36,4 @@ public class MappingUtils {
     /**获取附近门店*/
     public static final String NRARBY_BUSINESS="/nearbyBusiness";
 
-    /**我的押金*/
-    public static final String MY_DEPOSIT="/myDeposit";
-
-    /**查询充值方式*/
-    public static final String SELECT_LIMT="/selectLimt";
-
-    /**押金提现申请*/
-    public static final String MARGIN_WITHDRAW="/marginWithdraw";
-
-    /**我的钱包*/
-    public static final String MY_PURSE="/myPurse";
-
-    /**我的钱包*/
-    public static final String BALANCE_DETAIL="/balanceDetail";
-
-    /**我要充值显示余额*/
-    public static final String GET_BALANCE="/getBalance";
-
-    /**用户时长明细*/
-    public static final String TIME_DETAIL="/timeDetail";
-
-    /**剩余时长*/
-    public static final String GET_TIME="/getTime";
-
 }

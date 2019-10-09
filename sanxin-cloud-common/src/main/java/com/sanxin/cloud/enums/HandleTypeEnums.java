@@ -12,8 +12,9 @@ import java.util.List;
  * @date 2019-09-12
  */
 public enum HandleTypeEnums {
-    CASH(1, "handle_type_cash"),
-    ORDER(2, "handle_type_order");
+    ORDER(1, "handle_type_order"),
+    RECHARGE_DEPOSIT_MONEY(2, "service_recharge_deposit"),
+    CASH(3, "handle_type_cash");
 
     private Integer id;
     private String name;

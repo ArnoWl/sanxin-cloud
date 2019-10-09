@@ -1,6 +1,7 @@
 package com.sanxin.cloud.app.api.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.app.api.common.AccountMapping;
 import com.sanxin.cloud.app.api.common.MappingUtils;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.FunctionUtils;
@@ -151,7 +152,7 @@ public class CashController {
      * 用户点击提现申请返回判断支付方式(押金)查询最后一条充值记录
      * @return
      */
-    @RequestMapping(MappingUtils.SELECT_LIMT)
+    @RequestMapping(AccountMapping.SELECT_LIMT)
     public RestResult selectLimt() {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);
@@ -162,7 +163,7 @@ public class CashController {
      * 确认申请提现
      * @return
      */
-    @RequestMapping(MappingUtils.MARGIN_WITHDRAW)
+    @RequestMapping(AccountMapping.MARGIN_WITHDRAW)
     public RestResult marginWithdraw() {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginTid(token);

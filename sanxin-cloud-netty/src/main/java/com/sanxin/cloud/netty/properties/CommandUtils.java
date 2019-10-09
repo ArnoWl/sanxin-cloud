@@ -9,6 +9,7 @@ import com.sanxin.cloud.enums.TerminalStatusEnums;
 import com.sanxin.cloud.netty.enums.CommandEnums;
 import com.sanxin.cloud.netty.hex.HexUtils;
 import com.sanxin.cloud.netty.service.HandleService;
+import com.sanxin.cloud.service.system.pay.HandleBatteryService;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang.StringUtils;
@@ -30,6 +31,7 @@ public class CommandUtils {
 
     private static Logger log = LoggerFactory.getLogger(CommandUtils.class);
     private static HandleService handleService = SpringBeanFactoryUtils.getApplicationContext().getBean(HandleService.class);
+    private static HandleBatteryService e = SpringBeanFactoryUtils.getApplicationContext().getBean(HandleBatteryService.class);
     /**
      * 接收到机器的指令
      * @param content  机器发送过来的16进制

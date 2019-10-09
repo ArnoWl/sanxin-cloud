@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanxin.cloud.mapper.CPayLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sanxin.cloud.entity.CPayLog">
+        <id column="id" property="id" />
+        <result column="cid" property="cid" />
+        <result column="pay_code" property="payCode" />
+        <result column="trans_code" property="transCode" />
+        <result column="pay_money" property="payMoney" />
+        <result column="status" property="status" />
+        <result column="service_type" property="serviceType" />
+        <result column="user_id" property="userId" />
+        <result column="pay_type" property="payType" />
+        <result column="pay_time" property="payTime" />
+        <result column="pay_channel" property="payChannel" />
+        <result column="create_time" property="createTime" />
+        <result column="params" property="params" />
+        <result column="version" property="version" />
+    </resultMap>
+
+</mapper>

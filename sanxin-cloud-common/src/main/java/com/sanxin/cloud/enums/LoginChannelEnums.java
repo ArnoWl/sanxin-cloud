@@ -11,9 +11,8 @@ import java.util.List;
  *
  */
 public enum LoginChannelEnums {
-
 	APP(1,"APP"),
-	ALI_PROGRAM(2,"ali program");
+	ALI_PROGRAM(2,"Ali program");
 
 	private Integer channel;
 	private String name;

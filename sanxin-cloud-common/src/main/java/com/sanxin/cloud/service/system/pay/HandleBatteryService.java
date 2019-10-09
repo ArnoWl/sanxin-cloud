@@ -7,10 +7,7 @@ import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.common.times.DateUtil;
 import com.sanxin.cloud.entity.*;
-import com.sanxin.cloud.enums.HandleTypeEnums;
-import com.sanxin.cloud.enums.OrderStatusEnums;
-import com.sanxin.cloud.enums.PayTypeEnums;
-import com.sanxin.cloud.enums.TerminalStatusEnums;
+import com.sanxin.cloud.enums.*;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.service.*;
 import org.apache.commons.lang3.StringUtils;
@@ -259,7 +256,7 @@ public class HandleBatteryService {
         }
 
         Integer orderStatus = OrderStatusEnums.CONFIRMED.getId();
-        String valueStr = infoParamService.getValueByCode("useHourMoney");
+        String valueStr = infoParamService.getValueByCode(ParamCodeEnums.USE_HOUR_MONEY.getCode());
         // 一小时多少钱
         BigDecimal value = FunctionUtils.getValueByClass(BigDecimal.class, valueStr);
         // 租金总额

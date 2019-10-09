@@ -4,11 +4,13 @@ import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.entity.CAccount;
 import com.sanxin.cloud.entity.CHourDetail;
+import com.sanxin.cloud.entity.CMarginDetail;
 import com.sanxin.cloud.entity.CMoneyDetail;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.mapper.CAccountMapper;
 import com.sanxin.cloud.service.CAccountService;
 import com.sanxin.cloud.service.CHourDetailService;
+import com.sanxin.cloud.service.CMarginDetailService;
 import com.sanxin.cloud.service.CMoneyDetailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,8 @@ public class HandleAccountChangeService {
     private CMoneyDetailService cMoneyDetailService;
     @Autowired
     private CHourDetailService cHourDetailService;
+    @Autowired
+    private CMarginDetailService cMarginDetailService;
 
     /**
      *
@@ -70,6 +74,11 @@ public class HandleAccountChangeService {
         return result;
     }
 
+    /**
+     * 操作时长
+     * @param detail
+     * @return
+     */
     public String insertCHourDetail(CHourDetail detail) {
         String result="";
         try {
@@ -95,8 +104,42 @@ public class HandleAccountChangeService {
             detail.setLast(hour);
             cHourDetailService.save(detail);
         } catch (Exception e) {
-            logger.info("操作用户余额明细异常："+e.getMessage());
-            throw new ThrowJsonException("保存校验用户余额异常");
+            logger.info("操作用户时长明细异常："+e.getMessage());
+            throw new ThrowJsonException("保存校验用户时长异常");
+        }
+        return result;
+    }
+
+    /**
+     * 操作押金
+     * @param detail
+     * @return
+     */
+    public String insertCDepositDetail(CMarginDetail detail) {
+        String result="";
+        try {
+            //行锁数据
+            CAccount account= cAccountService.getByCid(detail.getCid());
+            BigDecimal originalDeposit = account.getDeposit();
+            BigDecimal deposit = account.getDeposit();
+            if(FunctionUtils.isEquals(StaticUtils.PAY_IN, detail.getIsout())){
+                deposit=FunctionUtils.add(deposit, detail.getCost(), 2);
+            }else{
+                deposit=FunctionUtils.sub(deposit, detail.getCost(), 2);
+            }
+            if(deposit.compareTo(BigDecimal.ZERO)<0){
+                return "押金不足";
+            }
+            account.setDeposit(deposit);
+            //首先修改余额  根据当前版本号去修改
+            int i = cAccountMapper.updateLockVersion(account);
+            if(i<1) {
+                return "重复提交数据";
+            }
+            cMarginDetailService.save(detail);
+        } catch (Exception e) {
+            logger.info("操作用户押金明细异常："+e.getMessage());
+            throw new ThrowJsonException("保存校验用户押金异常");
         }
         return result;
     }

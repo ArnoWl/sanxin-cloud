@@ -10,6 +10,7 @@ import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.enums.CashTypeEnums;
+import com.sanxin.cloud.enums.HandleTypeEnums;
 import com.sanxin.cloud.enums.ServiceEnums;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.mapper.CAccountMapper;
@@ -125,7 +126,7 @@ public class SysCashDetailServiceImpl extends ServiceImpl<SysCashDetailMapper, S
             tax = cashDetail.getTax();
         }
 
-        String payCode = FunctionUtils.getOrderCode(ServiceEnums.CASH.name());
+        String payCode = FunctionUtils.getOrderCode(HandleTypeEnums.CASH.name());
         // 操作——扣除余额
 
         // 提现手续费比例

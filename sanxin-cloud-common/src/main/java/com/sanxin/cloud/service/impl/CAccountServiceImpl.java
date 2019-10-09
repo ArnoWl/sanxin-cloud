@@ -26,16 +26,6 @@ import java.math.BigDecimal;
  */
 @Service
 public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> implements CAccountService {
-    @Autowired
-    private CMarginDetailMapper marginDetailMapper;
-    @Autowired
-    private BankDetailMapper bankDetailMapper;
-    @Autowired
-    private CMoneyDetailMapper moneyDetailMapper;
-    @Autowired
-    private CTimeDetailMapper timeDetailMapper;
-
-
     @Override
     public CAccount getByCid(Integer cid) {
         QueryWrapper<CAccount> wrapper = new QueryWrapper<>();
@@ -44,90 +34,9 @@ public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> i
         return cAccount;
     }
 
-    /**
-     * 我的押金
-     * @param cid
-     * @return
-     */
-    @Override
-    public RestResult queryMyDeposit(SPage<CMarginDetail> page, Integer cid) {
-        CMarginVO marginVO=new CMarginVO();
-        Page<CMarginDetail> list = marginDetailMapper.queryMyDepositList(page, cid);
-        CAccount account = baseMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
-        marginVO.setList(list);
-        marginVO.setMargin(account.getDeposit());
-        return RestResult.success(marginVO);
-    }
-
-    /**
-     * 我的钱包
-     * @param cid
-     * @return
-     */
-    @Override
-    public RestResult queryMyPurse(Integer cid) {
-        CAccount account = baseMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
-        Integer count = bankDetailMapper.selectCount(new QueryWrapper<BankDetail>().eq("target_id", cid));
-        account.setCard(count);
-        return RestResult.success(account);
-    }
-
-    /**
-     * 余额明细
-     * @param cid
-     * @return
-     */
-    @Override
-    public RestResult queryBalanceDetail(SPage<CMoneyDetail> page, Integer cid) {
-        MoneyDetailVO moneyDetailVO=new MoneyDetailVO();
-        Page<CMoneyDetail> list = moneyDetailMapper.queryBalanceDetail(page,cid);
-        CAccount account = baseMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
-        moneyDetailVO.setList(list);
-        moneyDetailVO.setBalance(account.getMoney());
-        return RestResult.success(moneyDetailVO);
-    }
-
-    /**
-     * 我要充值显示余额
-     * @param cid
-     * @return
-     */
-    @Override
-    public RestResult getBalance(Integer cid) {
-        CAccount account = baseMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
-        return RestResult.success(account.getMoney());
-    }
-
     @Override
     public BigDecimal sumDepositMoney() {
         return baseMapper.sumDepositMoney();
-    }
-
-    /**
-     * 用户时长明细
-     * @param page
-     * @param cid
-     * @return
-     */
-    @Override
-    public RestResult queryTimeDetail(SPage<CTimeDetail> page, Integer cid) {
-        UserTimeVO userTimeVO=new UserTimeVO();
-        SPage<CTimeDetail> list = timeDetailMapper.queryTimeDetail(page, cid);
-        CAccount account = baseMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
-        userTimeVO.setList(list);
-        userTimeVO.setTime(account.getHour());
-        return RestResult.success(userTimeVO);
-    }
-
-    /**
-     * 剩余时长
-     * @param cid
-     * @return
-     */
-    @Override
-    public RestResult getTime(Integer cid) {
-        CAccount account = baseMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
-        return RestResult.success(account.getHour());
     }
 
 }
