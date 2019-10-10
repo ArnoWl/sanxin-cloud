@@ -6,7 +6,6 @@ import com.sanxin.cloud.app.api.service.AccountService;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.language.LanguageUtils;
-import com.sanxin.cloud.common.pwd.Encode;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
@@ -17,10 +16,15 @@ import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.enums.HandleTypeEnums;
 import com.sanxin.cloud.enums.ParamCodeEnums;
 import com.sanxin.cloud.enums.PayTypeEnums;
+import com.sanxin.cloud.enums.ServiceEnums;
 import com.sanxin.cloud.exception.ThrowJsonException;
-import com.sanxin.cloud.mapper.*;
+import com.sanxin.cloud.mapper.BankDetailMapper;
+import com.sanxin.cloud.mapper.CMarginDetailMapper;
+import com.sanxin.cloud.mapper.CMoneyDetailMapper;
+import com.sanxin.cloud.mapper.CTimeDetailMapper;
 import com.sanxin.cloud.service.CAccountService;
 import com.sanxin.cloud.service.CCustomerService;
+import com.sanxin.cloud.service.CPayLogService;
 import com.sanxin.cloud.service.InfoParamService;
 import com.sanxin.cloud.service.system.pay.PayService;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +40,7 @@ import java.math.BigDecimal;
  */
 @Service
 public class AccountServiceImpl implements AccountService {
+
     @Autowired
     private CMarginDetailMapper marginDetailMapper;
     @Autowired
@@ -52,6 +57,8 @@ public class AccountServiceImpl implements AccountService {
     private PayService payService;
     @Autowired
     private CCustomerService customerService;
+    @Autowired
+    private CPayLogService cPayLogService;
 
     /**
      * 我的押金
@@ -60,7 +67,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public RestResult queryMyDeposit(SPage<CMarginDetail> page, Integer cid) {
-        CMarginVO marginVO=new CMarginVO();
+        CMarginVO marginVO = new CMarginVO();
         Page<CMarginDetail> list = marginDetailMapper.queryMyDepositList(page, cid);
         CAccount account = getAccount(cid);
         marginVO.setList(list);
@@ -88,8 +95,8 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public RestResult queryBalanceDetail(SPage<CMoneyDetail> page, Integer cid) {
-        MoneyDetailVO moneyDetailVO=new MoneyDetailVO();
-        Page<CMoneyDetail> list = moneyDetailMapper.queryBalanceDetail(page,cid);
+        MoneyDetailVO moneyDetailVO = new MoneyDetailVO();
+        Page<CMoneyDetail> list = moneyDetailMapper.queryBalanceDetail(page, cid);
         CAccount account = getAccount(cid);
         moneyDetailVO.setList(list);
         moneyDetailVO.setBalance(account.getMoney());
@@ -115,7 +122,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public RestResult queryTimeDetail(SPage<CTimeDetail> page, Integer cid) {
-        UserTimeVO userTimeVO=new UserTimeVO();
+        UserTimeVO userTimeVO = new UserTimeVO();
         SPage<CTimeDetail> list = timeDetailMapper.queryTimeDetail(page, cid);
         CAccount account = getAccount(cid);
         userTimeVO.setList(list);
@@ -153,6 +160,21 @@ public class AccountServiceImpl implements AccountService {
         if (customer == null) {
             return RestResult.fail("register_user_empty");
         }
+        // 判断参数值
+        if (payType == null) {
+            return RestResult.fail("pay_type_empty");
+        }
+        if (payChannel == null) {
+            return RestResult.fail("pay_channel_empty");
+        }
+        if (freeSecret == null) {
+            freeSecret = StaticUtils.STATUS_NO;
+        }
+        // 判断是否交过押金
+        CAccount account = cAccountService.getByCid(cid);
+        if (FunctionUtils.isEquals(account.getRechargeDeposit(), StaticUtils.STATUS_YES)) {
+            return RestResult.fail("deposit_is_have");
+        }
         // 余额支付判断支付密码
         if (FunctionUtils.isEquals(payType, PayTypeEnums.MONEY.getId())) {
             // 判断是否余额支付——余额支付需要校验密码
@@ -168,17 +190,22 @@ public class AccountServiceImpl implements AccountService {
                 }
             }
         }
-
         // 数据赋值-签名
         BigDecimal payMoney = FunctionUtils.getValueByClass(BigDecimal.class, infoParamService.getValueByCode(ParamCodeEnums.RECHARGE_DEPOSIT_MONEY.getCode()));
         String payCode = FunctionUtils.getOrderCode("P");
         CPayLog log = new CPayLog();
         log.setCid(cid);
-        log.setPayType(payChannel);
+        log.setPayType(payType);
+        log.setPayChannel(payChannel);
         log.setPayMoney(payMoney);
         log.setHandleType(HandleTypeEnums.RECHARGE_DEPOSIT_MONEY.getId());
+        log.setServiceType(ServiceEnums.RECHARGE_DEPOSIT_MONEY.getId());
         log.setPayCode(payCode);
         log.setParams(freeSecret.toString());
+        boolean flag = cPayLogService.save(log);
+        if (!flag) {
+            throw new ThrowJsonException(LanguageUtils.getMessage("pay_log_create_fail"));
+        }
         return payService.handleSign(log);
     }
 }

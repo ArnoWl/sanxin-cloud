@@ -234,9 +234,9 @@ public class SysCashDetailServiceImpl extends ServiceImpl<SysCashDetailMapper, S
             String encPayWord = PwdEncode.encodePwd(payWord);
             if (!encPayWord.equals(customer.getPayWord())) {
                 if (StringUtils.isBlank(customer.getPayWord())) {
-                    return RestResult.fail("您还未设置支付密码", null, "1");
+                    return RestResult.fail("not_set_pay_word", null, "1");
                 } else {
-                    return RestResult.fail("支付密码不正确");
+                    return RestResult.fail("pay_word_error");
                 }
             }
         } else if (FunctionUtils.isEquals(cashDetail.getType(), CashTypeEnums.BUSINESS.getId())) {
@@ -248,9 +248,9 @@ public class SysCashDetailServiceImpl extends ServiceImpl<SysCashDetailMapper, S
             String encPayWord = PwdEncode.encodePwd(payWord);
             if (!encPayWord.equals(business.getPayWord())) {
                 if (StringUtils.isBlank(business.getPayWord())) {
-                    return RestResult.fail("您还未设置支付密码", null, "1");
+                    return RestResult.fail("not_set_pay_word", null, "1");
                 } else {
-                    return RestResult.fail("支付密码不正确");
+                    return RestResult.fail("pay_word_error");
                 }
             }
         } else {

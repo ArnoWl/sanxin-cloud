@@ -23,5 +23,4 @@
     <select id="queryMyDepositList" resultType="com.sanxin.cloud.entity.CMarginDetail">
         select * from c_margin_detail where cid=#{cid}
     </select>
-
 </mapper>

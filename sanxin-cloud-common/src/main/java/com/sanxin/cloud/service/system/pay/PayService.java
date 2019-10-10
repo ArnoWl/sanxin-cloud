@@ -91,16 +91,18 @@ public class PayService {
                 // 订单处理
                 break;
             case RECHARGE_DEPOSIT_MONEY:
+                Integer freeSecret = Integer.parseInt(cPayLog.getParams());
                 // 充值押金
                 // 增加押金金额
-                String msg = handleAccountChangeService.insertCDepositDetail(new CMarginDetail(cPayLog.getCid(), HandleTypeEnums.ORDER.getId(),
-                        StaticUtils.PAY_OUT, cPayLog.getPayCode(), cPayLog.getPayMoney(), HandleTypeEnums.getName(HandleTypeEnums.ORDER.getId())));
+                String msg = handleAccountChangeService.insertCDepositDetail(new CMarginDetail(cPayLog.getCid(), HandleTypeEnums.RECHARGE_DEPOSIT_MONEY.getId(),
+                        StaticUtils.PAY_IN, cPayLog.getPayCode(), cPayLog.getPayMoney(), HandleTypeEnums.getName(HandleTypeEnums.RECHARGE_DEPOSIT_MONEY.getId())));
                 if (StringUtils.isNotEmpty(msg)) {
                     throw new ThrowJsonException(msg);
                 }
                 // 更新账户信息
                 CAccount account = cAccountService.getByCid(cPayLog.getCid());
                 account.setRechargeDeposit(StaticUtils.STATUS_YES);
+                account.setFreeSecret(freeSecret);
                 boolean result = cAccountService.updateById(account);
                 if (!result) {
                     throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));

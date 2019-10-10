@@ -8,6 +8,7 @@ import com.sanxin.cloud.entity.CMarginDetail;
 import com.sanxin.cloud.entity.CMoneyDetail;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.mapper.CAccountMapper;
+import com.sanxin.cloud.mapper.CMarginDetailMapper;
 import com.sanxin.cloud.service.CAccountService;
 import com.sanxin.cloud.service.CHourDetailService;
 import com.sanxin.cloud.service.CMarginDetailService;
@@ -26,6 +27,7 @@ import java.math.BigDecimal;
  */
 @Service
 public class HandleAccountChangeService {
+
     private static Logger logger = LoggerFactory.getLogger(HandleAccountChangeService.class);
     @Autowired
     private CAccountService cAccountService;
@@ -37,38 +39,39 @@ public class HandleAccountChangeService {
     private CHourDetailService cHourDetailService;
     @Autowired
     private CMarginDetailService cMarginDetailService;
-
+    @Autowired
+    private CMarginDetailMapper cMarginDetailMapper;
     /**
      *
      * @param detail cid typeId isOut payCode cost remark targetId
      * @return
      */
     public String insertCMoneyDetail(CMoneyDetail detail) {
-        String result="";
+        String result = "";
         try {
             //行锁数据
-            CAccount account= cAccountService.getByCid(detail.getCid());
+            CAccount account = cAccountService.getByCid(detail.getCid());
             BigDecimal originalMoney = account.getMoney();
             BigDecimal money = account.getMoney();
-            if(FunctionUtils.isEquals(StaticUtils.PAY_IN, detail.getIsout())){
-                money=FunctionUtils.add(money, detail.getCost(), 2);
-            }else{
-                money=FunctionUtils.sub(money, detail.getCost(), 2);
+            if (FunctionUtils.isEquals(StaticUtils.PAY_IN, detail.getIsout())) {
+                money = FunctionUtils.add(money, detail.getCost(), 2);
+            } else {
+                money = FunctionUtils.sub(money, detail.getCost(), 2);
             }
-            if(money.compareTo(BigDecimal.ZERO)<0){
+            if (money.compareTo(BigDecimal.ZERO) < 0) {
                 return "余额不足";
             }
             account.setMoney(money);
             //首先修改余额  根据当前版本号去修改
             int i = cAccountMapper.updateLockVersion(account);
-            if(i<1) {
+            if (i < 1) {
                 return "重复提交数据";
             }
             detail.setOriginal(originalMoney);
             detail.setLast(money);
             cMoneyDetailService.save(detail);
         } catch (Exception e) {
-            logger.info("操作用户余额明细异常："+e.getMessage());
+            logger.info("操作用户余额明细异常：" + e.getMessage());
             throw new ThrowJsonException("保存校验用户余额异常");
         }
         return result;
@@ -80,31 +83,31 @@ public class HandleAccountChangeService {
      * @return
      */
     public String insertCHourDetail(CHourDetail detail) {
-        String result="";
+        String result = "";
         try {
             //行锁数据
-            CAccount account= cAccountService.getByCid(detail.getCid());
+            CAccount account = cAccountService.getByCid(detail.getCid());
             Integer originalHour = account.getHour();
             Integer hour = account.getHour();
-            if(FunctionUtils.isEquals(StaticUtils.PAY_IN, detail.getIsout())){
+            if (FunctionUtils.isEquals(StaticUtils.PAY_IN, detail.getIsout())) {
                 hour = hour + detail.getCost();
-            }else{
-                hour= hour - detail.getCost();
+            } else {
+                hour = hour - detail.getCost();
             }
-            if(hour<0){
+            if (hour < 0) {
                 return "时长不足";
             }
             account.setHour(hour);
             //首先修改余额  根据当前版本号去修改
             int i = cAccountMapper.updateLockVersion(account);
-            if(i<1) {
+            if (i < 1) {
                 return "重复提交数据";
             }
             detail.setOriginal(originalHour);
             detail.setLast(hour);
             cHourDetailService.save(detail);
         } catch (Exception e) {
-            logger.info("操作用户时长明细异常："+e.getMessage());
+            logger.info("操作用户时长明细异常：" + e.getMessage());
             throw new ThrowJsonException("保存校验用户时长异常");
         }
         return result;
@@ -116,29 +119,30 @@ public class HandleAccountChangeService {
      * @return
      */
     public String insertCDepositDetail(CMarginDetail detail) {
-        String result="";
+        String result = "";
         try {
             //行锁数据
-            CAccount account= cAccountService.getByCid(detail.getCid());
-            BigDecimal originalDeposit = account.getDeposit();
+            CAccount account = cAccountService.getByCid(detail.getCid());
             BigDecimal deposit = account.getDeposit();
-            if(FunctionUtils.isEquals(StaticUtils.PAY_IN, detail.getIsout())){
-                deposit=FunctionUtils.add(deposit, detail.getCost(), 2);
-            }else{
-                deposit=FunctionUtils.sub(deposit, detail.getCost(), 2);
+            if (FunctionUtils.isEquals(StaticUtils.PAY_IN, detail.getIsout())) {
+                deposit = FunctionUtils.add(deposit, detail.getCost(), 2);
+            } else {
+                deposit = FunctionUtils.sub(deposit, detail.getCost(), 2);
             }
-            if(deposit.compareTo(BigDecimal.ZERO)<0){
+            System.out.println(deposit);
+            if (deposit.compareTo(BigDecimal.ZERO) < 0) {
                 return "押金不足";
             }
             account.setDeposit(deposit);
             //首先修改余额  根据当前版本号去修改
             int i = cAccountMapper.updateLockVersion(account);
-            if(i<1) {
+            if (i < 1) {
                 return "重复提交数据";
             }
-            cMarginDetailService.save(detail);
+            //cMarginDetailService.save(detail);
+            cMarginDetailMapper.insert(detail);
         } catch (Exception e) {
-            logger.info("操作用户押金明细异常："+e.getMessage());
+            logger.info("操作用户押金明细异常：" + e.getMessage());
             throw new ThrowJsonException("保存校验用户押金异常");
         }
         return result;

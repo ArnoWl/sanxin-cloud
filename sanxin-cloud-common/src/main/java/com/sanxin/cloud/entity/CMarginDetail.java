@@ -1,7 +1,10 @@
 package com.sanxin.cloud.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -15,6 +18,7 @@ import java.io.Serializable;
  * @author Arno
  * @since 2019-09-19
  */
+@Data
 public class CMarginDetail implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,6 +26,7 @@ public class CMarginDetail implements Serializable {
     /**
      * ID
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
