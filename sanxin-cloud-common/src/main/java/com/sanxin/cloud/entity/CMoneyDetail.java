@@ -91,4 +91,116 @@ public class CMoneyDetail implements Serializable {
         this.cost = cost;
         this.remark = remark;
     }
+
+    public CMoneyDetail() {
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getCid() {
+        return cid;
+    }
+
+    public void setCid(Integer cid) {
+        this.cid = cid;
+    }
+
+    public String getPayCode() {
+        return payCode;
+    }
+
+    public void setPayCode(String payCode) {
+        this.payCode = payCode;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getIsout() {
+        return isout;
+    }
+
+    public void setIsout(Integer isout) {
+        this.isout = isout;
+    }
+
+    public BigDecimal getOriginal() {
+        return original;
+    }
+
+    public void setOriginal(BigDecimal original) {
+        this.original = original;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
+
+    public BigDecimal getLast() {
+        return last;
+    }
+
+    public void setLast(BigDecimal last) {
+        this.last = last;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    @Override
+    public String toString() {
+        return "CMoneyDetail{" +
+                "id=" + id +
+                ", cid=" + cid +
+                ", payCode='" + payCode + '\'' +
+                ", type=" + type +
+                ", isout=" + isout +
+                ", original=" + original +
+                ", cost=" + cost +
+                ", last=" + last +
+                ", createTime=" + createTime +
+                ", remark='" + remark + '\'' +
+                ", nickName='" + nickName + '\'' +
+                '}';
+    }
 }

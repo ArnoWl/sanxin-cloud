@@ -16,7 +16,6 @@
         <result column="remark" property="remark" />
     </resultMap>
 
-    <!-- 余额明细 -->
     <select id="queryBalanceDetail" resultMap="BaseResultMap">
         select * from c_money_detail where cid=#{cid}
     </select>

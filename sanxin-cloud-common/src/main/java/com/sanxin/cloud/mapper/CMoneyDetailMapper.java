@@ -18,9 +18,10 @@ public interface CMoneyDetailMapper extends BaseMapper<CMoneyDetail> {
 
     /**
      * 余额明细
+     *
      * @param page
      * @param cid
      * @return
      */
-    Page<CMoneyDetail> queryBalanceDetail(@Param("cid") Integer cid);
+    Page<CMoneyDetail> queryBalanceDetail(SPage<CMoneyDetail> page, @Param("cid") Integer cid);
 }

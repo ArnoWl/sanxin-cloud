@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author xiaoky
@@ -98,13 +99,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public RestResult queryBalanceDetail(SPage<CMoneyDetail> page, Integer cid) {
         MoneyDetailVO moneyDetailVO = new MoneyDetailVO();
-        Page<CMoneyDetail> list = null;
-        try {
-            list = moneyDetailMapper.queryBalanceDetail(cid);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Page<CMoneyDetail> list = moneyDetailMapper.queryBalanceDetail(page, cid);
         CAccount account = getAccount(cid);
         moneyDetailVO.setList(list);
         moneyDetailVO.setBalance(account.getMoney());
@@ -113,7 +108,6 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 我要充值显示余额
-     *
      * @param cid
      * @return
      */
@@ -125,7 +119,6 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 用户时长明细
-     *
      * @param page
      * @param cid
      * @return
