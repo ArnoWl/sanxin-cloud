@@ -17,7 +17,7 @@
     </resultMap>
 
     <!-- 余额明细 -->
-    <select id="queryBalanceDetail" resultType="com.sanxin.cloud.entity.CMoneyDetail">
+    <select id="queryBalanceDetail" resultMap="BaseResultMap">
         select * from c_money_detail where cid=#{cid}
     </select>
 

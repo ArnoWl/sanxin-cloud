@@ -67,6 +67,14 @@ public class PowerBankListVo {
      */
     private Integer distance;
     /**
+     * 距离千米
+     */
+    private Double distanceKm;
+    /**
+     * 距离米
+     */
+    private Integer distanceM;
+    /**
      * 备注
      */
     private String remark;

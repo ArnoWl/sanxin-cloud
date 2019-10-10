@@ -20,11 +20,6 @@ public class OrderUserDetailVo extends OrderUserVo{
     private String standard;
 
     /**
-     * 租借总额
-     */
-    private BigDecimal rentMoney;
-
-    /**
      * 租借时长
      */
     private Integer hour;

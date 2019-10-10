@@ -34,7 +34,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 
 /**
- *
  * @author xiaoky
  * @date 2019-10-09
  */
@@ -62,6 +61,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 我的押金
+     *
      * @param cid
      * @return
      */
@@ -77,6 +77,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 我的钱包
+     *
      * @param cid
      * @return
      */
@@ -90,13 +91,20 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 余额明细
+     *
      * @param cid
      * @return
      */
     @Override
     public RestResult queryBalanceDetail(SPage<CMoneyDetail> page, Integer cid) {
         MoneyDetailVO moneyDetailVO = new MoneyDetailVO();
-        Page<CMoneyDetail> list = moneyDetailMapper.queryBalanceDetail(page, cid);
+        Page<CMoneyDetail> list = null;
+        try {
+            list = moneyDetailMapper.queryBalanceDetail(cid);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         CAccount account = getAccount(cid);
         moneyDetailVO.setList(list);
         moneyDetailVO.setBalance(account.getMoney());
@@ -105,6 +113,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 我要充值显示余额
+     *
      * @param cid
      * @return
      */
@@ -116,6 +125,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 用户时长明细
+     *
      * @param page
      * @param cid
      * @return
@@ -132,6 +142,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 剩余时长
+     *
      * @param cid
      * @return
      */
@@ -143,6 +154,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 获取用户账户
+     *
      * @param cid
      * @return
      */

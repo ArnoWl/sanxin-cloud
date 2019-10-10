@@ -62,7 +62,20 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
         IPage<PowerBankListVo> page = new Page<>();
         page.setCurrent(current);
         page.setSize(size);
-        List<PowerBankListVo> byShops = baseMapper.findByShops(page, latVal, lonVal, search, radius);
+        List<PowerBankListVo> byShops = null;
+        try {
+            byShops = baseMapper.findByShops(page, latVal, lonVal, search, radius);
+            for (PowerBankListVo byShop : byShops) {
+                if (byShop.getDistance() > 1000) {
+                    double v = FunctionUtils.div(new BigDecimal(byShop.getDistance()), new BigDecimal(1000), 2).doubleValue();
+                    byShop.setDistanceKm(v);
+                }else{
+                    byShop.setDistanceM(byShop.getDistance());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         for (PowerBankListVo byShop : byShops) {
             List<Integer> cabinet = baseMapper.findByCabinet(byShop.getId());
             StringBuffer sb = new StringBuffer();
@@ -72,7 +85,7 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
                 }
                 sb.append(DeviceTypeEnums.getName(cabinet.get(i)));
             }
-            byShop.setBusinessHours(FunctionUtils.getHours(byShop.getStartDay(),byShop.getEndDay(),byShop.getStartTime(),byShop.getEndTime()));
+            byShop.setBusinessHours(FunctionUtils.getHours(byShop.getStartDay(), byShop.getEndDay(), byShop.getStartTime(), byShop.getEndTime()));
             byShop.setCabinet(sb.toString());
             if (byShop.getLendPort() == 0 && byShop.getRepayPort() != 0) {
                 byShop.setStrLendPort(LanguageUtils.getMessage("device_1"));
@@ -332,6 +345,7 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
 
     /**
      * 查询今日收益
+     *
      * @param bid
      * @return
      */

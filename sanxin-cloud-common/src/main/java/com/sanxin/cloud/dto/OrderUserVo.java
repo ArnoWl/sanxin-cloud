@@ -1,5 +1,6 @@
 package com.sanxin.cloud.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -57,9 +58,14 @@ public class OrderUserVo {
     /**
      * 租借时间
      */
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
     private Date rentTime;
     /**
      * 租借地点
      */
     private String addressDetail;
+    /**
+     * 租借总额
+     */
+    private BigDecimal rentMoney;
 }
