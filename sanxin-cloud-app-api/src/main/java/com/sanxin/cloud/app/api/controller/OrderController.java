@@ -24,12 +24,14 @@ import com.sanxin.cloud.dto.OrderUserVo;
 import com.sanxin.cloud.entity.OrderMain;
 import com.sanxin.cloud.service.BBusinessService;
 import com.sanxin.cloud.service.system.pay.HandleBatteryService;
+import com.sanxin.cloud.service.system.pay.PayOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 订单Controller
@@ -53,6 +55,8 @@ public class OrderController {
     private CAccountService cAccountService;
     @Autowired
     private InfoParamService infoParamService;
+    @Autowired
+    private PayOrderService payOrderService;
 
     /**
      * 借充电宝
@@ -140,15 +144,15 @@ public class OrderController {
         Integer cid = loginTokenService.validLoginCid(token);
         QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
         wrapper.eq("cid", cid).eq("order_status", OrderStatusEnums.USING.getId());
-        int orderNum = orderMainService.count(wrapper);
-        if (orderNum>0) {
-            return RestResult.success("success", OrderStatusEnums.USING.getId());
+        List<OrderMain> list = orderMainService.list(wrapper);
+        if (list != null && list.size() > 0) {
+            return RestResult.success("success", OrderStatusEnums.USING.getId(), list.get(0).getOrderCode());
         } else {
             wrapper = new QueryWrapper<>();
             wrapper.eq("cid", cid).eq("order_status", OrderStatusEnums.CONFIRMED.getId());
-            orderNum = orderMainService.count(wrapper);
-            if (orderNum>0) {
-                return RestResult.success("success", OrderStatusEnums.CONFIRMED.getId());
+            list = orderMainService.list(wrapper);
+            if (list != null && list.size() > 0) {
+                return RestResult.success("success", OrderStatusEnums.CONFIRMED.getId(), list.get(0).getOrderCode());
             }
         }
         return RestResult.success("success");
@@ -169,9 +173,23 @@ public class OrderController {
         return RestResult.success("success", account.getRechargeDeposit());
     }
 
+    /**
+     * 待支付订单支付
+     * @param orderCode 订单编号
+     * @param payType 支付方式见PayTypeEnums
+     * @param payWord 支付密码-余额支付时用到
+     * @param payChannel 支付渠道见LoginChannelEnums
+     * @return
+     */
+    @RequestMapping(value = OrderMapping.HANDLE_ORDER_PAY)
+    public RestResult handleOrderPay(String orderCode, String payWord, Integer payType, Integer payChannel) {
+        RestResult result = payOrderService.handleOrderPay(orderCode, payWord, payType, payChannel);
+        return result;
+    }
+
     @RequestMapping("/test")
     public RestResult test() {
-        // RestResult result = handleBatteryService.handleLendBattery(1, "RL1H081905680019", "RL1H96005635", "03", 1);
+        // RestResult result = handleBatteryService.handleLendBattery(2, "RL1H081905680019", "RL1H96005635", "03", 1);
         RestResult result = handleBatteryService.handleReturnBattery("RL1H081905680019", "03", "RL1H96005635");
         return result;
     }

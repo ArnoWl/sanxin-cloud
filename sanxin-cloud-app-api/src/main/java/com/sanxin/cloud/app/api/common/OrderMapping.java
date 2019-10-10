@@ -20,4 +20,6 @@ public class OrderMapping {
     public static final String QUERY_NO_COMPLETE_ORDER = "/queryNoCompleteOrder";
     /** 借充电宝扫码时判断是否交了押金*/
     public static final String VALID_RECHARGE_DEPOSIT = "/validRechargeDeposit";
+    /** 待支付订单支付*/
+    public static final String HANDLE_ORDER_PAY = "/handleOrderPay";
 }

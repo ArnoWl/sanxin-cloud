@@ -1,28 +1,28 @@
 package com.sanxin.cloud.service.system.pay;
 
+import com.alipay.api.domain.OrderDetail;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.common.times.DateUtil;
-import com.sanxin.cloud.entity.CAccount;
-import com.sanxin.cloud.entity.CMarginDetail;
-import com.sanxin.cloud.entity.CMoneyDetail;
-import com.sanxin.cloud.entity.CPayLog;
+import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.enums.HandleTypeEnums;
+import com.sanxin.cloud.enums.OrderStatusEnums;
 import com.sanxin.cloud.enums.PayTypeEnums;
 import com.sanxin.cloud.enums.ServiceEnums;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.service.CAccountService;
 import com.sanxin.cloud.service.CPayLogService;
-import io.netty.channel.ChannelOption;
-import javafx.scene.chart.CategoryAxis;
+import com.sanxin.cloud.service.OrderMainService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 支付Service
@@ -31,12 +31,15 @@ import java.math.BigDecimal;
  */
 @Service
 public class PayService {
+
     @Autowired
     private HandleAccountChangeService handleAccountChangeService;
     @Autowired
     private CPayLogService cPayLogService;
     @Autowired
     private CAccountService cAccountService;
+    @Autowired
+    private OrderMainService orderMainService;
 
     /**
      * 处理支付签名
@@ -89,6 +92,7 @@ public class PayService {
         switch (enums) {
             case ORDER:
                 // 订单处理
+                handleOrderCallBack(cPayLog);
                 break;
             case RECHARGE_DEPOSIT_MONEY:
                 Integer freeSecret = Integer.parseInt(cPayLog.getParams());
@@ -110,6 +114,30 @@ public class PayService {
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * 处理订单支付回调
+     * @param cPayLog
+     */
+    public void handleOrderCallBack(CPayLog cPayLog) {
+        //1.修改订单状态 查询订单信息
+        QueryWrapper<OrderMain> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("pay_code", cPayLog.getPayCode());
+        queryWrapper.eq("order_status", OrderStatusEnums.CONFIRMED.getId());
+        List<OrderMain> list = orderMainService.list(queryWrapper);
+        if (list == null || list.size() != 1) {
+            throw new ThrowJsonException(LanguageUtils.getMessage("order_is_processed"));
+        }
+        OrderMain orderMain = list.get(0);
+        orderMain.setPayType(PayTypeEnums.MONEY.getId());
+        orderMain.setOverTime(DateUtil.currentDate());
+        orderMain.setOrderStatus(OrderStatusEnums.OVER.getId());
+        orderMain.setTransCode(cPayLog.getTransCode());
+        boolean result = orderMainService.updateById(orderMain);
+        if (!result) {
+            throw new ThrowJsonException(LanguageUtils.getMessage("request_error"));
         }
     }
 }

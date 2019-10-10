@@ -255,56 +255,57 @@ public class HandleBatteryService {
             return RestResult.fail("fail", "00");
         }
 
+        String flag = null;
+        String msg = "";
         Integer orderStatus = OrderStatusEnums.CONFIRMED.getId();
         String valueStr = infoParamService.getValueByCode(ParamCodeEnums.USE_HOUR_MONEY.getCode());
         // 一小时多少钱
         BigDecimal value = FunctionUtils.getValueByClass(BigDecimal.class, valueStr);
         // 租金总额
-        BigDecimal rentMoney = FunctionUtils.div(value, new BigDecimal(hour), 2);
+        BigDecimal rentMoney = FunctionUtils.mul(value, new BigDecimal(hour), 2);
         // 实际扣除时长
         Integer realHour = hour;
         // 实际扣除余额
         BigDecimal payMoney = BigDecimal.ZERO;
         // 有时长，先扣时长
-        if (account.getHour() > 0) {
-            // 计算能扣多少时长-如果有这么多时长直接扣，时长不足就有多少扣多少
-            if (account.getHour()<hour) {
-                // 时长不足
-                realHour = account.getHour();
-                // 计算应该扣多少余额
-                payMoney = new BigDecimal(hour - realHour);
-                payMoney = FunctionUtils.div(value, payMoney, 2);
-            } else {
-                orderMain.setPayType(PayTypeEnums.MONEY.getId());
-                orderMain.setOverTime(DateUtil.currentDate());
-                orderStatus = OrderStatusEnums.OVER.getId();
+        // 时长足够
+        if (account.getHour() > 0 && account.getHour()>=hour) {
+            // 时长足够，不管是否开启免密支付，订单都会使用时长支付-变成已完成
+            orderMain.setPayType(PayTypeEnums.MONEY.getId());
+            orderMain.setOverTime(DateUtil.currentDate());
+            orderStatus = OrderStatusEnums.OVER.getId();
+        } else {
+            // 时长不足——先有多少扣多少
+            realHour = account.getHour();
+            // 扣除时长后计算应该扣多少余额
+            payMoney = FunctionUtils.mul(value, new BigDecimal(hour - realHour), 2);
+            // 判断是否免密支付-免密支付余额充足的情况下，订单状态变成已完成
+            if (FunctionUtils.isEquals(StaticUtils.STATUS_YES, account.getFreeSecret())) {
+                // 开启了免密支付-扣除余额
+                msg = handleAccountChangeService.insertCMoneyDetail(new CMoneyDetail(orderMain.getCid(), HandleTypeEnums.ORDER.getId(),
+                        StaticUtils.PAY_OUT, orderMain.getPayCode(), payMoney, HandleTypeEnums.getName(HandleTypeEnums.ORDER.getId())));
+                // 余额充足
+                if (StringUtils.isEmpty(msg)) {
+                    orderMain.setPayType(PayTypeEnums.MONEY.getId());
+                    orderMain.setOverTime(DateUtil.currentDate());
+                    orderStatus = OrderStatusEnums.OVER.getId();
+                } else {
+                    // 余额不足或其它情况,flag标识余额不足
+                    flag = "1";
+                }
             }
+            // 未开启免密支付-余额不用扣除
         }
 
-        String msg = "";
         // 统一扣除时长
         if (realHour > 0) {
             msg = handleAccountChangeService.insertCHourDetail(new CHourDetail(orderMain.getCid(), HandleTypeEnums.ORDER.getId(),
                     StaticUtils.PAY_OUT, orderMain.getPayCode(), realHour, HandleTypeEnums.getName(HandleTypeEnums.ORDER.getId())));
-        }
-        if (StringUtils.isNotEmpty(msg)) {
-            return RestResult.fail("fail", "00");
-        }
-
-        // 判断是否需要余额支付和是否开启免密支付
-        if (payMoney.compareTo(BigDecimal.ZERO) > 0
-                && FunctionUtils.isEquals(StaticUtils.STATUS_SUCCESS, account.getFreeSecret())) {
-            msg = handleAccountChangeService.insertCMoneyDetail(new CMoneyDetail(orderMain.getCid(), HandleTypeEnums.ORDER.getId(),
-                    StaticUtils.PAY_OUT, orderMain.getPayCode(), payMoney, HandleTypeEnums.getName(HandleTypeEnums.ORDER.getId())));
-            if (StringUtils.isEmpty(msg)) {
-                orderMain.setPayType(PayTypeEnums.MONEY.getId());
-                orderMain.setOverTime(DateUtil.currentDate());
-                orderStatus = OrderStatusEnums.OVER.getId();
-            } else {
-                // 余额不足或其它情况
-                return RestResult.success("success", "01", 1);
+            if (StringUtils.isNotEmpty(msg)) {
+                return RestResult.fail("fail", "00");
             }
         }
+
         // 操作赋值
         BigDecimal realMoney = payMoney;
         orderMain.setRentMoney(rentMoney);
@@ -319,7 +320,7 @@ public class HandleBatteryService {
             return RestResult.fail("fail", "00");
         }
         // 成功
-        return RestResult.success("success", "01");
+        return RestResult.success("success", "01", flag);
     }
 
 }

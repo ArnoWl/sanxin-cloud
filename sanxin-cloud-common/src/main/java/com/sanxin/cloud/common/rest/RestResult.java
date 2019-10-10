@@ -38,6 +38,8 @@ public class RestResult implements Serializable {
      */
     public Object data;
 
+    public String flag;
+
     private static String getLanguageMsg(String msg) {
         String languageMsg = LanguageUtils.getMessage(msg);
         if (StringUtils.isNotBlank(languageMsg)) {
@@ -52,14 +54,33 @@ public class RestResult implements Serializable {
      * @param code
      * @param msg
      * @param data
+     * @param flag
      * @return
      */
-    public static RestResult success(String code,String msg,Object data){
+    public static RestResult success(String code,String msg,Object data, String flag){
         RestResult restResult=new RestResult();
         restResult.status=true;
         restResult.code=code;
         restResult.msg=getLanguageMsg(msg);
         restResult.data=data;
+        restResult.flag=flag;
+        return restResult;
+    }
+
+    /**
+     * 成功返回
+     * @param msg
+     * @param data
+     * @param flag
+     * @return
+     */
+    public static RestResult success(String msg,Object data, String flag){
+        RestResult restResult=new RestResult();
+        restResult.status=true;
+        restResult.code="1";
+        restResult.msg=getLanguageMsg(msg);
+        restResult.data=data;
+        restResult.flag=flag;
         return restResult;
     }
 
@@ -113,12 +134,30 @@ public class RestResult implements Serializable {
      * @param data
      * @return
      */
-    public static RestResult fail(String code,String msg,Object data){
+    public static RestResult fail(String code,String msg,Object data, String flag){
         RestResult restResult=new RestResult();
         restResult.status=false;
         restResult.code=code;
         restResult.msg=getLanguageMsg(msg);
         restResult.data=data;
+        restResult.flag=flag;
+        return restResult;
+    }
+
+    /**
+     * 失败返回
+     * @param msg
+     * @param data
+     * @param flag
+     * @return
+     */
+    public static RestResult fail(String msg,Object data, String flag){
+        RestResult restResult=new RestResult();
+        restResult.status=false;
+        restResult.code="-1";
+        restResult.msg=getLanguageMsg(msg);
+        restResult.data=data;
+        restResult.flag=flag;
         return restResult;
     }
 

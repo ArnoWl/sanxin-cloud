@@ -80,7 +80,7 @@ public class GlobalExceptionHandler {
     public RestResult handleJsonException(ThrowJsonException e){
 		switch (e.getMessage()) {
 		case "1001":
-			return RestResult.fail("1001","Token is invalid, please log in again",null);
+			return RestResult.fail("1001","Token is invalid, please log in again",null,null);
 		default:
 			return RestResult.fail(e.getMessage());
 		}
@@ -94,7 +94,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(LoginOutException.class)
 	@ResponseBody
 	public RestResult handleLoginOut(LoginOutException e){
-		return RestResult.fail("1001",e.getMessage(),null);
+		return RestResult.fail("1001",e.getMessage(),null,null);
 	}
 
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -106,7 +106,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value =  Exception.class)
     @ResponseBody
     public RestResult errorResponse(HttpServletRequest req,Exception e) {
-		return RestResult.fail("请求错误");
+		return RestResult.fail("request_error");
     }
 
 }
