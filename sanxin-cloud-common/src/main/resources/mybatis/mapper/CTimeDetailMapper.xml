@@ -17,7 +17,7 @@
     </resultMap>
 
     <!-- 用户时长明细 -->
-    <select id="queryTimeDetail" resultType="com.sanxin.cloud.entity.CTimeDetail">
+    <select id="queryTimeDetail" resultMap="BaseResultMap">
         select * from c_time_detail where cid=#{cid}
     </select>
 

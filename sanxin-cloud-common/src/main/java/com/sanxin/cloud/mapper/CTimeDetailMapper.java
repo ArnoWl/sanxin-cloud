@@ -3,6 +3,7 @@ package com.sanxin.cloud.mapper;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.CTimeDetail;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -14,5 +15,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface CTimeDetailMapper extends BaseMapper<CTimeDetail> {
 
-    SPage<CTimeDetail> queryTimeDetail(SPage<CTimeDetail> page, Integer cid);
+    SPage<CTimeDetail> queryTimeDetail(SPage<CTimeDetail> page, @Param("cid") Integer cid);
 }
