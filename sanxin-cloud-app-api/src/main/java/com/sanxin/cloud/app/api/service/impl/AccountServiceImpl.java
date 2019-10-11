@@ -136,6 +136,9 @@ public class AccountServiceImpl implements AccountService {
     public RestResult queryTimeDetail(SPage<CTimeDetail> page, Integer cid) {
         UserTimeVO userTimeVO = new UserTimeVO();
         SPage<CTimeDetail> list = timeDetailMapper.queryTimeDetail(page, cid);
+        for (CTimeDetail record : list.getRecords()) {
+            record.setTypeName(HandleTypeEnums.getName(record.getType()));
+        }
         CAccount account = getAccount(cid);
         userTimeVO.setList(list);
         userTimeVO.setTime(account.getHour());
