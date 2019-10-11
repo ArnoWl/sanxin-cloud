@@ -98,4 +98,14 @@ public class StaticUtils {
      * 类型-加盟商(val=2)
      */
     public static final int TYPE_FRANCHISEE = 2;
+    /**==================================================================================**/
+    /**
+     * 余额
+     */
+    public static final int TWENTY = 20;
+    public static final int THIRTY = 30;
+    public static final int FIFTY = 50;
+    public static final int SIXTY = 60;
+    public static final int SEVENTY = 70;
+    public static final int EIGHTY = 80;
 }

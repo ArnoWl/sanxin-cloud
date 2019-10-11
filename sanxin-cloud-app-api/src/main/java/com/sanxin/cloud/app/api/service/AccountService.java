@@ -54,7 +54,7 @@ public interface AccountService {
      * @param cid
      * @return
      */
-    RestResult getTime(Integer cid);
+    RestResult getBuyGift(Integer cid);
 
     /**
      * 充值押金处理

@@ -9,19 +9,14 @@ import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
-import com.sanxin.cloud.dto.CMarginVO;
-import com.sanxin.cloud.dto.MoneyDetailVO;
-import com.sanxin.cloud.dto.UserTimeVO;
+import com.sanxin.cloud.dto.*;
 import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.enums.HandleTypeEnums;
 import com.sanxin.cloud.enums.ParamCodeEnums;
 import com.sanxin.cloud.enums.PayTypeEnums;
 import com.sanxin.cloud.enums.ServiceEnums;
 import com.sanxin.cloud.exception.ThrowJsonException;
-import com.sanxin.cloud.mapper.BankDetailMapper;
-import com.sanxin.cloud.mapper.CMarginDetailMapper;
-import com.sanxin.cloud.mapper.CMoneyDetailMapper;
-import com.sanxin.cloud.mapper.CTimeDetailMapper;
+import com.sanxin.cloud.mapper.*;
 import com.sanxin.cloud.service.CAccountService;
 import com.sanxin.cloud.service.CCustomerService;
 import com.sanxin.cloud.service.CPayLogService;
@@ -32,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,7 +55,8 @@ public class AccountServiceImpl implements AccountService {
     private CCustomerService customerService;
     @Autowired
     private CPayLogService cPayLogService;
-
+    @Autowired
+    private GiftHourMapper giftHourMapper;
     /**
      * 我的押金
      *
@@ -113,8 +110,20 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public RestResult getBalance(Integer cid) {
+        BalanceVO vo=new BalanceVO();
         CAccount account = getAccount(cid);
-        return RestResult.success(account.getMoney());
+        if (account != null) {
+            vo.setBalance(account.getMoney());
+        }
+        List<Integer> list=new ArrayList<>();
+        list.add(StaticUtils.TWENTY);
+        list.add(StaticUtils.THIRTY);
+        list.add(StaticUtils.FIFTY);
+        list.add(StaticUtils.SIXTY);
+        list.add(StaticUtils.SEVENTY);
+        list.add(StaticUtils.EIGHTY);
+        vo.setList(list);
+        return RestResult.success(vo);
     }
 
     /**
@@ -140,9 +149,15 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public RestResult getTime(Integer cid) {
+    public RestResult getBuyGift(Integer cid) {
+        BuyGiftVO giftVO=new BuyGiftVO();
         CAccount account = getAccount(cid);
-        return RestResult.success(account.getHour());
+        if (account != null) {
+            giftVO.setHour(account.getHour());
+        }
+        List<GiftHour> giftHours = giftHourMapper.selectList(null);
+        giftVO.setList(giftHours);
+        return RestResult.success(giftVO);
     }
 
     /**

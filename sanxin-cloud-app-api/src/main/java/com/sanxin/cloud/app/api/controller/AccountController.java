@@ -77,14 +77,14 @@ public class AccountController {
     }
 
     /**
-     * 剩余时长
+     * 购买时长礼包
      * @return
      */
-    @RequestMapping(value = AccountMapping.GET_TIME)
-    public RestResult getTime() {
+    @RequestMapping(value = AccountMapping.GET_BUY_GIFT)
+    public RestResult getBuyGift() {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginCid(token);
-        return accountService.getTime(cid);
+        return accountService.getBuyGift(cid);
     }
 
     /**
