@@ -8,6 +8,7 @@ import com.sanxin.cloud.entity.CTimeDetail;
 
 /**
  * 用户账户Service
+ *
  * @author xiaoky
  * @date 2019-10-09
  */
@@ -15,6 +16,7 @@ public interface AccountService {
 
     /**
      * 我的押金明细
+     *
      * @param cid
      * @return
      */
@@ -22,6 +24,7 @@ public interface AccountService {
 
     /**
      * 我的钱包
+     *
      * @param cid
      * @return
      */
@@ -29,6 +32,7 @@ public interface AccountService {
 
     /**
      * 余额明细
+     *
      * @param cid
      * @return
      */
@@ -36,6 +40,7 @@ public interface AccountService {
 
     /**
      * 我要充值显示余额
+     *
      * @param cid
      * @return
      */
@@ -43,6 +48,7 @@ public interface AccountService {
 
     /**
      * 用户时长明细
+     *
      * @param page
      * @param cid
      * @return
@@ -51,19 +57,32 @@ public interface AccountService {
 
     /**
      * 剩余时长
+     *
      * @param cid
      * @return
      */
     RestResult getBuyGift(Integer cid);
 
     /**
+     * 支付购买时长
+     * @param cid 用户di
+     * @param id 礼包id
+     * @param type 支付类型1余额  2泰国本地银行卡
+     * @param payPass 支付密码
+     * @return
+     */
+    RestResult payTimeGift(Integer cid, Integer id, Integer type,String payPass);
+
+
+    /**
      * 充值押金处理
      * @param cid
-     * @param payWord 支付密码-选择余额支付需要
-     * @param payType 支付方式见PayTypeEnums
+     * @param payWord    支付密码-选择余额支付需要
+     * @param payType    支付方式见PayTypeEnums
      * @param payChannel 支付渠道见LoginChannelEnums
      * @param freeSecret 是否免密支付
      * @return
      */
     RestResult rechargeDeposit(Integer cid, String payWord, Integer payType, Integer payChannel, Integer freeSecret);
+
 }

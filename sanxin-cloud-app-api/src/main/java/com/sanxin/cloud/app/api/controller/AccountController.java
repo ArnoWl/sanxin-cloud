@@ -88,6 +88,21 @@ public class AccountController {
     }
 
     /**
+     * 支付购买时长
+     * @param id 礼包id
+     * @param type 支付类型1余额
+     * @param payPass 支付密码
+     * @return
+     */
+    @RequestMapping(value = AccountMapping.PAY_TIME_GIFT)
+    public RestResult payTimeGift(Integer id,Integer type,String payPass) {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginCid(token);
+        return accountService.payTimeGift(cid,id,type,payPass);
+    }
+
+
+    /**
      * 充值押金
      * @param payWord 支付密码-选择余额支付需要
      * @param payType 支付方式

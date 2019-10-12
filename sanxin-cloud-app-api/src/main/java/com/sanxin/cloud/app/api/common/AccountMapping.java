@@ -29,6 +29,10 @@ public class AccountMapping {
 
     /**剩余时长*/
     public static final String GET_BUY_GIFT="/getBuyGift";
+
+    /**提交购买时长*/
+    public static final String PAY_TIME_GIFT="/payTimeGift";
+
     /**充值押金*/
     public static final String RECHARGE_DEPOSIT="/rechargeDeposit";
 }

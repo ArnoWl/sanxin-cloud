@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author xiaoky
  * @date 2019-09-12
  */
@@ -15,7 +14,8 @@ public enum HandleTypeEnums {
     ORDER(1, "handle_type_order"),
     RECHARGE_DEPOSIT_MONEY(2, "service_recharge_deposit"),
     CASH(3, "handle_type_cash"),
-    TIME(4,"handle_type_time");
+    TIME(4, "handle_type_time"),
+    BUY_TIEM_GIFT(5, "buy_type_time");
 
     private Integer id;
     private String name;

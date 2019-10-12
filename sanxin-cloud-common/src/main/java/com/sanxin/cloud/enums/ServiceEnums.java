@@ -11,7 +11,8 @@ import com.sanxin.cloud.common.language.LanguageUtils;
 public enum ServiceEnums {
     ORDER(1,"service_order"),
     RECHARGE_DEPOSIT_MONEY(2,"service_recharge_deposit"),
-    CASH(3, "handle_type_cash");
+    CASH(3, "handle_type_cash"),
+    BUY_TIEM_GIFT(4, "buy_type_time");
 
     private int id;
     private String name;

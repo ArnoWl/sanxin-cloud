@@ -8,13 +8,11 @@ import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.common.times.DateUtil;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.*;
 import com.sanxin.cloud.entity.*;
-import com.sanxin.cloud.enums.HandleTypeEnums;
-import com.sanxin.cloud.enums.ParamCodeEnums;
-import com.sanxin.cloud.enums.PayTypeEnums;
-import com.sanxin.cloud.enums.ServiceEnums;
+import com.sanxin.cloud.enums.*;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.mapper.*;
 import com.sanxin.cloud.service.CAccountService;
@@ -28,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,6 +47,8 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private CAccountService cAccountService;
     @Autowired
+    private CAccountMapper accountMapper;
+    @Autowired
     private InfoParamService infoParamService;
     @Autowired
     private PayService payService;
@@ -57,6 +58,7 @@ public class AccountServiceImpl implements AccountService {
     private CPayLogService cPayLogService;
     @Autowired
     private GiftHourMapper giftHourMapper;
+
     /**
      * 我的押金
      *
@@ -105,17 +107,18 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 我要充值显示余额
+     *
      * @param cid
      * @return
      */
     @Override
     public RestResult getBalance(Integer cid) {
-        BalanceVO vo=new BalanceVO();
+        BalanceVO vo = new BalanceVO();
         CAccount account = getAccount(cid);
         if (account != null) {
             vo.setBalance(account.getMoney());
         }
-        List<Integer> list=new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
         list.add(StaticUtils.TWENTY);
         list.add(StaticUtils.THIRTY);
         list.add(StaticUtils.FIFTY);
@@ -128,6 +131,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 用户时长明细
+     *
      * @param page
      * @param cid
      * @return
@@ -153,7 +157,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public RestResult getBuyGift(Integer cid) {
-        BuyGiftVO giftVO=new BuyGiftVO();
+        BuyGiftVO giftVO = new BuyGiftVO();
         CAccount account = getAccount(cid);
         if (account != null) {
             giftVO.setHour(account.getHour());
@@ -161,6 +165,68 @@ public class AccountServiceImpl implements AccountService {
         List<GiftHour> giftHours = giftHourMapper.selectList(null);
         giftVO.setList(giftHours);
         return RestResult.success(giftVO);
+    }
+
+    /**
+     * 支付购买时长
+     *
+     * @param cid     用户di
+     * @param id      礼包id
+     * @param type    支付类型1余额  2泰国本地银行卡
+     * @param payPass 支付密码
+     * @return
+     */
+    @Override
+    public RestResult payTimeGift(Integer cid, Integer id, Integer type, String payPass) {
+        GiftHour giftHour = giftHourMapper.selectById(id);
+        if (giftHour == null) {
+            return RestResult.fail("礼包异常");
+        }
+        CCustomer customer = customerService.getById(cid);
+        if (customer == null) {
+            return RestResult.fail("register_user_empty");
+        }
+        CAccount account = cAccountService.getByCid(cid);
+        switch (type) {
+            //余额支付
+            case 1:
+                //密码加密
+                String pass = PwdEncode.encodePwd(payPass);
+                //交易密码是否为空
+                if (StringUtils.isBlank(customer.getPayWord())) {
+                    return RestResult.fail("not_set_pay_word", null, "1");
+                }
+                //交易密码是否匹配
+                if (!pass.equals(customer.getPayWord())) {
+                    return RestResult.fail("pay_word_error");
+                }
+                //余额是否大于礼包金额
+                if (account.getMoney().compareTo(giftHour.getMoney()) != 1) {
+                    return RestResult.fail("pay_balance_error");
+                }
+                String payCode = FunctionUtils.getOrderCode("T");
+                /*BigDecimal sub = FunctionUtils.sub(account.getMoney(), giftHour.getMoney(), 2);
+                account.setMoney(sub);
+                accountMapper.updateById(account);
+*/
+                CPayLog log = new CPayLog();
+                log.setCid(cid);
+                log.setPayType(PayTypeEnums.MONEY.getId());
+                log.setPayChannel(LoginChannelEnums.APP.getChannel());
+                log.setPayMoney(giftHour.getMoney());
+                log.setHandleType(HandleTypeEnums.BUY_TIEM_GIFT.getId());
+                log.setServiceType(ServiceEnums.BUY_TIEM_GIFT.getId());
+                log.setPayCode(payCode);
+                log.setCreateTime(DateUtil.getInstance().currentDate());
+                boolean flag = cPayLogService.save(log);
+                if (!flag) {
+                    throw new ThrowJsonException(LanguageUtils.getMessage("pay_log_create_fail"));
+                }
+                return payService.handleSign(log);
+
+
+        }
+        return null;
     }
 
     /**
@@ -177,6 +243,16 @@ public class AccountServiceImpl implements AccountService {
         return account;
     }
 
+    /**
+     * 充值押金处理
+     *
+     * @param cid
+     * @param payWord    支付密码-选择余额支付需要
+     * @param payType    支付方式见PayTypeEnums
+     * @param payChannel 支付渠道见LoginChannelEnums
+     * @param freeSecret 是否免密支付
+     * @return
+     */
     @Override
     public RestResult rechargeDeposit(Integer cid, String payWord, Integer payType, Integer payChannel, Integer freeSecret) {
         CCustomer customer = customerService.getById(cid);
