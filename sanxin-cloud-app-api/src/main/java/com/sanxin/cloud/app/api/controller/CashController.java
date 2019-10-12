@@ -59,7 +59,7 @@ public class CashController {
      * @param bankId 银行卡id
      * @return
      */
-    @DeleteMapping("/deleteBank")
+    @RequestMapping("/deleteBank")
     public RestResult deleteBank(Integer bankId) {
         String token = BaseUtil.getUserToken();
         Integer targetId = loginTokenService.validLoginTid(token);
@@ -82,7 +82,7 @@ public class CashController {
      * @param bankDetail 数据
      * @return
      */
-    @PostMapping(value = "/addBank")
+    @RequestMapping(value = "/addBank")
     public RestResult addBankDetail(BankDetail bankDetail) {
         String token = BaseUtil.getUserToken();
         Integer targetId = loginTokenService.validLoginTid(token);
@@ -120,8 +120,13 @@ public class CashController {
      * @param bankDetail
      * @return
      */
-    @PutMapping("/updateBank")
+    @RequestMapping("/updateBank")
     public RestResult updateBankDetail(BankDetail bankDetail) {
+        String token = BaseUtil.getUserToken();
+        Integer targetId = loginTokenService.validLoginTid(token);
+        Integer type = loginTokenService.validLoginType(token);
+        bankDetail.setTargetId(targetId);
+        bankDetail.setType(type);
         RestResult result = bankDetailService.updateBankDetail(bankDetail);
         return result;
     }
@@ -142,7 +147,7 @@ public class CashController {
      * @param cashDetail
      * @return
      */
-    @PostMapping("/handleCashApply")
+    @RequestMapping("/handleCashApply")
     public RestResult handleCashApply(SysCashDetail cashDetail, String payWord, String validCode) {
         return sysCashDetailService.handleCashApply(cashDetail, payWord, validCode);
     }
