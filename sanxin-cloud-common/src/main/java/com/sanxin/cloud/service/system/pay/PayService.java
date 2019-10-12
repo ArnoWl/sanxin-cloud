@@ -112,6 +112,8 @@ public class PayService {
                     throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
                 }
                 break;
+            case BUY_TIEM_GIFT:
+
             default:
                 break;
         }
