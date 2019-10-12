@@ -14,7 +14,8 @@ import java.util.List;
 public enum HandleTypeEnums {
     ORDER(1, "handle_type_order"),
     RECHARGE_DEPOSIT_MONEY(2, "service_recharge_deposit"),
-    CASH(3, "handle_type_cash");
+    CASH(3, "handle_type_cash"),
+    TIME(4,"handle_type_time");
 
     private Integer id;
     private String name;

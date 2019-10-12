@@ -7,6 +7,7 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -18,6 +19,7 @@ import java.io.Serializable;
  * @author Arno
  * @since 2019-09-27
  */
+@Data
 public class CTimeDetail implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,6 +41,12 @@ public class CTimeDetail implements Serializable {
      * 操作类型
      */
     private Integer type;
+
+    /**
+     * 操作类型名称
+     */
+    @TableField(exist = false)
+    private String typeName;
 
     /**
      * 1充值 0扣除
@@ -77,15 +85,6 @@ public class CTimeDetail implements Serializable {
     @TableField(exist = false)
     private String nickName;
 
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-
     public Integer getId() {
         return id;
     }
@@ -93,6 +92,7 @@ public class CTimeDetail implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+
     public Integer getCid() {
         return cid;
     }
@@ -100,6 +100,7 @@ public class CTimeDetail implements Serializable {
     public void setCid(Integer cid) {
         this.cid = cid;
     }
+
     public String getPayCode() {
         return payCode;
     }
@@ -107,6 +108,7 @@ public class CTimeDetail implements Serializable {
     public void setPayCode(String payCode) {
         this.payCode = payCode;
     }
+
     public Integer getType() {
         return type;
     }
@@ -114,6 +116,15 @@ public class CTimeDetail implements Serializable {
     public void setType(Integer type) {
         this.type = type;
     }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
     public Integer getIsout() {
         return isout;
     }
@@ -121,6 +132,7 @@ public class CTimeDetail implements Serializable {
     public void setIsout(Integer isout) {
         this.isout = isout;
     }
+
     public BigDecimal getOriginal() {
         return original;
     }
@@ -128,6 +140,7 @@ public class CTimeDetail implements Serializable {
     public void setOriginal(BigDecimal original) {
         this.original = original;
     }
+
     public BigDecimal getCost() {
         return cost;
     }
@@ -135,6 +148,7 @@ public class CTimeDetail implements Serializable {
     public void setCost(BigDecimal cost) {
         this.cost = cost;
     }
+
     public BigDecimal getLast() {
         return last;
     }
@@ -142,6 +156,7 @@ public class CTimeDetail implements Serializable {
     public void setLast(BigDecimal last) {
         this.last = last;
     }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -149,6 +164,7 @@ public class CTimeDetail implements Serializable {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
     public String getRemark() {
         return remark;
     }
@@ -157,19 +173,29 @@ public class CTimeDetail implements Serializable {
         this.remark = remark;
     }
 
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
     @Override
     public String toString() {
         return "CTimeDetail{" +
-        "id=" + id +
-        ", cid=" + cid +
-        ", payCode=" + payCode +
-        ", type=" + type +
-        ", isout=" + isout +
-        ", original=" + original +
-        ", cost=" + cost +
-        ", last=" + last +
-        ", createTime=" + createTime +
-        ", remark=" + remark +
-        "}";
+                "id=" + id +
+                ", cid=" + cid +
+                ", payCode='" + payCode + '\'' +
+                ", type=" + type +
+                ", typeName=" + typeName +
+                ", isout=" + isout +
+                ", original=" + original +
+                ", cost=" + cost +
+                ", last=" + last +
+                ", createTime=" + createTime +
+                ", remark='" + remark + '\'' +
+                ", nickName='" + nickName + '\'' +
+                '}';
     }
 }

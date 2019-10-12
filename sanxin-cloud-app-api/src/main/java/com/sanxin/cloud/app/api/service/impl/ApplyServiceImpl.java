@@ -153,11 +153,14 @@ public class ApplyServiceImpl implements ApplyService {
             if (StringUtils.isBlank(business.getCardBack())) {
                 return RestResult.fail("apply_card_back_empty");
             }
-        } else if (FunctionUtils.isEquals(business.getCardType(), CardTypeEnums.PASS_PORT.getType())) {
-            return RestResult.fail("apply_card_pass_empty");
-        } else {
-            return RestResult.fail("data_exception");
         }
+
+        if (FunctionUtils.isEquals(business.getCardType(), CardTypeEnums.PASS_PORT.getType())) {
+            if (StringUtils.isBlank(business.getPassPort())) {
+                return RestResult.fail("apply_card_pass_empty");
+            }
+        }
+
         if (StringUtils.isBlank(business.getCompanyName())) {
             return RestResult.fail("apply_company_name_empty");
         }
