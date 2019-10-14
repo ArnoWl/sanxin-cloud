@@ -27,5 +27,5 @@ public interface SysCashRuleService extends IService<SysCashRule> {
      * @param type
      * @return
      */
-    Map<String, Object> getCashRule(Integer type);
+    Map<String, Object> getCashRule(Integer type, Integer tid);
 }

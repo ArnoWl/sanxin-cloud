@@ -133,12 +133,14 @@ public class CashController {
 
     /**
      * 获取提现比例等规则
-     * @param type 根据类型查询提现规则
      * @return
      */
     @RequestMapping(value = "/getCashScale")
-    public RestResult getCashScale(Integer type) {
-        Map<String, Object> map = sysCashRuleService.getCashRule(type);
+    public RestResult getCashScale() {
+        String token = BaseUtil.getUserToken();
+        Integer tid = loginTokenService.validLoginTid(token);
+        Integer type = loginTokenService.validLoginType(token);
+        Map<String, Object> map = sysCashRuleService.getCashRule(type, tid);
         return RestResult.success("success", map);
     }
 
