@@ -49,7 +49,7 @@ public class CashController {
         bankDetailService.page(page, wrapper);
         for (BankDetail b : page.getRecords()) {
             b.setTargetId(null);
-            b.setBankCard(FunctionUtils.getLastValue(b.getBankCard(), 4));
+            b.setLastCode(FunctionUtils.getLastValue(b.getBankCard(), 4));
         }
         return RestResult.success("", page);
     }
