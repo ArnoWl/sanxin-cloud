@@ -98,6 +98,9 @@ public class StaticUtils {
      * 类型-加盟商(val=2)
      */
     public static final int TYPE_FRANCHISEE = 2;
+
+    public static final String RETURN_MONEY_NOT_ENOUGH = "1";
+    public static final String RETURN_NOT_FREE_SECRET = "2";
     /**==================================================================================**/
     /**
      * 余额

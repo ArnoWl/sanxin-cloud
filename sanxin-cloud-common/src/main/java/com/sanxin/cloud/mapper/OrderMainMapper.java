@@ -6,6 +6,7 @@ import com.sanxin.cloud.entity.OrderMain;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -24,4 +25,10 @@ public interface OrderMainMapper extends BaseMapper<OrderMain> {
      * @return
      */
     IPage<OrderMain> queryOrderList(SPage<OrderMain> page, @Param("order") OrderMain orderMain);
+
+    /**
+     * 统计订单金额
+     * @return
+     */
+    BigDecimal sumOrderMoney();
 }

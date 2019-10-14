@@ -27,6 +27,11 @@ public class LoginTokenService {
     @Autowired
     private RedisUtilsService redisUtilsService;
 
+    public String getTokenByTid(Integer tid) {
+        String token = redisUtilsService.getKey(tid+"_token");
+        return token;
+    }
+
     /**
      * 统一处理登录
      *
@@ -181,6 +186,28 @@ public class LoginTokenService {
             throw new LoginOutException("1000");
         }
         return loginDto.getType();
+    }
+
+    public Integer validLoginChannel(String token) {
+        if (StringUtils.isBlank(token)) {
+            //Token can't be Null
+            throw new LoginOutException("997");
+        }
+        String decrypt = redisUtilsService.getKey(token);
+        if (StringUtils.isBlank(decrypt)) {
+            //Logon information error
+            throw new LoginOutException("998");
+        }
+        LoginDto loginDto = JSONObject.parseObject(decrypt, LoginDto.class);
+        if (loginDto == null || loginDto.getTid() == null) {
+            //Unique primary can't be Null
+            throw new LoginOutException("999");
+        }
+        if (loginDto.getChannel() == null) {
+            //Error in landing channel
+            throw new LoginOutException("1000");
+        }
+        return loginDto.getChannel();
     }
 
     /**

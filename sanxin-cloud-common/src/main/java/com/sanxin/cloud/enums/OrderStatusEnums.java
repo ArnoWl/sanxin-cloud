@@ -53,7 +53,7 @@ public enum OrderStatusEnums {
         String str="";
         for(OrderStatusEnums o:OrderStatusEnums.values()){
             if(FunctionUtils.isEquals(id, o.getId())){
-                str= o.getName();
+                str= LanguageUtils.getMessage(o.getName());
                 break;
             }
         }

@@ -48,9 +48,4 @@ public interface SysCashDetailService extends IService<SysCashDetail> {
      */
     RestResult marginWithdraw(Integer cid);
 
-    /**
-     * 查询提现总额
-     * @return
-     */
-    BigDecimal sumCashMoney();
 }

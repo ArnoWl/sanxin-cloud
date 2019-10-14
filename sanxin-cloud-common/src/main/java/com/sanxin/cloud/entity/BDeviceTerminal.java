@@ -45,9 +45,14 @@ public class BDeviceTerminal implements Serializable {
     private String dCode;
 
     /**
+     * 用户id——标识正在使用人员
+     */
+    private Integer useCid;
+
+    /**
      * 用户id——状态为已销毁数据才有效
      */
-    private Integer cid;
+    private Integer buyCid;
 
     /**
      * 充电宝借出次数
@@ -99,13 +104,23 @@ public class BDeviceTerminal implements Serializable {
     public void setdCode(String dCode) {
         this.dCode = dCode;
     }
-    public Integer getCid() {
-        return cid;
+
+    public Integer getUseCid() {
+        return useCid;
     }
 
-    public void setCid(Integer cid) {
-        this.cid = cid;
+    public void setUseCid(Integer useCid) {
+        this.useCid = useCid;
     }
+
+    public Integer getBuyCid() {
+        return buyCid;
+    }
+
+    public void setBuyCid(Integer buyCid) {
+        this.buyCid = buyCid;
+    }
+
     public Integer getLendNum() {
         return lendNum;
     }
@@ -156,7 +171,8 @@ public class BDeviceTerminal implements Serializable {
         ", status=" + status +
         ", level=" + level +
         ", dCode=" + dCode +
-        ", cid=" + cid +
+        ", useCid=" + useCid +
+        ", buyCid=" + buyCid +
         ", lendNum=" + lendNum +
         ", lastLendTime=" + lastLendTime +
         ", lastRevertTime=" + lastRevertTime +

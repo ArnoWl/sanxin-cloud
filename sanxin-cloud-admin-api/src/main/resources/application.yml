@@ -25,9 +25,9 @@ spring:
     testOnReturn: false
     poolPreparedStatements: true
   redis:
-    host: 183.60.136.220
-    port: 6388
-    password:
+    host: 47.244.167.166
+    port: 39182
+    password: N5Y6NZ7MO5WzBNI2
     jedis:
       pool:
         max-wait: 1000ms
@@ -55,7 +55,7 @@ mybatis-plus:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:7001/eureka/,http://localhost:7002/eureka/
+      defaultZone: http://47.244.167.166:7001/eureka/,http://47.244.167.166:7002/eureka/
     healthcheck:
       enabled: true
   instance:

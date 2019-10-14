@@ -27,9 +27,4 @@ public interface CAccountService extends IService<CAccount> {
      */
     CAccount getByCid(Integer cid);
 
-    /**
-     * 统计押金金额
-     * @return
-     */
-    BigDecimal sumDepositMoney();
 }

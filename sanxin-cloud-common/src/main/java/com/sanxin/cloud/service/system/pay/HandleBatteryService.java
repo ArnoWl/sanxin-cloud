@@ -10,6 +10,7 @@ import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.enums.*;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.service.*;
+import com.sanxin.cloud.service.system.login.LoginTokenService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,20 +42,29 @@ public class HandleBatteryService {
     @Autowired
     private CAccountService cAccountService;
     @Autowired
+    private LoginTokenService loginTokenService;
+    @Autowired
     private HandleAccountChangeService handleAccountChangeService;
 
     /**
      * 借充电宝逻辑处理
      * app、小程序端扫码，调用后台接口，后台首先应该查询机柜库存，得到电量最多的充电宝
      * 再发送借充电宝指令，等待机柜响应，借用成功调用该方法处理程序流程——诸如订单之类
-     * @param cid 当前借用充电宝的用户
      * @param boxId 机柜id
      * @param terminalId 充电宝id
      * @param slot 槽位
-     * @param fromChannel 来源渠道
      * @return
      */
-    public RestResult handleLendBattery(Integer cid, String boxId, String terminalId, String slot, Integer fromChannel) {
+    public RestResult handleLendBattery(String boxId, String terminalId, String slot) {
+        // 查询充电宝信息
+        BDeviceTerminal terminal = bDeviceTerminalService.getTerminalById(terminalId);
+        // 校验-充电宝不存在或者充电宝状态不是充电中
+        if (terminal == null || !FunctionUtils.isEquals(terminal.getStatus(), TerminalStatusEnums.CHARGING.getStatus())) {
+            throw new ThrowJsonException("data_exception");
+        }
+        Integer cid = terminal.getUseCid();
+        String token = loginTokenService.getTokenByTid(cid);
+        Integer fromChannel = loginTokenService.validLoginChannel(token);
         // 校验用户
         CCustomer customer = customerService.getById(cid);
         if (customer == null) {
@@ -71,12 +81,6 @@ public class HandleBatteryService {
         }
         // 查询店铺信息
         BBusiness business = businessService.validById(device.getBid());
-        // 查询充电宝信息
-        BDeviceTerminal terminal = bDeviceTerminalService.getTerminalById(terminalId);
-        // 校验-充电宝不存在或者充电宝状态不是充电中
-        if (terminal == null || !FunctionUtils.isEquals(terminal.getStatus(), TerminalStatusEnums.CHARGING.getStatus())) {
-            throw new ThrowJsonException("data_exception");
-        }
         // 借出-更新充电宝信息
         boolean result = handleLendTerminalMsg(terminal);
         if (!result) {
@@ -291,10 +295,12 @@ public class HandleBatteryService {
                     orderStatus = OrderStatusEnums.OVER.getId();
                 } else {
                     // 余额不足或其它情况,flag标识余额不足
-                    flag = "1";
+                    flag = StaticUtils.RETURN_MONEY_NOT_ENOUGH;
                 }
+            } else {
+                // 未开启免密支付-余额不用扣除
+                flag = StaticUtils.RETURN_NOT_FREE_SECRET;
             }
-            // 未开启免密支付-余额不用扣除
         }
 
         // 统一扣除时长
