@@ -34,9 +34,4 @@ public class CAccountServiceImpl extends ServiceImpl<CAccountMapper, CAccount> i
         return cAccount;
     }
 
-    @Override
-    public BigDecimal sumDepositMoney() {
-        return baseMapper.sumDepositMoney();
-    }
-
 }

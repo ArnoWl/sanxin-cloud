@@ -2,12 +2,18 @@ package com.sanxin.cloud.admin.api.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.times.DateUtil;
 import com.sanxin.cloud.dto.QueryTimeDataVo;
+import com.sanxin.cloud.entity.BDeviceTerminal;
 import com.sanxin.cloud.enums.CashTypeEnums;
+import com.sanxin.cloud.enums.TerminalStatusEnums;
+import com.sanxin.cloud.mapper.CAccountMapper;
+import com.sanxin.cloud.mapper.OrderMainMapper;
 import com.sanxin.cloud.mapper.SysCashDetailMapper;
+import com.sanxin.cloud.service.BDeviceTerminalService;
 import com.sanxin.cloud.service.SysCashDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +30,12 @@ import java.util.*;
 public class StatisticsService {
     @Autowired
     private SysCashDetailMapper sysCashDetailMapper;
+    @Autowired
+    private BDeviceTerminalService bDeviceTerminalService;
+    @Autowired
+    private CAccountMapper cAccountMapper;
+    @Autowired
+    private OrderMainMapper orderMainMapper;
 
     public Map<String, Object> queryCashStatistics() {
         JSONArray dateArray = new JSONArray();
@@ -144,5 +156,41 @@ public class StatisticsService {
             dateList = getMonthDate(time);
         }
         return dateList;
+    }
+
+    /**
+     * 统计充电宝数量
+     * @return
+     */
+    public Integer countTerminalNum() {
+        // 充电宝数量
+        QueryWrapper<BDeviceTerminal> terminalWrapper = new QueryWrapper<>();
+        terminalWrapper.eq("status", TerminalStatusEnums.CHARGING.getStatus());
+        Integer num = bDeviceTerminalService.count(terminalWrapper);
+        return num;
+    }
+
+    /**
+     * 统计提现金额
+     * @return
+     */
+    public BigDecimal sumCashMoney() {
+        return sysCashDetailMapper.sumCashMoney();
+    }
+
+    /**
+     * 统计押金金额
+     * @return
+     */
+    public BigDecimal sumDepositMoney() {
+        return cAccountMapper.sumDepositMoney();
+    }
+
+    /**
+     * 统计订单金额
+     * @return
+     */
+    public BigDecimal sumOrderMoney() {
+        return orderMainMapper.sumOrderMoney();
     }
 }

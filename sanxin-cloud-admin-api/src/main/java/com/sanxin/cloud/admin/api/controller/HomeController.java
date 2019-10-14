@@ -7,6 +7,7 @@ import com.sanxin.cloud.entity.BDeviceTerminal;
 import com.sanxin.cloud.enums.TerminalStatusEnums;
 import com.sanxin.cloud.service.BDeviceTerminalService;
 import com.sanxin.cloud.service.CAccountService;
+import com.sanxin.cloud.service.OrderMainService;
 import com.sanxin.cloud.service.SysCashDetailService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,16 +44,15 @@ public class HomeController {
     public RestResult labelMsg() {
         Map<String, Object> map = new HashMap<>();
         // 充电宝数量
-        QueryWrapper<BDeviceTerminal> terminalWrapper = new QueryWrapper<>();
-        terminalWrapper.eq("status", TerminalStatusEnums.CHARGING.getStatus());
-        int powerNum = bDeviceTerminalService.count(terminalWrapper);
+        int powerNum = statisticsService.countTerminalNum();
         map.put("powerNum", powerNum);
-        // orderMoney
+        BigDecimal orderMoney = statisticsService.sumOrderMoney();
+        map.put("orderMoney", orderMoney);
         // 提现金额
-        BigDecimal cashMoney = sysCashDetailService.sumCashMoney();
+        BigDecimal cashMoney = statisticsService.sumCashMoney();
         map.put("cashMoney", cashMoney);
         // 押金金额
-        BigDecimal depositMoney = cAccountService.sumDepositMoney();
+        BigDecimal depositMoney = statisticsService.sumDepositMoney();
         map.put("depositMoney", depositMoney);
         return RestResult.success("", map);
     }
