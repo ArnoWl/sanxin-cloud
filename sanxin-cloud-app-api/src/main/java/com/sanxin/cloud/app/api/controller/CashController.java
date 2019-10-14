@@ -87,8 +87,9 @@ public class CashController {
         String token = BaseUtil.getUserToken();
         Integer targetId = loginTokenService.validLoginTid(token);
         Integer type = loginTokenService.validLoginType(token);
-        RestResult result = bankDetailService.addBankDetail(bankDetail);
-        return result;
+        bankDetail.setTargetId(targetId);
+        bankDetail.setType(type);
+        return bankDetailService.addBankDetail(bankDetail);
     }
 
     /**
@@ -127,8 +128,7 @@ public class CashController {
         Integer type = loginTokenService.validLoginType(token);
         bankDetail.setTargetId(targetId);
         bankDetail.setType(type);
-        RestResult result = bankDetailService.updateBankDetail(bankDetail);
-        return result;
+        return bankDetailService.updateBankDetail(bankDetail);
     }
 
     /**
