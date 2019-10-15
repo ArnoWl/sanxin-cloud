@@ -64,6 +64,7 @@ public class HandleBatteryService {
         }
         Integer cid = terminal.getUseCid();
         String token = loginTokenService.getTokenByTid(cid);
+        System.out.println("借充电宝成功token"+token);
         Integer fromChannel = loginTokenService.validLoginChannel(token);
         // 校验用户
         CCustomer customer = customerService.getById(cid);

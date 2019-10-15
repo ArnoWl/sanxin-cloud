@@ -1,7 +1,10 @@
 package com.sanxin.cloud.netty.service;
 
+import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.BDeviceTerminal;
 import io.netty.channel.ChannelHandlerContext;
+
+import java.util.Map;
 
 /**
  * 机柜通信业务处理service
@@ -39,11 +42,34 @@ public interface HandleService {
      * @param boxId 机柜id
      * @return
      */
-    String getMostCharge(String boxId);
+    Map<String, String> getMostCharge(String boxId);
 
     /**
      * 成功借充电宝
      * @param terminalId
      */
     void handleLendSuccess(String terminalId);
+
+    /**
+     * 通过充电宝编号查询正在使用的用户id
+     * @param terminalId
+     * @return
+     */
+    Integer queryCidByTerminalId(String terminalId);
+
+    /**
+     * 归还成功查询订单支付信息
+     * @param cid
+     * @param terminalId
+     * @return
+     */
+    RestResult queryReturnMsg(String cid, String terminalId);
+
+    /**
+     * 修改设备总库存
+     * @param boxId
+     * @param terminalNum
+     * @return
+     */
+    Boolean handleSaveDevice(String boxId, Integer terminalNum);
 }

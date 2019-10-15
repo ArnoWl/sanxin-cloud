@@ -1,9 +1,17 @@
 package com.sanxin.cloud.config.redis;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sanxin.cloud.dto.BTerminalVo;
+import com.sanxin.cloud.entity.BDeviceTerminal;
 import com.sanxin.cloud.entity.InfoAli;
 import com.sanxin.cloud.exception.ThrowJsonException;
+import jdk.nashorn.internal.ir.Terminal;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * redis工具类
@@ -51,6 +59,42 @@ public class RedisUtils {
         }
         InfoAli infos = JSONObject.parseObject(obj, InfoAli.class);
         return infos;
+    }
+
+    /**
+     * 设置充电宝信息
+     * @param boxId
+     * @param list
+     */
+    public void setTerminalByBoxId(String boxId, List<BTerminalVo> list) {
+        String obj = JSON.toJSONString(list);
+        getRedisUtilsService().setKey(boxId, obj);
+    }
+
+    /**
+     * 获取充电宝信息
+     * @return
+     */
+    public List<BTerminalVo> getTerminalByBoxId(String boxId) {
+        String obj = getRedisUtilsService().getKey(boxId);
+        System.out.println("充电宝编号" + boxId);
+        System.out.println("获取充电宝库存信息" + obj);
+        List<BTerminalVo> list = JSONArray.parseArray(obj, BTerminalVo.class);
+        return list;
+    }
+
+    /**
+     * 获取电量最多的充电宝
+     * @param boxId
+     * @return
+     */
+    public BTerminalVo getMostCharge(String boxId) {
+        List<BTerminalVo> list = getTerminalByBoxId(boxId);
+        if (list != null && list.size()>0) {
+            Collections.sort(list);
+            return list.get(0);
+        }
+        return null;
     }
 
     /**

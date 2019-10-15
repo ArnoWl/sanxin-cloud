@@ -1,6 +1,6 @@
 package com.sanxin.cloud.netty.handle;
 
-import com.sanxin.cloud.netty.enums.CommandEnums;
+import com.sanxin.cloud.netty.properties.AppCommandUtils;
 import com.sanxin.cloud.netty.properties.CommandUtils;
 import com.sanxin.cloud.netty.properties.NettySocketHolder;
 import io.netty.channel.ChannelFutureListener;
@@ -20,9 +20,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ChannelHandler.Sharable
-public class DataAcceptHandler extends SimpleChannelInboundHandler<String> {
+public class AppDataAcceptHandler extends SimpleChannelInboundHandler<String> {
 
-    private static Logger log = LoggerFactory.getLogger(DataAcceptHandler.class);
+    private static Logger log = LoggerFactory.getLogger(AppDataAcceptHandler.class);
 
     @Override
     public void channelActive(ChannelHandlerContext ctx){
@@ -40,10 +40,9 @@ public class DataAcceptHandler extends SimpleChannelInboundHandler<String> {
         ctx.channel().close();
     }
 
-
     @Override
     public void channelRead0(ChannelHandlerContext ctx, String content)throws  Exception{
-        String out_remark=CommandUtils.command(ctx,content);
+        String out_remark= AppCommandUtils.command(ctx,content);
         if(!StringUtils.isEmpty(out_remark)){
             ctx.channel().writeAndFlush(out_remark).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
         }
@@ -56,20 +55,14 @@ public class DataAcceptHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt){
-        log.info("进入空闲处理");
         if (evt instanceof IdleStateEvent){
             IdleStateEvent event = (IdleStateEvent) evt ;
-            log.info("state"+event.state());
             if (event.state() == IdleState.READER_IDLE) {
-                log.info("===客户端["+ctx.channel().remoteAddress()+"]===(READER_IDLE 读超时)");
+                log.info("===APP客户端["+ctx.channel().remoteAddress()+"]===(READER_IDLE 读超时)");
             } else if (event.state() == IdleState.WRITER_IDLE) {
-                log.info("===客户端["+ctx.channel().remoteAddress()+"]===(WRITER_IDLE 写超时)！");
+                log.info("===APP客户端["+ctx.channel().remoteAddress()+"]===(WRITER_IDLE 写超时)！");
             }else if (event.state() == IdleState.ALL_IDLE) {
-                log.info("===客户端["+ctx.channel().remoteAddress()+"]===(ALL_IDLE 总超时 重新连接)");
-                // 请求查询库存
-                if (NettySocketHolder.get(ctx) != null) {
-                    ctx.channel().writeAndFlush(CommandUtils.sendCommand(CommandEnums.x64.getCommand())).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
-                }
+                log.info("===APP客户端["+ctx.channel().remoteAddress()+"]===(ALL_IDLE 总超时 重新连接)");
             }
         }
     }

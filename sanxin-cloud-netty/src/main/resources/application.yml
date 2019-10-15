@@ -25,9 +25,11 @@ spring:
     testOnReturn: false
     poolPreparedStatements: true
   redis:
-    host: 35.240.194.196
-    port: 39182
-    password: N5Y6NZ7MO5WzBNI2
+    host: 183.60.136.220
+    port: 6388
+    token:
+      time: 864000
+    password:
     jedis:
       pool:
         max-wait: 1000ms
@@ -67,6 +69,7 @@ eureka:
 #netty
 netty:
   port: 8086
+  appPort: 8087
 
 # 使用actuator来展示项目的基本信息
 info:

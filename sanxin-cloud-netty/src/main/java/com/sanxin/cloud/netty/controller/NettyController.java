@@ -5,6 +5,7 @@ import com.sanxin.cloud.netty.properties.CommandUtils;
 import com.sanxin.cloud.netty.properties.NettySocketHolder;
 import com.sanxin.cloud.netty.service.HandleService;
 import com.sanxin.cloud.service.BDeviceTerminalService;
+import com.sanxin.cloud.service.system.login.LoginTokenService;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,16 @@ import java.util.Map;
 public class NettyController {
     @Autowired
     private HandleService handleService;
+    @Autowired
+    private LoginTokenService loginTokenService;
 
     @GetMapping(value="/sendCommand")
     public void sendCommand(String boxId,String commond){
-        ChannelHandlerContext ctx= NettySocketHolder.get(boxId);
-        ctx.channel().writeAndFlush(CommandUtils.sendCommand(commond)).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+        // ChannelHandlerContext ctx= NettySocketHolder.get(boxId);
+        // ctx.channel().writeAndFlush(CommandUtils.sendCommand(commond)).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
 //        //登陆成功后借一个充电宝
+        Integer cid = handleService.queryCidByTerminalId("RL1H96005656");
+        System.out.println(cid);
 //        ctx.channel().writeAndFlush(CommandUtils.sendCommand(CommandEnums.x65.getCommand())).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
 //        //查看充电宝库存
 //        ctx.channel().writeAndFlush(CommandUtils.sendCommand(CommandEnums.x64.getCommand())).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);

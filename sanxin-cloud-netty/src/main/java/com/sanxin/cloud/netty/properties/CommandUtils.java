@@ -1,11 +1,12 @@
 package com.sanxin.cloud.netty.properties;
 
 import com.sanxin.cloud.common.random.RandNumUtils;
-import com.sanxin.cloud.config.redis.RedisUtilsService;
-import com.sanxin.cloud.entity.BDeviceTerminal;
-import com.sanxin.cloud.enums.DeviceStatusEnums;
+import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.config.redis.RedisUtils;
+import com.sanxin.cloud.config.redis.SpringBeanFactoryUtils;
+import com.sanxin.cloud.dto.BTerminalVo;
 import com.sanxin.cloud.enums.RandNumType;
-import com.sanxin.cloud.enums.TerminalStatusEnums;
+import com.sanxin.cloud.netty.enums.AppCommandEnums;
 import com.sanxin.cloud.netty.enums.CommandEnums;
 import com.sanxin.cloud.netty.hex.HexUtils;
 import com.sanxin.cloud.netty.service.HandleService;
@@ -15,8 +16,8 @@ import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +32,7 @@ public class CommandUtils {
 
     private static Logger log = LoggerFactory.getLogger(CommandUtils.class);
     private static HandleService handleService = SpringBeanFactoryUtils.getApplicationContext().getBean(HandleService.class);
-    private static HandleBatteryService e = SpringBeanFactoryUtils.getApplicationContext().getBean(HandleBatteryService.class);
+    private static HandleBatteryService handleBatteryService = SpringBeanFactoryUtils.getApplicationContext().getBean(HandleBatteryService.class);
     /**
      * 接收到机器的指令
      * @param content  机器发送过来的16进制
@@ -78,6 +79,8 @@ public class CommandUtils {
                         out_str=HexUtils.hexStr2Str(out_str);
                         //登陆记录
                         NettySocketHolder.put(boxId,ctx);
+                        // 登录成功——发送查询机柜充电宝数量指令
+                        // ctx.channel().writeAndFlush(CommandUtils.sendCommand(CommandEnums.x6B.getCommand())).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                         break;
                     case x61:
                         // 心跳及响应
@@ -101,9 +104,9 @@ public class CommandUtils {
                         boxId=NettySocketHolder.get(ctx);
                         Integer terminalNum = Integer.parseInt(hex_arr[9], 16);
                         System.out.println("剩余充电宝个数"+terminalNum);
-                        List<String> list = new ArrayList<>();
                         // 更新设备可租借数量
-                        // boolean updateNum = handleService.handleUpdateDeviceRentNum(boxId, terminalNum);
+                        boolean updateNum = handleService.handleUpdateDeviceRentNum(boxId, terminalNum);
+                        List<BTerminalVo> list = new ArrayList<>();
                         for (int i=1;i<hex_arr.length/10;i++) {
                             int num = 10*i;
                             String slot = hex_arr[num];
@@ -114,20 +117,30 @@ public class CommandUtils {
                             System.out.println("查询库存-充电宝Id"+terminalId);
                             Integer level = Integer.parseInt(hex_arr[num + 9], 16);
                             System.out.println("查询库存-充电宝电量"+level);
-                            list.add(slot);
-                            // BDeviceTerminal terminal = new BDeviceTerminal();
-                            // terminal.setTerminalId(terminalId);
+                            BTerminalVo terminal = new BTerminalVo();
+                            terminal.setTerminalId(terminalId);
                             // terminal.setStatus(TerminalStatusEnums.CHARGING.getStatus());
-                            // terminal.setSlot(slot);
+                            terminal.setSlot(slot);
                             // terminal.setdCode(boxId);
-                            // terminal.setLevel(level);
+                            terminal.setLevel(level);
+                            list.add(terminal);
                             // 操作-更新充电宝数据
                             // handleService.handleUpdateTerminal(terminal);
                         }
-                        // 调用借充电宝的方法
-                        if (list != null && list.size()>=0) {
-                            out_str = sendCommand(CommandEnums.x65.getCommand(), list.get(0));
-                        }
+                        RedisUtils.getInstance().setTerminalByBoxId(boxId, list);
+                        // 查询数据库电量最高的充电宝
+                        // Map<String, String> map = handleService.getMostCharge(boxId);
+                        // String slot = map.get("slot");
+                        // // 发送指令借充电宝
+                        // String cid = CNettySocketHolder.get(ctx);
+                        // // 更新充电宝数据
+                        // BDeviceTerminal terminal = new BDeviceTerminal();
+                        // terminal.setTerminalId("terminalId");
+                        // terminal.setUseCid(Integer.parseInt(cid));
+                        // handleService.handleUpdateTerminal(terminal);
+                        // CNettySocketHolder.remove(ctx);
+                        // // 返回响应——借充电宝
+                        // out_str = sendCommand(CommandEnums.x65.getCommand(), slot);
                         break;
                     case x65:
                         // 借充电宝及响应
@@ -140,14 +153,20 @@ public class CommandUtils {
                         System.out.println("借充电宝响应  充电宝Id"+terminalId);
                         boxId = NettySocketHolder.get(ctx);
                         System.out.println("借出充电宝的机柜id");
-                        if (Integer.parseInt(result, 16) == 1) {
+                        Integer status = Integer.parseInt(result, 16);
+                        if (status == 1) {
                             // 借充电宝成功
-                            // handleService.handleLendSuccess(terminalId);
+                            handleBatteryService.handleLendBattery(boxId, terminalId, slot);
                         }
+                        Integer useCid = handleService.queryCidByTerminalId(terminalId);
+                        log.info("借充电宝发送响应cid"+useCid);
+                        ChannelHandlerContext otherCtx = AppNettySocketHolder.get(useCid.toString());
+                        otherCtx.channel().writeAndFlush(AppCommandUtils.sendCommand(AppCommandEnums.x10002.getCommand(), status.toString())).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                         break;
                     case x66:
                         // 归还充电宝
                         slot = hex_arr[9];
+                        boxId=NettySocketHolder.get(ctx);
                         terminalId = String.join("", Arrays.copyOfRange(hex_arr, 10, hex_arr.length));
                         terminalId = getTerminalId(terminalId);
                         System.out.println("归还充电宝  槽位"+slot);
@@ -157,8 +176,18 @@ public class CommandUtils {
                         // 查找该充电宝对应的订单，操作订单
                         // String status = handleService.handleReturnTerminal(slot, terminalId, ctx);
                         // System.out.println("归还充电宝  充电宝状态"+status);
-                        out_str = "0009"+enums.getCommand()+"0100"+hex_token+slot+"01";
+                        RestResult returnResult = handleBatteryService.handleReturnBattery(boxId, slot, terminalId);
+                        out_str = "0009"+enums.getCommand()+"0100"+hex_token+slot+returnResult.getData();
                         out_str = HexUtils.hexStr2Str(out_str);
+                        // 给app发送指令
+                        useCid = handleService.queryCidByTerminalId(terminalId);
+                        log.info("归还充电宝cid"+useCid);
+                        otherCtx = AppNettySocketHolder.get(useCid.toString());
+                        if (returnResult.status) {
+                            otherCtx.channel().writeAndFlush(AppCommandUtils.sendCommand(AppCommandEnums.x10003.getCommand(), "1", useCid.toString(), returnResult.getFlag(), terminalId)).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+                        } else {
+                            otherCtx.channel().writeAndFlush(AppCommandUtils.sendCommand(AppCommandEnums.x10003.getCommand(), "0")).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+                        }
                         break;
                     case x67:
                         // 远程重启机柜及响应
@@ -190,8 +219,10 @@ public class CommandUtils {
                         break;
                     case x6B:
                         // 查询机柜库存充电宝数量
+                        boxId = NettySocketHolder.get(ctx);
                         String terminal_num_str = hex_arr[9];
                         terminalNum = Integer.parseInt(terminal_num_str, 16);
+                        handleService.handleSaveDevice(boxId, terminalNum);
                         System.out.println("查询机柜库存充电宝数量" + terminalNum);
                         break;
                     case x80:

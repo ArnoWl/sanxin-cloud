@@ -1,5 +1,6 @@
 package com.sanxin.cloud.netty;
 
+import com.sanxin.cloud.netty.server.AppNettyServer;
 import com.sanxin.cloud.netty.server.NettyServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -23,6 +24,8 @@ public class NettyApiServer {
         ConfigurableApplicationContext context = SpringApplication.run(NettyApiServer.class, args);
         NettyServer nettyServer=context.getBean(NettyServer.class);
         nettyServer.init();
+        AppNettyServer appNettyServer=context.getBean(AppNettyServer.class);
+        appNettyServer.init();
     }
 
 }

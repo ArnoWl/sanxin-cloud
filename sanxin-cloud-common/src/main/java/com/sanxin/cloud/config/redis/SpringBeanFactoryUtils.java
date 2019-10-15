@@ -3,13 +3,15 @@ package com.sanxin.cloud.config.redis;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 /**
  * spring 工具类
  * @author  FAGNLIAI
  */
+@Component
 public class SpringBeanFactoryUtils implements ApplicationContextAware {
-    
+
     private static ApplicationContext appCtx;
 
 

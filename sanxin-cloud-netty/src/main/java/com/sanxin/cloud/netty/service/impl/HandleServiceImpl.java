@@ -3,20 +3,27 @@ package com.sanxin.cloud.netty.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.common.times.DateUtil;
+import com.sanxin.cloud.dto.OrderReturnVo;
 import com.sanxin.cloud.entity.BDevice;
 import com.sanxin.cloud.entity.BDeviceTerminal;
+import com.sanxin.cloud.entity.OrderMain;
+import com.sanxin.cloud.enums.DeviceTypeEnums;
+import com.sanxin.cloud.enums.OrderStatusEnums;
 import com.sanxin.cloud.enums.TerminalStatusEnums;
 import com.sanxin.cloud.netty.properties.NettySocketHolder;
 import com.sanxin.cloud.netty.service.HandleService;
 import com.sanxin.cloud.service.BDeviceService;
 import com.sanxin.cloud.service.BDeviceTerminalService;
+import com.sanxin.cloud.service.OrderMainService;
 import io.netty.channel.ChannelHandlerContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * 机柜通信业务处理service实现类
@@ -29,6 +36,8 @@ public class HandleServiceImpl implements HandleService {
     private BDeviceTerminalService bDeviceTerminalService;
     @Autowired
     private BDeviceService bDeviceService;
+    @Autowired
+    private OrderMainService orderMainService;
 
     @Override
     public String handleReturnTerminal(String boxId, String slot, String terminalId, ChannelHandlerContext ctx) {
@@ -100,7 +109,7 @@ public class HandleServiceImpl implements HandleService {
     }
 
     @Override
-    public String getMostCharge(String boxId) {
+    public Map<String, String> getMostCharge(String boxId) {
         QueryWrapper<BDeviceTerminal> wrapper = new QueryWrapper<>();
         wrapper.eq("d_code", boxId);
         wrapper.orderByDesc("level");
@@ -108,7 +117,10 @@ public class HandleServiceImpl implements HandleService {
         if (terminalList == null || terminalList.size()<=0) {
             return null;
         }
-        return terminalList.get(0).getSlot();
+        Map<String, String> map = new HashMap<>();
+        map.put("slot", terminalList.get(0).getSlot());
+        map.put("terminalId", terminalList.get(0).getTerminalId());
+        return map;
     }
 
     @Override
@@ -122,6 +134,61 @@ public class HandleServiceImpl implements HandleService {
             terminal.setLendNum(terminal.getLendNum()+1);
             terminal.setLastLendTime(new Date());
             bDeviceTerminalService.updateById(terminal);
+        }
+    }
+
+    @Override
+    public Integer queryCidByTerminalId(String terminalId) {
+        QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
+        wrapper.eq("terminal_id", terminalId);
+        wrapper.orderByDesc("create_time");
+        List<OrderMain> list = orderMainService.list(wrapper);
+        if (list != null && list.size()>0) {
+            return list.get(0).getCid();
+        }
+        return null;
+    }
+
+    @Override
+    public RestResult queryReturnMsg(String cid, String terminalId) {
+        QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
+        wrapper.eq("cid", cid).eq("terminal_id", terminalId);
+        wrapper.orderByDesc("create_time");
+        List<OrderMain> list = orderMainService.list(wrapper);
+        OrderMain orderMain = null;
+        if (list != null && list.size()>0) {
+            orderMain = list.get(0);
+        }
+        OrderReturnVo vo = new OrderReturnVo();
+        BeanUtils.copyProperties(orderMain, vo);
+        Date endTime = new Date();
+        // 使用时长
+        if (!FunctionUtils.isEquals(orderMain.getOrderStatus(), OrderStatusEnums.USING.getId())) {
+            // 如果订单正在使用中，计算使用时长应该用当前时间和借出时间算
+            // 其它状态用归还时间算
+            endTime = orderMain.getReturnTime();
+        }
+        String useHour = DateUtil.dateDiff(orderMain.getRentTime().getTime(), endTime.getTime());
+        vo.setUseHour(useHour);
+        vo.setMoney(orderMain.getPayMoney());
+        return RestResult.success("success", vo);
+    }
+
+    @Override
+    public Boolean handleSaveDevice(String boxId, Integer terminalNum) {
+        BDevice bDevice = new BDevice();
+        bDevice.setCode(boxId);
+        bDevice.setAllPort(terminalNum);
+        if (terminalNum > 8) {
+            bDevice.setType(DeviceTypeEnums.LARGE_CABINET.getType());
+        }
+        UpdateWrapper<BDevice> wrapper = new UpdateWrapper<>();
+        wrapper.eq("code", boxId);
+        BDevice queryDevice = bDeviceService.getOne(wrapper);
+        if (queryDevice == null) {
+            return bDeviceService.save(bDevice);
+        } else {
+            return bDeviceService.update(bDevice, wrapper);
         }
     }
 }
