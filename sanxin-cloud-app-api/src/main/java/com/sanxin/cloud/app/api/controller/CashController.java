@@ -111,7 +111,7 @@ public class CashController {
                 || !FunctionUtils.isEquals(bankDetail.getTargetId(), targetId)) {
             return RestResult.fail("data_exception");
         }
-
+        bankDetail.setLastCode(FunctionUtils.getLastValue(bankDetail.getBankCard(), 4));
         bankDetail.setTargetId(null);
         return RestResult.success("success", bankDetail);
     }
