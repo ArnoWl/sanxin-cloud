@@ -41,18 +41,30 @@ public class BusinessController {
     private BAccountService bAccountService;
 
     /**
-     * 根据经纬度分页查询周边商铺
-     * @param current
-     * @param size
-     * @param latVal
-     * @param lonVal
-     * @param search
+     * 根据经纬度分页搜索周边商铺
+     * @param current 当前页
+     * @param size 每页大小
+     * @param latVal 纬度
+     * @param lonVal 经度
+     * @param search 搜索
      * @return
      */
     @RequestMapping(value = MappingUtils.NRARBY_BUSINESS)
     public RestResult pageByShops(@RequestParam Integer current, @RequestParam Integer size, String latVal, String lonVal,String search){
         IPage<PowerBankListVo> byShops = businessService.findByShops(current, size, latVal, lonVal, search, radius);
         return RestResult.success("success",byShops);
+    }
+
+    /**
+     * 根据经纬度和范围搜索周边商铺
+     * @param latVal 纬度
+     * @param lonVal 经度
+     * @param distance 范围距离(米)
+     * @return
+     */
+    @RequestMapping(value = MappingUtils.RANGE_SHOP)
+    public RestResult rangeShop(String latVal, String lonVal,Integer distance){
+        return businessService.rangeShop(latVal, lonVal, distance);
     }
 
     /**

@@ -35,4 +35,7 @@ public class AccountMapping {
 
     /**充值押金*/
     public static final String RECHARGE_DEPOSIT="/rechargeDeposit";
+
+    /**支付方式列表*/
+    public static final String PAY_METHOD_LIST="/payMethodList";
 }

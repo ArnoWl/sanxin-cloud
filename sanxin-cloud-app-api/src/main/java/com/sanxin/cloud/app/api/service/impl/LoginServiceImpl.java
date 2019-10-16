@@ -11,6 +11,9 @@ import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.alipay.AliLoginUtil;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.entity.CPushLog;
+import com.sanxin.cloud.enums.CashTypeEnums;
+import com.sanxin.cloud.mapper.CPushLogMapper;
 import com.sanxin.cloud.service.system.login.LoginDto;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
@@ -49,7 +52,8 @@ public class LoginServiceImpl implements LoginService {
     private LoginTokenService loginTokenService;
     @Autowired
     private BusinessService businessService;
-
+    @Autowired
+    private CPushLogMapper pushLogMapper;
     /**
      * 登录
      *
@@ -195,6 +199,8 @@ public class LoginServiceImpl implements LoginService {
      */
     @Override
     public CustomerHomeVo personalInform(Integer cid) {
+        Integer number = pushLogMapper.selectCount(new QueryWrapper<CPushLog>().eq("target_id", cid).eq("target_type", CashTypeEnums.CUSTOMER.getId())
+                .eq("reading", StaticUtils.STATUS_NO));
         CustomerHomeVo homeVo = new CustomerHomeVo();
         CCustomer customer = customerMapper.selectById(cid);
         homeVo.setPhone(customer.getPhone());
@@ -205,6 +211,7 @@ public class LoginServiceImpl implements LoginService {
         homeVo.setIsValid(customer.getIsReal());
         homeVo.setHeadUrl(customer.getHeadUrl());
         homeVo.setNickName(customer.getNickName());
+        homeVo.setNumber(number);
         return homeVo;
     }
 

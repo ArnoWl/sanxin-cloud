@@ -33,7 +33,10 @@ public class MappingUtils {
     /**注册*/
     public static final String HANDLE_REGISTER="/handleRegister";
 
-    /**获取附近门店*/
+    /**根据经纬度分页搜索周边商铺*/
     public static final String NRARBY_BUSINESS="/nearbyBusiness";
+
+    /**根据经纬度和范围搜索周边商铺*/
+    public static final String RANGE_SHOP="/rangeShop";
 
 }

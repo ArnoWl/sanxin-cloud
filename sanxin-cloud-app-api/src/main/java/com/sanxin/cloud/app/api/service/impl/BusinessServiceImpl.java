@@ -76,6 +76,43 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
         } catch (Exception e) {
             e.printStackTrace();
         }
+        setStr(byShops);
+        return page.setRecords(byShops);
+    }
+
+    /**
+     * 根据经纬度和范围搜索周边商铺
+     * @param latVal
+     * @param lonVal
+     * @param distance
+     * @return
+     */
+    @Override
+    public RestResult rangeShop(String latVal, String lonVal, Integer distance) {
+
+        List<PowerBankListVo> byShops = null;
+        try {
+            byShops = baseMapper.rangeShop(latVal, lonVal,distance);
+            for (PowerBankListVo byShop : byShops) {
+                if (byShop.getDistance() > 1000) {
+                    double v = FunctionUtils.div(new BigDecimal(byShop.getDistance()), new BigDecimal(1000), 2).doubleValue();
+                    byShop.setDistanceKm(v);
+                }else{
+                    byShop.setDistanceM(byShop.getDistance());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        setStr(byShops);
+        return RestResult.success(byShops);
+    }
+
+    /**
+     * 公共方法抽取
+     * @param byShops
+     */
+    private void setStr(List<PowerBankListVo> byShops){
         for (PowerBankListVo byShop : byShops) {
             List<Integer> cabinet = baseMapper.findByCabinet(byShop.getId());
             StringBuffer sb = new StringBuffer();
@@ -108,9 +145,14 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
                 byShop.setRemark(LanguageUtils.getMessage("device_7"));
             }
         }
-        return page.setRecords(byShops);
     }
 
+
+    /**
+     * 获取商家个人资料信息
+     * @param bid
+     * @return
+     */
     @Override
     public BusinessBaseVo getBusinessInfo(Integer bid) {
         BusinessBaseVo vo = new BusinessBaseVo();

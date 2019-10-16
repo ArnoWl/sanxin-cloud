@@ -10,6 +10,7 @@ import com.sanxin.cloud.dto.PowerBankListVo;
 import com.sanxin.cloud.entity.BMoneyDetail;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public interface BusinessService {
@@ -25,6 +26,16 @@ public interface BusinessService {
      * @return
      */
     IPage<PowerBankListVo> findByShops(Integer current, Integer size, String latVal, String lonVal, String search, Integer radius);
+
+    /**
+     * 根据经纬度和范围搜索周边商铺
+     * @param latVal
+     * @param lonVal
+     * @param distance
+     * @return
+     */
+    RestResult rangeShop(String latVal, String lonVal, Integer distance);
+
 
     /**
      * 获取商家个人资料信息
@@ -87,4 +98,5 @@ public interface BusinessService {
      * @return
      */
     BigDecimal getTodayIncome(Integer bid);
+
 }

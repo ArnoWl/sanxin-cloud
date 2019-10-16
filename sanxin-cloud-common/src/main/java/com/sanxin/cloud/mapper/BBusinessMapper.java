@@ -29,5 +29,21 @@ public interface BBusinessMapper extends BaseMapper<BBusiness> {
      */
     List<PowerBankListVo> findByShops(IPage<PowerBankListVo> page, @Param(value = "latVal") String latVal, @Param(value = "lonVal") String lonVal, @Param(value = "search") String search, @Param(value = "radius") Integer radius);
 
+    /**
+     * 根据经纬度和范围搜索周边商铺
+     * @param latVal
+     * @param lonVal
+     * @param distance
+     * @return
+     */
+    List<PowerBankListVo> rangeShop(@Param(value = "latVal")String latVal,@Param(value = "lonVal") String lonVal,@Param(value = "distance") Integer distance);
+
+
+    /**
+     * 大小机柜分类
+     * @param id
+     * @return
+     */
     List<Integer> findByCabinet(@Param(value = "id") Integer id);
+
 }

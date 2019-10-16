@@ -85,4 +85,11 @@ public interface AccountService {
      */
     RestResult rechargeDeposit(Integer cid, String payWord, Integer payType, Integer payChannel, Integer freeSecret);
 
+    /**
+     * 支付方式列表
+     * @param type 支付渠道
+     * @param cid 用户id
+     * @return
+     */
+    RestResult payMethodList(Integer type, Integer cid);
 }

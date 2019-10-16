@@ -307,4 +307,17 @@ public class AccountServiceImpl implements AccountService {
         }
         return payService.handleSign(log);
     }
+
+    /**
+     * 支付方式列表
+     * @param type 支付渠道
+     * @param cid 用户id
+     * @return
+     */
+    @Override
+    public RestResult payMethodList(Integer type, Integer cid) {
+
+        return null;
+    }
+
 }

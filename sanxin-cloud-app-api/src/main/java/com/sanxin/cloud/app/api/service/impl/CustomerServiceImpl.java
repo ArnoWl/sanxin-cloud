@@ -52,7 +52,8 @@ public class CustomerServiceImpl extends ServiceImpl<CCustomerMapper, CCustomer>
         map.put("nickName", customer.getNickName());
         map.put("headUrl", customer.getHeadUrl());
         map.put("number", integer.toString());
-        return RestResult.success("map");
+        map.put("email",customer.getEmail());
+        return RestResult.success(map);
     }
 
 }

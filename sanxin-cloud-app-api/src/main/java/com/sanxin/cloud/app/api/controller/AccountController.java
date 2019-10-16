@@ -116,4 +116,18 @@ public class AccountController {
         Integer cid = loginTokenService.validLoginCid(token);
         return accountService.rechargeDeposit(cid, payWord, payType, payChannel, freeSecret);
     }
+
+    /**
+     * 支付方式
+     * @param type 支付渠道类型
+     * @return
+     */
+    @RequestMapping(value = AccountMapping.PAY_METHOD_LIST)
+    public RestResult payMethodList(Integer type) {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginCid(token);
+        return accountService.payMethodList(type,cid);
+    }
+
+
 }
