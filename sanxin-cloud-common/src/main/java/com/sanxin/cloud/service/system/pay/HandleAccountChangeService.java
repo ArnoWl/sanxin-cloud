@@ -139,8 +139,7 @@ public class HandleAccountChangeService {
             if (i < 1) {
                 return "重复提交数据";
             }
-            //cMarginDetailService.save(detail);
-            cMarginDetailMapper.insert(detail);
+            cMarginDetailService.save(detail);
         } catch (Exception e) {
             logger.info("操作用户押金明细异常：" + e.getMessage());
             throw new ThrowJsonException("保存校验用户押金异常");

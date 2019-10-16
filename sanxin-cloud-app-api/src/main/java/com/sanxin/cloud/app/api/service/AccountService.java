@@ -85,7 +85,7 @@ public interface AccountService {
      * @param freeSecret 是否免密支付
      * @return
      */
-    RestResult rechargeDeposit(Integer cid, String payWord, Integer payType, Integer payChannel, Integer freeSecret);
+    RestResult handleRechargeDeposit(Integer cid, String payWord, Integer payType, Integer payChannel, Integer freeSecret);
 
     /**
      * 支付方式列表

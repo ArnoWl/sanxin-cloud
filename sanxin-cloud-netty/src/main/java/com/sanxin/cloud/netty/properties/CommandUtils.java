@@ -79,8 +79,6 @@ public class CommandUtils {
                         out_str=HexUtils.hexStr2Str(out_str);
                         //登陆记录
                         NettySocketHolder.put(boxId,ctx);
-                        // 登录成功——发送查询机柜充电宝数量指令
-                        // ctx.channel().writeAndFlush(CommandUtils.sendCommand(CommandEnums.x6B.getCommand())).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                         break;
                     case x61:
                         // 心跳及响应
