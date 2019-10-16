@@ -30,11 +30,8 @@ public class NettyController {
 
     @GetMapping(value="/sendCommand")
     public void sendCommand(String boxId,String commond){
-        // ChannelHandlerContext ctx= NettySocketHolder.get(boxId);
-        // ctx.channel().writeAndFlush(CommandUtils.sendCommand(commond)).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
-//        //登陆成功后借一个充电宝
-        Integer cid = handleService.queryCidByTerminalId("RL1H96005656");
-        System.out.println(cid);
+        ChannelHandlerContext ctx= NettySocketHolder.get(boxId);
+        ctx.channel().writeAndFlush(CommandUtils.sendCommand(commond)).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
 //        ctx.channel().writeAndFlush(CommandUtils.sendCommand(CommandEnums.x65.getCommand())).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
 //        //查看充电宝库存
 //        ctx.channel().writeAndFlush(CommandUtils.sendCommand(CommandEnums.x64.getCommand())).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);

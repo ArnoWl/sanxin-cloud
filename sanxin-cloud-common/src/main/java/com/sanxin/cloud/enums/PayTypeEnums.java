@@ -21,8 +21,8 @@ public enum PayTypeEnums {
     ALI_PAY(5, "Alipay Pay", "http://47.106.131.191:8004//files/20191016/53343674.png", 1, 5, 0),
     WE_CHAT_PAY(6, "WeChat Pay", "", 1, 5, 0),
     PROMPT_PAY(7, "Prompt Pay", "", 1, 4, 0),
-    GOOGLE_PAY(7, "Prompt Pay", "", 0, 4, 0),
-    APPLE_PAY(7, "Prompt Pay", "", 0, 4, 0);
+    GOOGLE_PAY(8, "Prompt Pay", "", 0, 4, 0),
+    APPLE_PAY(9, "Prompt Pay", "", 0, 4, 0);
     private Integer id;
     private String name;
     /**

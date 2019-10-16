@@ -252,7 +252,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public RestResult rechargeDeposit(Integer cid, String payWord, Integer payType, Integer payChannel, Integer freeSecret) {
+    public RestResult handleRechargeDeposit(Integer cid, String payWord, Integer payType, Integer payChannel, Integer freeSecret) {
         CCustomer customer = customerService.getById(cid);
         if (customer == null) {
             return RestResult.fail("register_user_empty");

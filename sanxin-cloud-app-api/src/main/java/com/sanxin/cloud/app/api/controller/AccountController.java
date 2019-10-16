@@ -135,7 +135,7 @@ public class AccountController {
     public RestResult rechargeDeposit(String payWord, Integer payType, Integer payChannel, Integer freeSecret) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginCid(token);
-        return accountService.rechargeDeposit(cid, payWord, payType, payChannel, freeSecret);
+        return accountService.handleRechargeDeposit(cid, payWord, payType, payChannel, freeSecret);
     }
 
     /**
