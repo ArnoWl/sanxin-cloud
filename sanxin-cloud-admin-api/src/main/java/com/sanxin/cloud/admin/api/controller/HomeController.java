@@ -28,12 +28,6 @@ import java.util.Map;
 @RequestMapping("/home")
 public class HomeController {
     @Autowired
-    private BDeviceTerminalService bDeviceTerminalService;
-    @Autowired
-    private SysCashDetailService sysCashDetailService;
-    @Autowired
-    private CAccountService cAccountService;
-    @Autowired
     private StatisticsService statisticsService;
 
     /**

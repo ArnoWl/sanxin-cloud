@@ -1,17 +1,22 @@
 package com.sanxin.cloud.app.api.controller;
 
 import com.sanxin.cloud.app.api.common.AccountMapping;
+import com.sanxin.cloud.app.api.common.OrderMapping;
 import com.sanxin.cloud.app.api.service.AccountService;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
+import com.sanxin.cloud.entity.CAccount;
 import com.sanxin.cloud.entity.CMarginDetail;
 import com.sanxin.cloud.entity.CMoneyDetail;
 import com.sanxin.cloud.entity.CTimeDetail;
+import com.sanxin.cloud.service.CAccountService;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/account")
@@ -20,6 +25,8 @@ public class AccountController {
     private AccountService accountService;
     @Autowired
     private LoginTokenService loginTokenService;
+    @Autowired
+    private CAccountService cAccountService;
 
     /**
      * 我的押金明细
@@ -101,6 +108,20 @@ public class AccountController {
         return accountService.payTimeGift(cid,id,type,payPass);
     }
 
+    /**
+     * 借充电宝扫码时判断是否交了押金
+     * @return
+     */
+    @RequestMapping(AccountMapping.VALID_RECHARGE_DEPOSIT)
+    public RestResult validRechargeDeposit() {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginCid(token);
+        CAccount account = cAccountService.getByCid(cid);
+        if (account == null) {
+            return RestResult.success("data_exception");
+        }
+        return RestResult.success("success", account.getRechargeDeposit());
+    }
 
     /**
      * 充值押金
@@ -122,12 +143,12 @@ public class AccountController {
      * @param type 支付渠道类型
      * @return
      */
-    @RequestMapping(value = AccountMapping.PAY_METHOD_LIST)
-    public RestResult payMethodList(Integer type) {
+    @RequestMapping(value = AccountMapping.QUERY_PAY_TYPE_LIST)
+    public RestResult queryPayTypeList(Integer type) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginCid(token);
-        return accountService.payMethodList(type,cid);
+        Map<String, Object> map = accountService.queryPayTypeList(type,cid);
+        return RestResult.success("success", map);
     }
-
 
 }

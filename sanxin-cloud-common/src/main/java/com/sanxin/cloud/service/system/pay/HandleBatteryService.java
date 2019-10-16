@@ -56,32 +56,26 @@ public class HandleBatteryService {
      * @return
      */
     public RestResult handleLendBattery(String boxId, String terminalId, String slot) {
+        // 查询是否有订单信息
+        QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
+        wrapper.eq("terminal_id", terminalId).eq("order_status", OrderStatusEnums.CREATE.getId());
+        wrapper.orderByDesc("create_time");
+        List<OrderMain> orderList = orderMainService.list(wrapper);
+        if (orderList == null || orderList.size() <= 0) {
+            return RestResult.fail("fail");
+        }
+        OrderMain orderMain = orderList.get(0);
         // 查询充电宝信息
         BDeviceTerminal terminal = bDeviceTerminalService.getTerminalById(terminalId);
         // 校验-充电宝不存在或者充电宝状态不是充电中
         if (terminal == null || !FunctionUtils.isEquals(terminal.getStatus(), TerminalStatusEnums.CHARGING.getStatus())) {
             throw new ThrowJsonException("data_exception");
         }
-        Integer cid = terminal.getUseCid();
-        String token = loginTokenService.getTokenByTid(cid);
-        System.out.println("借充电宝成功token"+token);
-        Integer fromChannel = loginTokenService.validLoginChannel(token);
-        // 校验用户
-        CCustomer customer = customerService.getById(cid);
-        if (customer == null) {
-            throw new ThrowJsonException("register_user_empty");
-        }
-        //判断账号是否被冻结
-        if (customer.getStatus() == StaticUtils.STATUS_NO) {
-            throw new ThrowJsonException("register_user_freeze");
-        }
         // 查询机柜信息
         BDevice device = bDeviceService.getByCode(boxId);
         if (device == null) {
             throw new ThrowJsonException("data_exception");
         }
-        // 查询店铺信息
-        BBusiness business = businessService.validById(device.getBid());
         // 借出-更新充电宝信息
         boolean result = handleLendTerminalMsg(terminal);
         if (!result) {
@@ -93,34 +87,11 @@ public class HandleBatteryService {
             throw new ThrowJsonException(LanguageUtils.getMessage("fail"));
         }
         // 机柜-充电宝信息处理完
-        // 校验订单信息-充电宝是否在被租用
-        // 当前用户是否存在未支付订单
-        QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
-        wrapper.eq("terminal_id", terminalId).in("order_status", OrderStatusEnums.USING.getId(), OrderStatusEnums.CONFIRMED.getId());
-        int orderNum = orderMainService.count(wrapper);
-        if (orderNum>0) {
-            throw new ThrowJsonException("充电宝被使用中");
-        }
-        wrapper = new QueryWrapper<>();
-        wrapper.eq("cid", cid).in("order_status", OrderStatusEnums.USING.getId(), OrderStatusEnums.CONFIRMED.getId());
-        orderNum = orderMainService.count(wrapper);
-        if (orderNum>0) {
-            throw new ThrowJsonException("您还有未完成订单");
-        }
-        // 生成借充电宝订单信息
-        String orderCode = FunctionUtils.getOrderCode("O");
-        String payCode = FunctionUtils.getOrderCode("P");
-        OrderMain orderMain = new OrderMain();
-        orderMain.setCid(cid);
-        orderMain.setBid(business.getId());
-        orderMain.setOrderCode(orderCode);
-        orderMain.setPayCode(payCode);
-        orderMain.setTerminalId(terminalId);
-        orderMain.setCreateTime(DateUtil.currentDate());
+
+        // 操作借充电宝订单信息
         orderMain.setRentTime(DateUtil.currentDate());
-        orderMain.setFromChannel(fromChannel);
-        orderMain.setRentAddr(business.getAddressDetail());
-        result = orderMainService.save(orderMain);
+        orderMain.setOrderStatus(OrderStatusEnums.USING.getId());
+        result = orderMainService.updateById(orderMain);
         if (!result) {
             throw new ThrowJsonException(LanguageUtils.getMessage("fail"));
         }

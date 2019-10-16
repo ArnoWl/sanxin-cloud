@@ -52,10 +52,6 @@ public class OrderController {
     @Autowired
     private HandleBatteryService handleBatteryService;
     @Autowired
-    private CAccountService cAccountService;
-    @Autowired
-    private InfoParamService infoParamService;
-    @Autowired
     private PayOrderService payOrderService;
 
     /**
@@ -156,21 +152,6 @@ public class OrderController {
             }
         }
         return RestResult.success("success");
-    }
-
-    /**
-     * 借充电宝扫码时判断是否交了押金
-     * @return
-     */
-    @RequestMapping(OrderMapping.VALID_RECHARGE_DEPOSIT)
-    public RestResult validRechargeDeposit() {
-        String token = BaseUtil.getUserToken();
-        Integer cid = loginTokenService.validLoginCid(token);
-        CAccount account = cAccountService.getByCid(cid);
-        if (account == null) {
-            return RestResult.success("data_exception");
-        }
-        return RestResult.success("success", account.getRechargeDeposit());
     }
 
     /**

@@ -3,20 +3,26 @@ package com.sanxin.cloud.netty.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.StaticUtils;
+import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.common.times.DateUtil;
 import com.sanxin.cloud.dto.OrderReturnVo;
+import com.sanxin.cloud.entity.BBusiness;
 import com.sanxin.cloud.entity.BDevice;
 import com.sanxin.cloud.entity.BDeviceTerminal;
 import com.sanxin.cloud.entity.OrderMain;
 import com.sanxin.cloud.enums.DeviceTypeEnums;
 import com.sanxin.cloud.enums.OrderStatusEnums;
 import com.sanxin.cloud.enums.TerminalStatusEnums;
+import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.netty.properties.NettySocketHolder;
 import com.sanxin.cloud.netty.service.HandleService;
+import com.sanxin.cloud.service.BBusinessService;
 import com.sanxin.cloud.service.BDeviceService;
 import com.sanxin.cloud.service.BDeviceTerminalService;
 import com.sanxin.cloud.service.OrderMainService;
+import com.sanxin.cloud.service.system.login.LoginTokenService;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +44,10 @@ public class HandleServiceImpl implements HandleService {
     private BDeviceService bDeviceService;
     @Autowired
     private OrderMainService orderMainService;
+    @Autowired
+    private LoginTokenService loginTokenService;
+    @Autowired
+    private BBusinessService businessService;
 
     @Override
     public String handleReturnTerminal(String boxId, String slot, String terminalId, ChannelHandlerContext ctx) {
@@ -190,5 +200,48 @@ public class HandleServiceImpl implements HandleService {
         } else {
             return bDeviceService.update(bDevice, wrapper);
         }
+    }
+
+    @Override
+    public List<OrderMain> queryUseOrderByTerminal(String terminalId) {
+        QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
+        wrapper.eq("terminal_id", terminalId).ne("order_status", OrderStatusEnums.OVER.getId());
+        return orderMainService.list(wrapper);
+    }
+
+    @Override
+    public RestResult handleCreateUseOrder(Integer cid, String token, String boxId, String terminalId) {
+        // 查询充电宝信息
+        BDeviceTerminal terminal = bDeviceTerminalService.getTerminalById(terminalId);
+        // 校验-充电宝不存在或者充电宝状态不是充电中
+        if (terminal == null || !FunctionUtils.isEquals(terminal.getStatus(), TerminalStatusEnums.CHARGING.getStatus())) {
+            return RestResult.fail("data_exception");
+        }
+        // 查询机柜信息
+        BDevice device = bDeviceService.getByCode(boxId);
+        if (device == null) {
+            return RestResult.fail("data_exception");
+        }
+        // 查询店铺信息
+        BBusiness business = businessService.validById(device.getBid());
+        Integer fromChannel = loginTokenService.validLoginChannel(token);
+        String orderCode = FunctionUtils.getOrderCode("O");
+        String payCode = FunctionUtils.getOrderCode("P");
+        OrderMain orderMain = new OrderMain();
+        orderMain.setCid(cid);
+        orderMain.setBid(device.getBid());
+        orderMain.setOrderCode(orderCode);
+        orderMain.setOrderStatus(OrderStatusEnums.CREATE.getId());
+        orderMain.setPayCode(payCode);
+        orderMain.setTerminalId(terminalId);
+        orderMain.setCreateTime(DateUtil.currentDate());
+        orderMain.setRentTime(DateUtil.currentDate());
+        orderMain.setFromChannel(fromChannel);
+        orderMain.setRentAddr(business.getAddressDetail());
+        boolean result = orderMainService.save(orderMain);
+        if (!result) {
+            return RestResult.fail("fail");
+        }
+        return RestResult.success("success");
     }
 }

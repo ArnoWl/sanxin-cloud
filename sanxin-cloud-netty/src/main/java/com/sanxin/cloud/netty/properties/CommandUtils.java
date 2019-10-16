@@ -127,6 +127,7 @@ public class CommandUtils {
                             // 操作-更新充电宝数据
                             // handleService.handleUpdateTerminal(terminal);
                         }
+                        log.info("查询库存保存到redis_boxId"+boxId);
                         RedisUtils.getInstance().setTerminalByBoxId(boxId, list);
                         // 查询数据库电量最高的充电宝
                         // Map<String, String> map = handleService.getMostCharge(boxId);

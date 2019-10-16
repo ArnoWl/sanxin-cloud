@@ -25,9 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author xiaoky
@@ -315,9 +313,18 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public RestResult payMethodList(Integer type, Integer cid) {
-
-        return null;
+    public Map<String, Object> queryPayTypeList(Integer type, Integer cid) {
+        CAccount cAccount = cAccountService.getByCid(cid);
+        if (cAccount == null) {
+            throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
+        }
+        if (!PayPageEnums.isPayPage(type)) {
+            throw new ThrowJsonException("request_error");
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("list", PayTypeEnums.queryListByPayPage(type));
+        map.put("money", cAccount.getMoney());
+        return map;
     }
 
 }

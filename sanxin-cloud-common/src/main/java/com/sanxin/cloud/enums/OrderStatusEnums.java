@@ -12,6 +12,7 @@ import java.util.List;
  * @date 2019-09-21
  */
 public enum OrderStatusEnums {
+    CREATE(0, "order_status_create"),
     USING(1, "order_status_using"),
     CONFIRMED(2, "order_status_confirmed"),
     OVER(3, "order_status_over");

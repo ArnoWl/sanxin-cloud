@@ -2,8 +2,10 @@ package com.sanxin.cloud.netty.service;
 
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.BDeviceTerminal;
+import com.sanxin.cloud.entity.OrderMain;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -72,4 +74,21 @@ public interface HandleService {
      * @return
      */
     Boolean handleSaveDevice(String boxId, Integer terminalNum);
+
+    /**
+     * 通过充电宝id查询是否有正在使用中的订单
+     * @param terminalId
+     * @return
+     */
+    List<OrderMain> queryUseOrderByTerminal(String terminalId);
+
+    /**
+     * 生成一个创建中的订单，代表该充电宝已被使用
+     * @param cid
+     * @param token 用户token
+     * @param boxId 机柜编号
+     * @param terminalId 充电宝编号
+     * @return
+     */
+    RestResult handleCreateUseOrder(Integer cid, String token, String boxId, String terminalId);
 }

@@ -86,6 +86,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 strs.add("/system/queryGiftHourList");
                 strs.add("/device/queryDeviceList");
                 strs.add("/device/getDeviceDetail");
+                strs.add("/device/getDeviceTerminalDetail");
                 strs.add("/payment/getAliPayDetail");
                 strs.add("/payment/editAliPay");
                 strs.add("/home/labelMsg");

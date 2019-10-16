@@ -4,7 +4,7 @@ server:
 
 spring:
   application:
-    name: sanxin-cloud-app-api-test # 对外暴露的服务名称
+    name: sanxin-cloud-app-api # 对外暴露的服务名称
   servlet:
     multipart:
       max-file-size: 10MB

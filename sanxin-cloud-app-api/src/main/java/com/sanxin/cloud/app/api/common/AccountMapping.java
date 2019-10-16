@@ -33,9 +33,12 @@ public class AccountMapping {
     /**提交购买时长*/
     public static final String PAY_TIME_GIFT="/payTimeGift";
 
+    /** 借充电宝扫码时判断是否交了押金*/
+    public static final String VALID_RECHARGE_DEPOSIT = "/validRechargeDeposit";
+
     /**充值押金*/
     public static final String RECHARGE_DEPOSIT="/rechargeDeposit";
 
     /**支付方式列表*/
-    public static final String PAY_METHOD_LIST="/payMethodList";
+    public static final String QUERY_PAY_TYPE_LIST="/queryPayTypeList";
 }

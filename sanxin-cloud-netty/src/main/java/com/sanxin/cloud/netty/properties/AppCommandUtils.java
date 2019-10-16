@@ -2,15 +2,21 @@ package com.sanxin.cloud.netty.properties;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.redis.RedisUtils;
 import com.sanxin.cloud.config.redis.SpringBeanFactoryUtils;
 import com.sanxin.cloud.dto.BTerminalVo;
 import com.sanxin.cloud.entity.BDeviceTerminal;
+import com.sanxin.cloud.entity.OrderMain;
+import com.sanxin.cloud.enums.OrderStatusEnums;
+import com.sanxin.cloud.exception.LoginOutException;
+import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.netty.enums.AppCommandEnums;
 import com.sanxin.cloud.netty.enums.CommandEnums;
 import com.sanxin.cloud.netty.service.HandleService;
+import com.sanxin.cloud.service.OrderMainService;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,6 +24,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+import java.util.List;
 
 /**
  * app指令
@@ -30,6 +39,7 @@ public class AppCommandUtils {
     private static Logger log = LoggerFactory.getLogger(AppCommandUtils.class);
     private static LoginTokenService loginTokenService = SpringBeanFactoryUtils.getApplicationContext().getBean(LoginTokenService.class);
     private static HandleService handleService = SpringBeanFactoryUtils.getApplicationContext().getBean(HandleService.class);
+    private static OrderMainService orderMainService = SpringBeanFactoryUtils.getApplicationContext().getBean(OrderMainService.class);
 
     /**
      * 接收到机器的指令
@@ -70,14 +80,42 @@ public class AppCommandUtils {
                     String boxId = json.getString("boxId");
                     try {
                         cid = loginTokenService.validLoginCid(token);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                    } catch (LoginOutException ex) {
                         return JSON.toJSONString(RestResult.fail("1001","Token is invalid, please log in again",null,null));
                     }
-                    // 获取电量最多的充电宝
-                    BTerminalVo mostCharge = RedisUtils.getInstance().getMostCharge(boxId);
-                    if (mostCharge == null) {
-                        return JSON.toJSONString(RestResult.fail("fail"));
+                    QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
+                    wrapper.eq("cid", cid).in("order_status", OrderStatusEnums.USING.getId(), OrderStatusEnums.CONFIRMED.getId());
+                    Integer orderNum = orderMainService.count(wrapper);
+                    if (orderNum>0) {
+                        return JSON.toJSONString(RestResult.fail("您还有未完成订单"));
+                    }
+
+                    BTerminalVo mostCharge = null;
+                    Integer index = 0;
+                    while (mostCharge == null) {
+                        // 获取电量最多的充电宝
+                        try {
+                            mostCharge = RedisUtils.getInstance().getMostCharge(boxId, index);
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            // 机柜库存没有可借用的充电宝了
+                            return JSON.toJSONString(RestResult.fail("fail"));
+                        }
+                        if (mostCharge == null) {
+                            return JSON.toJSONString(RestResult.fail("fail"));
+                        }
+                        // 查询该充电宝是否被使用(是否有人已创建过订单)
+                        List<OrderMain> orderList = handleService.queryUseOrderByTerminal(mostCharge.getTerminalId());
+                        // 充电宝被使用中
+                        if (orderList != null && orderList.size()>0) {
+                            mostCharge = null;
+                            index ++;
+                        }
+                    }
+                    // 生成一个创建中的订单，代表该充电宝已被使用
+                    RestResult returnResult = handleService.handleCreateUseOrder(cid, token, boxId, mostCharge.getTerminalId());
+                    if (!returnResult.status) {
+                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                        return JSON.toJSONString(returnResult);
                     }
                     // 修改充电宝当前使用用户
                     BDeviceTerminal terminal = new BDeviceTerminal();
@@ -85,6 +123,7 @@ public class AppCommandUtils {
                     terminal.setUseCid(cid);
                     boolean result = handleService.handleUpdateTerminal(terminal);
                     if (!result) {
+                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                         return JSON.toJSONString(RestResult.fail("借用失败"));
                     }
                     log.info("APP_发送借充电宝指令");

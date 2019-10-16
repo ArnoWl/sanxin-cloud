@@ -1,5 +1,6 @@
 package com.sanxin.cloud.admin.api.controller;
 
+import com.sanxin.cloud.admin.api.service.DeviceService;
 import com.sanxin.cloud.common.language.AdminLanguageStatic;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.language.LanguageUtils;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 /**
  * 设备管理Controller
  * @author xiaoky
@@ -24,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class DeviceController {
     @Autowired
     private BDeviceService bDeviceService;
+    @Autowired
+    private DeviceService deviceService;
 
     /**
      * 查询设备列表
@@ -62,6 +67,17 @@ public class DeviceController {
         if (device == null) {
             return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
         }
+        return RestResult.success("", device);
+    }
+
+    /**
+     * 查询设备库存信息
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/getDeviceTerminalDetail")
+    public RestResult getDeviceTerminalDetail(Integer id) {
+        Map<String, Object> device = deviceService.getDeviceTerminalDetail(id);
         return RestResult.success("", device);
     }
 

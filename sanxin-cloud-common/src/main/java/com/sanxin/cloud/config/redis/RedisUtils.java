@@ -88,7 +88,7 @@ public class RedisUtils {
      * @param boxId
      * @return
      */
-    public BTerminalVo getMostCharge(String boxId) {
+    public BTerminalVo getMostCharge(String boxId, Integer index) {
         List<BTerminalVo> list = getTerminalByBoxId(boxId);
         if (list != null && list.size()>0) {
             Collections.sort(list);

@@ -6,6 +6,8 @@ import com.sanxin.cloud.entity.CMarginDetail;
 import com.sanxin.cloud.entity.CMoneyDetail;
 import com.sanxin.cloud.entity.CTimeDetail;
 
+import java.util.Map;
+
 /**
  * 用户账户Service
  *
@@ -91,5 +93,5 @@ public interface AccountService {
      * @param cid 用户id
      * @return
      */
-    RestResult payMethodList(Integer type, Integer cid);
+    Map<String, Object> queryPayTypeList(Integer type, Integer cid);
 }

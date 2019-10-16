@@ -23,5 +23,13 @@
         SELECT a.*, b.nick_name AS businessName
         FROM b_device a
         LEFT JOIN b_business b ON a.bid = b.id
+        <where>
+            <if test="device.status != null">
+                a.status = #{device.status, jdbcType=INTEGER}
+            </if>
+            <if test="device.code != null and device.code != ''">
+                and a.code like concat('%', #{device.code, jdbcType=INTEGER}, '%')
+            </if>
+        </where>
     </select>
 </mapper>
