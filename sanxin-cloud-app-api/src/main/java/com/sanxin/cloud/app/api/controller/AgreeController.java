@@ -32,4 +32,16 @@ public class AgreeController {
         SysAgreement agreement = sysAgreementService.getByTypeAndLanguage(type, language);
         return RestResult.success(LanguageUtils.getMessage("success"), agreement);
     }
+
+    /**
+     * 押金充值协议
+     * @return
+     */
+    @RequestMapping(value = "/rechargeAgree")
+    public RestResult rechargeAgree() {
+        Integer type = 2;
+        String language = BaseUtil.getLanguage();
+        SysAgreement agreement = sysAgreementService.getByTypeAndLanguage(type, language);
+        return RestResult.success(LanguageUtils.getMessage("success"), agreement);
+    }
 }

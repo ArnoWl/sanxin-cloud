@@ -38,7 +38,10 @@ public class AccountMapping {
 
     /**充值押金*/
     public static final String RECHARGE_DEPOSIT="/rechargeDeposit";
-
     /**支付方式列表*/
     public static final String QUERY_PAY_TYPE_LIST="/queryPayTypeList";
+    /** 充值押金页面数据*/
+    public static final String GET_RECHARGE_MSG="/getRechargeMsg";
+    /** 借用成功页面数据*/
+    public static final String GET_LEND_SUCCESS_MSG="/getLendSuccessMsg";
 }

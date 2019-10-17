@@ -4,18 +4,22 @@ import com.sanxin.cloud.app.api.common.AccountMapping;
 import com.sanxin.cloud.app.api.common.OrderMapping;
 import com.sanxin.cloud.app.api.service.AccountService;
 import com.sanxin.cloud.common.BaseUtil;
+import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
+import com.sanxin.cloud.dto.RuleTextVo;
 import com.sanxin.cloud.entity.CAccount;
 import com.sanxin.cloud.entity.CMarginDetail;
 import com.sanxin.cloud.entity.CMoneyDetail;
 import com.sanxin.cloud.entity.CTimeDetail;
 import com.sanxin.cloud.service.CAccountService;
+import com.sanxin.cloud.service.SysRuleTextService;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -27,6 +31,8 @@ public class AccountController {
     private LoginTokenService loginTokenService;
     @Autowired
     private CAccountService cAccountService;
+    @Autowired
+    private SysRuleTextService sysRuleTextService;
 
     /**
      * 我的押金明细
@@ -151,4 +157,27 @@ public class AccountController {
         return RestResult.success("success", map);
     }
 
+    /**
+     * 充值押金页面数据
+     * @return
+     */
+    @RequestMapping(value = AccountMapping.GET_RECHARGE_MSG)
+    public RestResult getRechargeMsg() {
+        Map<String, Object> map = accountService.getRechargeMsg();
+        return RestResult.success("success", map);
+    }
+
+    /**
+     * 借充电宝成功页面显示数据
+     * @return
+     */
+    @RequestMapping(value = AccountMapping.GET_LEND_SUCCESS_MSG)
+    public RestResult getLendSuccessMsg() {
+        Map<String, Object> map = new HashMap<>();
+        RuleTextVo ruleMoney = sysRuleTextService.getByType(1);
+        RuleTextVo ruleDeposit = sysRuleTextService.getByType(2);
+        map.put("ruleMoney", ruleMoney);
+        map.put("ruleDeposit", ruleDeposit);
+        return RestResult.success("success", map);
+    }
 }

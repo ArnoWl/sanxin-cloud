@@ -15,17 +15,17 @@ import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.enums.*;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.mapper.*;
-import com.sanxin.cloud.service.CAccountService;
-import com.sanxin.cloud.service.CCustomerService;
-import com.sanxin.cloud.service.CPayLogService;
-import com.sanxin.cloud.service.InfoParamService;
+import com.sanxin.cloud.service.*;
 import com.sanxin.cloud.service.system.pay.PayService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author xiaoky
@@ -45,8 +45,6 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private CAccountService cAccountService;
     @Autowired
-    private CAccountMapper accountMapper;
-    @Autowired
     private InfoParamService infoParamService;
     @Autowired
     private PayService payService;
@@ -56,6 +54,8 @@ public class AccountServiceImpl implements AccountService {
     private CPayLogService cPayLogService;
     @Autowired
     private GiftHourMapper giftHourMapper;
+    @Autowired
+    private SysRuleTextService sysRuleTextService;
 
     /**
      * 我的押金
@@ -215,7 +215,7 @@ public class AccountServiceImpl implements AccountService {
                 log.setHandleType(HandleTypeEnums.BUY_TIEM_GIFT.getId());
                 log.setServiceType(ServiceEnums.BUY_TIEM_GIFT.getId());
                 log.setPayCode(payCode);
-                log.setCreateTime(DateUtil.getInstance().currentDate());
+                log.setCreateTime(DateUtil.currentDate());
                 boolean flag = cPayLogService.save(log);
                 if (!flag) {
                     throw new ThrowJsonException(LanguageUtils.getMessage("pay_log_create_fail"));
@@ -327,4 +327,16 @@ public class AccountServiceImpl implements AccountService {
         return map;
     }
 
+    @Override
+    public Map<String, Object> getRechargeMsg() {
+        String value = infoParamService.getValueByCode(ParamCodeEnums.RECHARGE_DEPOSIT_MONEY.getCode());
+        BigDecimal depositMoney = FunctionUtils.getValueByClass(BigDecimal.class, value);
+        Map<String, Object> map = new HashMap<>();
+        map.put("depositMoney", depositMoney);
+        RuleTextVo ruleMoney = sysRuleTextService.getByType(1);
+        RuleTextVo ruleDeposit = sysRuleTextService.getByType(2);
+        map.put("ruleMoney", ruleMoney);
+        map.put("ruleDeposit", ruleDeposit);
+        return map;
+    }
 }

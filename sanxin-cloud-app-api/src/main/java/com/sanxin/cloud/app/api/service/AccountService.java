@@ -94,4 +94,10 @@ public interface AccountService {
      * @return
      */
     Map<String, Object> queryPayTypeList(Integer type, Integer cid);
+
+    /**
+     * 获取充值页面数据
+     * @return
+     */
+    Map<String, Object> getRechargeMsg();
 }

@@ -1,5 +1,6 @@
 package com.sanxin.cloud.common.language;
 
+import com.sanxin.cloud.enums.LanguageEnums;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -89,6 +90,9 @@ public class LanguageUtils {
      */
     public static String getLanguage() {
         String languageToken = getInstance().getRequest().getHeader("languageToken");
+        if (StringUtils.isEmpty(languageToken)) {
+            languageToken = LanguageEnums.CN.name();
+        }
         return languageToken;
     }
 
