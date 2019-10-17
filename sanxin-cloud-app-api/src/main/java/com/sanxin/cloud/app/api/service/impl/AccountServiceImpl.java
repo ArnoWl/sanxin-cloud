@@ -169,14 +169,14 @@ public class AccountServiceImpl implements AccountService {
      * 支付购买时长
      *
      * @param cid     用户di
-     * @param id      礼包id
-     * @param type    支付类型1余额  2泰国本地银行卡
-     * @param payPass 支付密码
+     * @param giftId      礼包id
+     * @param payType    支付类型1余额  2泰国本地银行卡
+     * @param payWord 支付密码
      * @return
      */
     @Override
-    public RestResult payTimeGift(Integer cid, Integer id, Integer type, String payPass) {
-        GiftHour giftHour = giftHourMapper.selectById(id);
+    public RestResult payTimeGift(Integer cid, Integer giftId, Integer payType, String payWord) {
+        GiftHour giftHour = giftHourMapper.selectById(giftId);
         if (giftHour == null) {
             return RestResult.fail("礼包异常");
         }
@@ -185,11 +185,11 @@ public class AccountServiceImpl implements AccountService {
             return RestResult.fail("register_user_empty");
         }
         CAccount account = cAccountService.getByCid(cid);
-        switch (type) {
+        switch (payType) {
             //余额支付
             case 1:
                 //密码加密
-                String pass = PwdEncode.encodePwd(payPass);
+                String pass = PwdEncode.encodePwd(payWord);
                 //交易密码是否为空
                 if (StringUtils.isBlank(customer.getPayWord())) {
                     return RestResult.fail("not_set_pay_word", null, "1");
@@ -202,29 +202,23 @@ public class AccountServiceImpl implements AccountService {
                 if (account.getMoney().compareTo(giftHour.getMoney()) != 1) {
                     return RestResult.fail("pay_balance_error");
                 }
-                String payCode = FunctionUtils.getOrderCode("T");
-                /*BigDecimal sub = FunctionUtils.sub(account.getMoney(), giftHour.getMoney(), 2);
-                account.setMoney(sub);
-                accountMapper.updateById(account);
-*/
-                CPayLog log = new CPayLog();
-                log.setCid(cid);
-                log.setPayType(PayTypeEnums.MONEY.getId());
-                log.setPayChannel(LoginChannelEnums.APP.getChannel());
-                log.setPayMoney(giftHour.getMoney());
-                log.setHandleType(HandleTypeEnums.BUY_TIEM_GIFT.getId());
-                log.setServiceType(ServiceEnums.BUY_TIEM_GIFT.getId());
-                log.setPayCode(payCode);
-                log.setCreateTime(DateUtil.currentDate());
-                boolean flag = cPayLogService.save(log);
-                if (!flag) {
-                    throw new ThrowJsonException(LanguageUtils.getMessage("pay_log_create_fail"));
-                }
-                return payService.handleSign(log);
-
 
         }
-        return null;
+        String payCode = FunctionUtils.getOrderCode("T");
+        CPayLog log = new CPayLog();
+        log.setCid(cid);
+        log.setPayType(PayTypeEnums.MONEY.getId());
+        log.setPayChannel(LoginChannelEnums.APP.getChannel());
+        log.setPayMoney(giftHour.getMoney());
+        log.setHandleType(HandleTypeEnums.BUY_TIEM_GIFT.getId());
+        log.setServiceType(ServiceEnums.BUY_TIEM_GIFT.getId());
+        log.setPayCode(payCode);
+        log.setCreateTime(DateUtil.currentDate());
+        boolean flag = cPayLogService.save(log);
+        if (!flag) {
+            throw new ThrowJsonException(LanguageUtils.getMessage("pay_log_create_fail"));
+        }
+        return payService.handleSign(log);
     }
 
     /**

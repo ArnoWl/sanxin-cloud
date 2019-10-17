@@ -68,12 +68,12 @@ public interface AccountService {
     /**
      * 支付购买时长
      * @param cid 用户di
-     * @param id 礼包id
-     * @param type 支付类型1余额  2泰国本地银行卡
-     * @param payPass 支付密码
+     * @param giftId 礼包id
+     * @param payType 支付类型1余额  2泰国本地银行卡
+     * @param payWord 支付密码
      * @return
      */
-    RestResult payTimeGift(Integer cid, Integer id, Integer type,String payPass);
+    RestResult payTimeGift(Integer cid, Integer giftId,Integer payType,String payWord);
 
 
     /**

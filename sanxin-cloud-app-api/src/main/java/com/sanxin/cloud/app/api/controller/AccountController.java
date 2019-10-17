@@ -102,16 +102,16 @@ public class AccountController {
 
     /**
      * 支付购买时长
-     * @param id 礼包id
-     * @param type 支付类型1余额
-     * @param payPass 支付密码
+     * @param giftId 礼包id
+     * @param payType 支付类型1余额
+     * @param payWord 支付密码
      * @return
      */
     @RequestMapping(value = AccountMapping.PAY_TIME_GIFT)
-    public RestResult payTimeGift(Integer id,Integer type,String payPass) {
+    public RestResult payTimeGift(Integer giftId,Integer payType,String payWord) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginCid(token);
-        return accountService.payTimeGift(cid,id,type,payPass);
+        return accountService.payTimeGift(cid,giftId,payType,payWord);
     }
 
     /**

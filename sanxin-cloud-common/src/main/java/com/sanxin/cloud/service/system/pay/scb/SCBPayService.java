@@ -3,6 +3,8 @@ package com.sanxin.cloud.service.system.pay.scb;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.http.HttpUtil;
+import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.common.scbpay.SCBConfig;
 import com.sanxin.cloud.common.scbpay.SCBHttpsUtils;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
@@ -263,4 +265,50 @@ public class SCBPayService {
         return dataObj;
     }
 
+    /**
+     * 查询交易记录
+     * @param cid
+     * @param transactionId
+     * @return
+     */
+    public JSONObject transactionRecord(Integer cid, String transactionId){
+        JSONObject returnObj = new JSONObject();
+        //获取token如果不存在的情况下就重新获取
+        String key=cid+"_scbtoken";
+        String accessToken=redisUtilsService.getKey(key);
+
+        Map<String,String> headers =new HashMap<>();
+        headers.put("Content-Type", "application/json");
+        headers.put("authorization","Bearer "+accessToken);
+        headers.put("accept-language", "EN");
+        headers.put("requestUId",String.valueOf(cid));
+        // TODO 用户Token
+        headers.put("resourceOwnerId", String.valueOf(cid));
+
+        String result="";
+        try {
+            result= HttpUtil.getInstance().get(SCBConfig.url+SCBConfig.getTransactions+transactionId, null, headers);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(StringUtils.isEmpty(result)){
+            returnObj.put("status", "0");
+            return returnObj;
+        }
+
+        JSONObject jsonObject=JSONObject.parseObject(result);
+        JSONObject statusObj=jsonObject.getJSONObject("status");
+        if(!"1000".equals(statusObj.getString("code"))){
+            returnObj.put("status", "0");
+            return returnObj;
+        }
+
+        JSONObject dataObj=jsonObject.getJSONObject("data");
+        String statusCode = dataObj.getString("statusCode");
+        String paidAmount = dataObj.getString("paidAmount");
+        returnObj.put("status", "1");
+        returnObj.put("statusCode", statusCode);
+        returnObj.put("paidAmount", paidAmount);
+        return returnObj;
+    }
 }

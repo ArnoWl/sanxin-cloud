@@ -1,7 +1,9 @@
 package com.sanxin.cloud.service.system.pay;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.domain.OrderDetail;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.language.LanguageUtils;
@@ -16,6 +18,7 @@ import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.service.CAccountService;
 import com.sanxin.cloud.service.CPayLogService;
 import com.sanxin.cloud.service.OrderMainService;
+import com.sanxin.cloud.service.system.pay.scb.SCBPayService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +43,8 @@ public class PayService {
     private CAccountService cAccountService;
     @Autowired
     private OrderMainService orderMainService;
+    @Autowired
+    private SCBPayService scbPayService;
 
     /**
      * 处理支付签名
@@ -50,6 +55,15 @@ public class PayService {
         //获取支付方式
         PayTypeEnums enums = PayTypeEnums.getEnums(log.getPayType());
         switch (enums) {
+            case SCB_PAY:
+                String token = BaseUtil.getUserToken();
+                JSONObject obj = scbPayService.transactions(token, log.getPayMoney(), log.getPayCode());
+                String transactionId = obj.getString("transactionId");
+                String userRefId = obj.getString("userRefId");
+                log.setTransCode(transactionId);
+                log.setUserId(userRefId);
+                cPayLogService.updateById(log);
+                return RestResult.success("SUCCESS",obj);
             case MONEY:
                 //余额支付
                 Integer handleType = log.getHandleType();
@@ -83,7 +97,7 @@ public class PayService {
         //2.根据版本号更新
         cPayLog.setStatus(StaticUtils.STATUS_YES);
         cPayLog.setTransCode(transCode);
-        cPayLog.setPayTime(DateUtil.getInstance().currentDate());
+        cPayLog.setPayTime(DateUtil.currentDate());
         boolean flag = cPayLogService.updateById(cPayLog);
         if (!flag) {
             throw new ThrowJsonException("pay_log_processed");
@@ -113,7 +127,12 @@ public class PayService {
                 }
                 break;
             case BUY_TIEM_GIFT:
-
+                msg = handleAccountChangeService.insertCHourDetail(new CHourDetail(cPayLog.getCid(), HandleTypeEnums.BUY_TIEM_GIFT.getId(),
+                        StaticUtils.PAY_IN, cPayLog.getPayCode(), cPayLog.getPayMoney().intValue(), HandleTypeEnums.getName(HandleTypeEnums.BUY_TIEM_GIFT.getId())));
+                if (StringUtils.isNotEmpty(msg)) {
+                    throw new ThrowJsonException(msg);
+                }
+                break;
             default:
                 break;
         }

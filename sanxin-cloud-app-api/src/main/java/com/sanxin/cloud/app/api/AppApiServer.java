@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * 订单服务
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableEurekaClient
 //启用feign进行远程调用
 @EnableFeignClients
+@EnableScheduling
 @ComponentScan(basePackages = "com.sanxin.cloud")
 public class AppApiServer {
 
