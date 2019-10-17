@@ -5,7 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.sanxin.cloud.entity.CPushLog">
         <id column="id" property="id" />
-        <result column="cid" property="cid" />
+        <result column="target_id" property="targetId" />
         <result column="pay_code" property="payCode" />
         <result column="msg_type" property="msgType" />
         <result column="content" property="content" />
@@ -16,5 +16,10 @@
         <result column="params" property="params" />
         <result column="target_type" property="targetType" />
     </resultMap>
+
+    <!--根据用户id批量更新已读-->
+    <update id="updateList">
+        update c_push_log set reading=1 where target_id=#{cid}
+    </update>
 
 </mapper>

@@ -32,8 +32,10 @@ public class CPushLogController {
     private LoginTokenService loginTokenService;
     @Autowired
     private CFeedbackLogService feedbackLogService;
+
     /**
      * 我的消息
+     *
      * @param page
      * @return
      */
@@ -46,7 +48,21 @@ public class CPushLogController {
     }
 
     /**
+     * 已读消息
+     * @param id 消息id
+     * @param type 已读类型
+     * @return
+     */
+    @RequestMapping(value = "/readMessage")
+    public RestResult readMessage(Integer id, Integer type) {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginTid(token);
+        return pushLogService.readMessage(id, type, cid);
+    }
+
+    /**
      * 加盟商的反馈列表
+     *
      * @param page
      * @return
      */

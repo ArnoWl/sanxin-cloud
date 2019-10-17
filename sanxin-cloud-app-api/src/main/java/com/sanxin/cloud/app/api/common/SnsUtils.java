@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.sound.midi.ShortMessage;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,19 +40,6 @@ public class SnsUtils {
         AWS_SECRET_KEY = key;
     }
 
-    public boolean send2SNS(String phoneNumber, String message) {
-        if (phoneNumber.contains("_")) {
-            phoneNumber = StringUtils.replace(phoneNumber, "_", "");
-        }
-        if (!phoneNumber.startsWith("+")) {
-            phoneNumber = "+" + phoneNumber;
-        }
-        PublishResult result = sendSMSMessage(phoneNumber, message, getDefaultSMSAttributes());
-        if (result != null && !StringUtils.isEmpty(result.getMessageId())) return true;
-        return false;
-    }
-
-
     public Map<String, MessageAttributeValue> getDefaultSMSAttributes() {
         if (smsAttributes == null) {
             smsAttributes = new HashMap<>();
@@ -68,19 +56,21 @@ public class SnsUtils {
         return smsAttributes;
     }
 
+    public PublishResult sendSMSMessage(String phoneNumber, String message) {
+        return sendSMSMessage(phoneNumber, message, getDefaultSMSAttributes());
+    }
 
     public PublishResult sendSMSMessage(String phoneNumber, String message, Map<String, MessageAttributeValue> smsAttributes) {
         AWSCredentials awsCredentials = new AWSCredentials() {
             @Override
             public String getAWSAccessKeyId() {
-                return AWS_ACCESS_KEYID;// 带有发短信权限的 IAM 的 ACCESS_KEY
+                return "xxxxxxxx"; // 带有发短信权限的 IAM 的 ACCESS_KEY
             }
 
             @Override
             public String getAWSSecretKey() {
-                return AWS_SECRET_KEY; // 带有发短信权限的 IAM 的 SECRET_KEY
+                return "xxxxxxxx"; // 带有发短信权限的 IAM 的 SECRET_KEY
             }
-
         };
         AWSCredentialsProvider provider = new AWSCredentialsProvider() {
             @Override
@@ -94,7 +84,6 @@ public class SnsUtils {
         };
         AmazonSNS amazonSNS = null;
         try {
-            //设置aws区域
             amazonSNS = AmazonSNSClientBuilder.standard().withCredentials(provider).withRegion("us-east-1").build();
         } catch (Exception e) {
 
@@ -106,6 +95,17 @@ public class SnsUtils {
                         .withMessageAttributes(smsAttributes)
         );
     }
+
+    public static void main(String[] args) {
+        //AmazonSNSClient client = new AmazonSNSClient(credentialsProvider);
+        //AWSCredentialsProviderChain chain = new AWSCredentialsProviderChain(credentialsProvider);
+        //chain.setReuseLastProvider(true);
+        //credentialsProvider.getCredentials();
+        ShortMessage shortMessage = new ShortMessage();
+        //PublishResult publishResult = shortMessage.sendSMSMessage("+8613958942952", "test1");
+        //System.out.println(publishResult);
+    }
+
 }
 
 

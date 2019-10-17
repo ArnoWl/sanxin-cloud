@@ -24,11 +24,45 @@ import java.util.List;
  * @since 2019-09-17
  */
 @Service
-public class CPushLogServiceImpl extends ServiceImpl<CPushLogMapper, CPushLog> implements CPushLogService{
+public class CPushLogServiceImpl extends ServiceImpl<CPushLogMapper, CPushLog> implements CPushLogService {
+
+    @Autowired
+    private CPushLogMapper pushLogMapper;
+
 
     @Override
     public IPage<CPushLog> queryMyMessage(SPage<CPushLog> page, Integer cid) {
-        IPage<CPushLog> iPage = baseMapper.selectPage(page, new QueryWrapper<CPushLog>().eq("cid", cid));
-        return iPage;
+        pushLogMapper.selectPage(page, new QueryWrapper<CPushLog>().eq("target_id", cid));
+        return page;
+    }
+
+    /**
+     * 已读消息
+     * @param id 消息id
+     * @param type 已读类型
+     * @param cid 用户di
+     * @return
+     */
+    @Override
+    public RestResult readMessage(Integer id, Integer type, Integer cid) {
+        switch (type) {
+            case 1:
+                CPushLog cPushLog = pushLogMapper.selectById(id);
+                if (cPushLog != null) {
+                    cPushLog.setReading(1);
+                }
+                int i = pushLogMapper.updateById(cPushLog);
+                if (i > 0) {
+                    return RestResult.success("success");
+                }
+                return RestResult.fail("fail");
+            case 2:
+                boolean b = pushLogMapper.updateList(cid);
+                if (b) {
+                    return RestResult.success("success");
+                }
+                return RestResult.fail("fail");
+        }
+        return RestResult.fail("fail");
     }
 }

@@ -13,4 +13,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface CPushLogMapper extends BaseMapper<CPushLog> {
 
+    /**
+     * 根据用户id批量更新已读
+     * @param cid
+     * @return
+     */
+    boolean updateList(Integer cid);
 }
