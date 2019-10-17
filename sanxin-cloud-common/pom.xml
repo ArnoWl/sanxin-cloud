@@ -109,6 +109,13 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
+        <!--亚马逊短信SNS-->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-sns</artifactId>
+            <version>1.11.229</version>
+        </dependency>
+
         <!--第三方授权登录的工具类库-->
         <dependency>
             <groupId>me.zhyd.oauth</groupId>

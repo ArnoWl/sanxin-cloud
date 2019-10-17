@@ -83,3 +83,7 @@ ribbon:
 info:
   author.name: Arno
   app.name: 三心网络科技
+#亚马逊短信
+sns:
+  AWS_ACCESS_KEYID: AKIAYQ6W6T34FOTRUKFO
+  AWS_SECRET_KEY: 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
