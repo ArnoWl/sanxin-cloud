@@ -11,7 +11,8 @@ public enum PayPageEnums {
     ORDER(1, "订单"),
     RECHARGE_DEPOSIT(2, "充值押金"),
     HOUR_GIFT(3, "购买时长"),
-    RECHARGE_MONEY(4, "充值余额");
+    RECHARGE_MONEY(4, "充值余额"),
+    BUY_TERMINAL(5, "购买充电宝");
 
     private Integer type;
     private String name;
