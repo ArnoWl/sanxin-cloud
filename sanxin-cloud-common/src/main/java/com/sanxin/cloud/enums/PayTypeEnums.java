@@ -131,7 +131,7 @@ public enum PayTypeEnums {
         for (PayTypeEnums o : PayTypeEnums.values()) {
             if (FunctionUtils.isEquals(o.getStatus(), StaticUtils.STATUS_YES)
                     && (FunctionUtils.isEquals(payPageType, o.getType())
-                    || FunctionUtils.isEquals(o.getType(), 5))) {
+                    || FunctionUtils.isEquals(o.getType(), 6))) {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("id", o.getId());
                 map.put("name", o.getName());
