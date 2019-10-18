@@ -1,18 +1,16 @@
 package com.sanxin.cloud.app.api.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.sanxin.cloud.app.api.service.MessageService;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
-import com.sanxin.cloud.entity.AAdvertContent;
+import com.sanxin.cloud.entity.AAdvertFind;
 import com.sanxin.cloud.entity.CFeedbackLog;
 import com.sanxin.cloud.service.CFeedbackLogService;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,13 +63,21 @@ public class MessageController {
     }
 
     /**
-     * 查询广告列表
+     * 发现查询广告列表
      * @param page 分页
      * @return
      */
     @RequestMapping("/queryAdvertList")
-    public RestResult queryAdvertList(SPage<AAdvertContent> page) {
-        messageService.queryAdvertList(page);
-        return RestResult.success("", page);
+    public RestResult queryAdvertList(SPage<AAdvertFind> page) {
+        return messageService.queryAdvertList(page);
+    }
+
+    /**
+     * 首页广告弹窗
+     * @return
+     */
+    @RequestMapping("/queryHomeAdvert")
+    public RestResult queryHomeAdvert() {
+        return messageService.queryHomeAdvert();
     }
 }

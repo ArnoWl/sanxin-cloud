@@ -5,6 +5,8 @@ import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 
 /**
@@ -46,11 +48,6 @@ public class AAdvertContent implements Serializable {
     private String frameImg;
 
     /**
-     * 广告列表展示图片
-     */
-    private String img;
-
-    /**
      * 是否有效 0 无效   1 有效
      */
     private Integer status;
@@ -61,13 +58,9 @@ public class AAdvertContent implements Serializable {
     private Integer homeShow;
 
     /**
-     * 排序  从小到大排序
-     */
-    private Integer sort;
-
-    /**
      * 发布时间
      */
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
     private Date createTime;
     /**
      * 中文标题
@@ -107,6 +100,7 @@ public class AAdvertContent implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+
     public String getTitle() {
         return title;
     }
@@ -114,6 +108,7 @@ public class AAdvertContent implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
+
     public String getContent() {
         return content;
     }
@@ -121,6 +116,7 @@ public class AAdvertContent implements Serializable {
     public void setContent(String content) {
         this.content = content;
     }
+
     public String getEvent() {
         return event;
     }
@@ -128,6 +124,15 @@ public class AAdvertContent implements Serializable {
     public void setEvent(String event) {
         this.event = event;
     }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public String getFrameImg() {
         return frameImg;
     }
@@ -135,13 +140,7 @@ public class AAdvertContent implements Serializable {
     public void setFrameImg(String frameImg) {
         this.frameImg = frameImg;
     }
-    public String getImg() {
-        return img;
-    }
 
-    public void setImg(String img) {
-        this.img = img;
-    }
     public Integer getStatus() {
         return status;
     }
@@ -149,6 +148,7 @@ public class AAdvertContent implements Serializable {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
     public Integer getHomeShow() {
         return homeShow;
     }
@@ -156,13 +156,7 @@ public class AAdvertContent implements Serializable {
     public void setHomeShow(Integer homeShow) {
         this.homeShow = homeShow;
     }
-    public Integer getSort() {
-        return sort;
-    }
 
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
     public Date getCreateTime() {
         return createTime;
     }
@@ -219,27 +213,24 @@ public class AAdvertContent implements Serializable {
         this.thaiContent = thaiContent;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     @Override
     public String toString() {
         return "AAdvertContent{" +
-        "id=" + id +
-        ", title=" + title +
-        ", content=" + content +
-        ", event=" + event +
-        ", frameImg=" + frameImg +
-        ", img=" + img +
-        ", status=" + status +
-        ", homeShow=" + homeShow +
-        ", sort=" + sort +
-        ", createTime=" + createTime +
-        "}";
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", event='" + event + '\'' +
+                ", url='" + url + '\'' +
+                ", frameImg='" + frameImg + '\'' +
+                ", status=" + status +
+                ", homeShow=" + homeShow +
+                ", createTime=" + createTime +
+                ", cnTitle='" + cnTitle + '\'' +
+                ", enTitle='" + enTitle + '\'' +
+                ", thaiTitle='" + thaiTitle + '\'' +
+                ", cnContent='" + cnContent + '\'' +
+                ", enContent='" + enContent + '\'' +
+                ", thaiContent='" + thaiContent + '\'' +
+                '}';
     }
 }

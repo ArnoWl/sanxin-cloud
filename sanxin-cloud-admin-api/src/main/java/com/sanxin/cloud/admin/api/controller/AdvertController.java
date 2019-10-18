@@ -155,12 +155,12 @@ public class AdvertController {
         if (advertContent.getId() == null && StringUtils.isBlank(advertContent.getFrameImg())) {
             return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_FRAME_IMG));
         }
-        if (advertContent.getId() == null && StringUtils.isBlank(advertContent.getImg())) {
+        /*if (advertContent.getId() == null && StringUtils.isBlank(advertContent.getImg())) {
             return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_IMG));
         }
         if (advertContent.getSort() == null) {
             return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_SORT));
-        }
+        }*/
         LanguageVo titleVo = new LanguageVo(advertContent.getCnTitle(), advertContent.getEnTitle(), advertContent.getThaiTitle());
         String titleObj = JSONObject.toJSONString(titleVo);
         advertContent.setTitle(titleObj);

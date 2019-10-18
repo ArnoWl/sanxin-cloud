@@ -21,6 +21,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     /**
      * 配置跨域问题
+     *
      * @param registry
      */
     @Override
@@ -44,7 +45,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/agree/**")
                 .excludePathPatterns("/business/**")
                 .excludePathPatterns("/base/**")
-                //查询广告列表
+                //首页广告
+                .excludePathPatterns("/message/queryHomeAdvert")
+                //发现广告
                 .excludePathPatterns("/message/queryAdvertList")
                 // 排除swagger相关请求
                 .excludePathPatterns("/webjars/**", "/v2/**");
