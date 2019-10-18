@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.http.HttpUtil;
-import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.common.scbpay.SCBConfig;
 import com.sanxin.cloud.common.scbpay.SCBHttpsUtils;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
@@ -139,26 +138,23 @@ public class SCBPayService {
         String key=loginDto.getTid()+"_scbtoken";
         String accessToken=redisUtilsService.getKey(key);
 
-        HttpHeaders params =new HttpHeaders();
-        params.add("applicationKey",SCBConfig.apikey);
-        params.add("applicationSecret",SCBConfig.apisecret);
-        params.add("refreshToken",accessToken);
+        JSONObject params =new JSONObject();
+        params.put("applicationKey",SCBConfig.apikey);
+        params.put("applicationSecret",SCBConfig.apisecret);
+        params.put("refreshToken",accessToken);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        headers.add("accept-language", "EN");
-        headers.add("requestUId",String.valueOf(loginDto.getTid()));
-        headers.add("resourceOwnerId",token);
+        Map<String,String> headers =new HashMap<>();
+        headers.put("Content-Type", "application/json");
+        headers.put("accept-language", "EN");
+        headers.put("requestUId",String.valueOf(loginDto.getTid()));
+        headers.put("resourceOwnerId",token);
 
-        HttpEntity<MultiValueMap> requestEntity = new HttpEntity<MultiValueMap>(params, headers);
-        RestTemplate restTemplate=new RestTemplate();
-        ResponseEntity<String> response =null;
+        String result ="";
         try {
-            response = restTemplate.exchange(SCBConfig.url+SCBConfig.refresh, HttpMethod.POST, requestEntity, String.class);
+            result= SCBHttpsUtils.httpPostRaw(SCBConfig.url+SCBConfig.refresh, params.toJSONString(), headers);
         }catch (Exception e){
             throw new ThrowJsonException("Token refresh error");
         }
-        String result = response.getBody();
         if(StringUtils.isEmpty(result)){
             throw new ThrowJsonException("SCB AUTHORIZE REQUEST ERROR");
         }
@@ -166,6 +162,7 @@ public class SCBPayService {
         JSONObject jsonObject=JSONObject.parseObject(result);
         JSONObject statusObj=jsonObject.getJSONObject("status");
         if(!"1000".equals(statusObj.getString("code"))){
+            redisUtilsService.deleteKey(key);
             throw new ThrowJsonException(statusObj.getString("description"));
         }
         JSONObject dataObj=jsonObject.getJSONObject("data");
