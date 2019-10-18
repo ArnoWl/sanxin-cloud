@@ -9,6 +9,9 @@ public class AccountMapping {
     /**我的押金*/
     public static final String MY_DEPOSIT="/myDeposit";
 
+    /**开启关闭免密支付*/
+    public static final String FREE_SECRET="/freeSecret";
+
     /**查询充值方式*/
     public static final String SELECT_LIMT="/selectLimt";
 

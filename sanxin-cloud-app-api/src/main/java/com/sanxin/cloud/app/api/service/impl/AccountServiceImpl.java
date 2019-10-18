@@ -162,6 +162,10 @@ public class AccountServiceImpl implements AccountService {
         }
         List<GiftHour> giftHours = giftHourMapper.selectList(null);
         giftVO.setList(giftHours);
+        RuleTextVo byType = sysRuleTextService.getByType(3);
+        if (byType != null) {
+            giftVO.setRuleTextVo(byType);
+        }
         return RestResult.success(giftVO);
     }
 
@@ -169,8 +173,8 @@ public class AccountServiceImpl implements AccountService {
      * 支付购买时长
      *
      * @param cid     用户di
-     * @param giftId      礼包id
-     * @param payType    支付类型1余额  2泰国本地银行卡
+     * @param giftId  礼包id
+     * @param payType 支付类型1余额  2泰国本地银行卡
      * @param payWord 支付密码
      * @return
      */
@@ -302,8 +306,9 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 支付方式列表
+     *
      * @param type 支付渠道
-     * @param cid 用户id
+     * @param cid  用户id
      * @return
      */
     @Override
@@ -332,5 +337,36 @@ public class AccountServiceImpl implements AccountService {
         map.put("ruleMoney", ruleMoney);
         map.put("ruleDeposit", ruleDeposit);
         return map;
+    }
+
+    /**
+     * 开启关闭免密支付
+     *
+     * @param cid 用户cid
+     * @return
+     */
+    @Override
+    public RestResult freeSecret(Integer cid, String payWord) {
+        CAccount account = cAccountService.getByCid(cid);
+        if (account.getFreeSecret() == 0) {
+            if (payWord != null) {
+                CCustomer customer = customerService.getById(cid);
+                //加密密码
+                String pass = PwdEncode.encodePwd(payWord);
+                if (!pass.equals(customer.getPayWord())) {
+                    return RestResult.fail("pay_word_error");
+                }
+            }else {
+                return RestResult.fail("pay_word_empty");
+            }
+            account.setFreeSecret(1);
+        } else {
+            account.setFreeSecret(0);
+        }
+        boolean update = cAccountService.updateById(account);
+        if (!update) {
+            return RestResult.fail("fail");
+        }
+        return RestResult.success("success");
     }
 }

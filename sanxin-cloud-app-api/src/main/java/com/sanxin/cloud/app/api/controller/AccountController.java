@@ -46,6 +46,17 @@ public class AccountController {
     }
 
     /**
+     * 开启关闭免密支付
+     * @return
+     */
+    @RequestMapping(value = AccountMapping.FREE_SECRET)
+    public RestResult freeSecret(String payWord) {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginCid(token);
+        return accountService.freeSecret(cid,payWord);
+    }
+
+    /**
      * 我的钱包
      * @return
      */

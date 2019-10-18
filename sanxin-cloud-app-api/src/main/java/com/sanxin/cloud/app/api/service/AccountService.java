@@ -100,4 +100,11 @@ public interface AccountService {
      * @return
      */
     Map<String, Object> getRechargeMsg();
+
+    /**
+     * 开启关闭免密支付
+     * @param cid
+     * @return
+     */
+    RestResult freeSecret(Integer cid,String payWord);
 }
