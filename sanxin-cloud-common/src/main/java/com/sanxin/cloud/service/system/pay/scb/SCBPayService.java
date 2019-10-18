@@ -276,14 +276,15 @@ public class SCBPayService {
         //获取token如果不存在的情况下就重新获取
         String key=cid+"_scbtoken";
         String accessToken=redisUtilsService.getKey(key);
+        String tKey = cid+"_token";
+        String token = redisUtilsService.getKey(tKey);
 
         Map<String,String> headers =new HashMap<>();
         headers.put("Content-Type", "application/json");
         headers.put("authorization","Bearer "+accessToken);
         headers.put("accept-language", "EN");
         headers.put("requestUId",String.valueOf(cid));
-        // TODO 用户Token
-        headers.put("resourceOwnerId", String.valueOf(cid));
+        headers.put("resourceOwnerId", token);
 
         String result="";
         try {
