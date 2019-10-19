@@ -89,7 +89,7 @@ public class DeviceController {
      * @param status
      * @return
      */
-    @PutMapping(value = DeviceMapping.HANDLE_DEVICE_STATUS)
+    @RequestMapping(value = DeviceMapping.HANDLE_DEVICE_STATUS)
     public RestResult handleDeviceStatus(Integer deviceId, Integer status) {
         // 校验店铺
         String token = BaseUtil.getUserToken();
@@ -109,7 +109,7 @@ public class DeviceController {
      * @param status
      * @return
      */
-    @PutMapping(value = DeviceMapping.EDIT_DEVICE)
+    @RequestMapping(value = DeviceMapping.EDIT_DEVICE)
     public RestResult editDevice(Integer deviceId, String code, Integer status, Integer type) {
         // 校验店铺
         String token = BaseUtil.getUserToken();
@@ -152,7 +152,7 @@ public class DeviceController {
      * @param type 柜机类型
      * @return
      */
-    @PostMapping(value = DeviceMapping.ADD_DEVICE)
+    @RequestMapping(value = DeviceMapping.ADD_DEVICE)
     public RestResult addDevice(String code, Integer status, Integer type) {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginBid(token);
@@ -189,7 +189,7 @@ public class DeviceController {
      * @param deviceId
      * @return
      */
-    @DeleteMapping(value = DeviceMapping.DELETE_DEVICE)
+    @RequestMapping(value = DeviceMapping.DELETE_DEVICE)
     public RestResult deleteDevice(Integer deviceId) {
         // 校验店铺
         String token = BaseUtil.getUserToken();
