@@ -6,6 +6,8 @@ package com.sanxin.cloud.dto;
  * @date 2019-09-17
  */
 public class DeviceDetailVo {
+    private Integer id;
+    private Integer type;
     /**
      * 设备编号
      */
@@ -102,5 +104,21 @@ public class DeviceDetailVo {
 
     public void setAddressDetail(String addressDetail) {
         this.addressDetail = addressDetail;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

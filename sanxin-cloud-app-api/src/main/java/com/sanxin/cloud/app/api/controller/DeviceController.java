@@ -63,7 +63,10 @@ public class DeviceController {
      */
     @RequestMapping(value = DeviceMapping.QUERY_DEVICE_LIST)
     public RestResult queryDeviceList(SPage<BDevice> page, Integer type, String key) {
-        deviceService.queryDeviceList(page, type, key);
+        String token = BaseUtil.getUserToken();
+        Integer bid = loginTokenService.validLoginBid(token);
+        businessService.validById(bid);
+        deviceService.queryDeviceList(page, bid, type, key);
         return RestResult.success("", page);
     }
 

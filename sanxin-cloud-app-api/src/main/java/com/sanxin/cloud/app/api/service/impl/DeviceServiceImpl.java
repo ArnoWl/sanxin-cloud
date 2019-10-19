@@ -13,6 +13,7 @@ import com.sanxin.cloud.enums.DeviceTypeEnums;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.service.BBusinessService;
 import com.sanxin.cloud.service.BDeviceService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,9 +38,14 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
-    public void queryDeviceList(SPage<BDevice> page, Integer type, String key) {
+    public void queryDeviceList(SPage<BDevice> page, Integer bid, Integer type, String key) {
         QueryWrapper<BDevice> wrapper = new QueryWrapper<>();
-        wrapper.eq("type", type);
+        wrapper.eq("bid", bid).ge("status", DeviceStatusEnums.RUN.getStatus())
+                .like(StringUtils.isNotBlank(key), "code", key);;
+        if (type != null) {
+            wrapper.eq("type", type);
+        }
+
         deviceService.page(page, wrapper);
         for (BDevice device : page.getRecords()) {
             device.setStatusName(DeviceStatusEnums.getName(device.getStatus()));

@@ -5,6 +5,8 @@ import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 
 /**
@@ -63,6 +65,7 @@ public class BDevice implements Serializable {
     /**
      * 设备添加时间
      */
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
     private Date createTime;
     /**
      * 对应店铺名称

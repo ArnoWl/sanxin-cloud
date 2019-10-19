@@ -22,11 +22,12 @@ public interface DeviceService {
     /**
      * 查询柜机列表
      * @param page
+     * @param bid
      * @param type 类型，大柜机，小柜机
      * @param key 暂时无用，设计图上有一个搜索
      * @return
      */
-    void queryDeviceList(SPage<BDevice> page, Integer type, String key);
+    void queryDeviceList(SPage<BDevice> page, Integer bid, Integer type, String key);
 
     /**
      * 通过柜机编号查询柜机详情
