@@ -67,6 +67,9 @@ public class DeviceDetailVo {
     }
 
     public Integer getLendPort() {
+        if (lendPort == null) {
+            return 0;
+        }
         return lendPort;
     }
 
@@ -75,6 +78,9 @@ public class DeviceDetailVo {
     }
 
     public Integer getRepayPort() {
+        if (repayPort == null) {
+            return 0;
+        }
         return repayPort;
     }
 

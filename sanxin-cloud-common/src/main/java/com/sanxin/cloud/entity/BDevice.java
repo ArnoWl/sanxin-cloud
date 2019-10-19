@@ -116,6 +116,9 @@ public class BDevice implements Serializable {
     }
 
     public Integer getAllPort() {
+        if (allPort == null) {
+            return 0;
+        }
         return allPort;
     }
 
@@ -124,6 +127,9 @@ public class BDevice implements Serializable {
     }
 
     public Integer getLendPort() {
+        if (lendPort == null) {
+            return 0;
+        }
         return lendPort;
     }
 
@@ -132,6 +138,9 @@ public class BDevice implements Serializable {
     }
 
     public Integer getRepayPort() {
+        if (repayPort == null) {
+            return 0;
+        }
         return repayPort;
     }
 

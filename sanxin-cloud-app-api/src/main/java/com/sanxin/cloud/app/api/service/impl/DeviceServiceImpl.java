@@ -33,7 +33,7 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public int countByType(Integer bid, Integer type) {
         QueryWrapper<BDevice> wrapper = new QueryWrapper<>();
-        wrapper.eq("bid", bid).eq("type", type);
+        wrapper.eq("bid", bid).eq("type", type).ge("status", DeviceStatusEnums.RUN.getStatus());
         return deviceService.count(wrapper);
     }
 
@@ -42,7 +42,7 @@ public class DeviceServiceImpl implements DeviceService {
         QueryWrapper<BDevice> wrapper = new QueryWrapper<>();
         wrapper.eq("bid", bid).ge("status", DeviceStatusEnums.RUN.getStatus())
                 .like(StringUtils.isNotBlank(key), "code", key);;
-        if (type != null) {
+        if (StringUtils.isNotBlank(key)) {
             wrapper.eq("type", type);
         }
 
