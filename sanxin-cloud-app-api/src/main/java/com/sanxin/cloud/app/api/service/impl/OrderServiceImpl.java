@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.sanxin.cloud.app.api.service.OrderService;
 import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.times.DateUtil;
 import com.sanxin.cloud.config.pages.SPage;
@@ -91,7 +92,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public SPage<OrderBusVo> queryBusinessOrderList(SPage<OrderMain> page, OrderMain orderMain) {
         QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
-        wrapper.eq("bid", orderMain.getBid()).like(StringUtils.isNotBlank(orderMain.getKey()), "order_code", orderMain.getKey());
+        wrapper.eq("bid", orderMain.getBid()).eq("del", StaticUtils.STATUS_NO)
+                .like(StringUtils.isNotBlank(orderMain.getKey()), "order_code", orderMain.getKey());
         if (orderMain.getOrderStatus() != null) {
             wrapper.eq("order_status", orderMain.getOrderStatus());
         }
@@ -181,7 +183,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public SPage<OrderUserVo> queryUserOrderList(SPage<OrderMain> page, OrderMain orderMain) {
         QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
-        wrapper.eq("cid", orderMain.getCid()).eq("order_status", orderMain.getOrderStatus());
+        wrapper.eq("cid", orderMain.getCid()).eq("del", StaticUtils.STATUS_NO)
+                .eq("order_status", orderMain.getOrderStatus());
         IPage<OrderMain> userPage = orderMainMapper.selectPage(page, wrapper);
         List<OrderUserVo> list = new ArrayList<>();
         for (OrderMain o : userPage.getRecords()) {

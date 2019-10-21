@@ -83,4 +83,5 @@ public class BTerminalVo implements Comparable<BTerminalVo>{
     public int compareTo(BTerminalVo o) {
         return o.getLevel().compareTo(this.getLevel());
     }
+
 }

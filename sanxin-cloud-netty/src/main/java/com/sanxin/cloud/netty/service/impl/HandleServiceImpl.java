@@ -205,18 +205,19 @@ public class HandleServiceImpl implements HandleService {
     @Override
     public List<OrderMain> queryUseOrderByTerminal(String terminalId) {
         QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
-        wrapper.eq("terminal_id", terminalId).ne("order_status", OrderStatusEnums.OVER.getId());
+        wrapper.eq("terminal_id", terminalId).eq("del", StaticUtils.STATUS_NO)
+                .ne("order_status", OrderStatusEnums.OVER.getId());
         return orderMainService.list(wrapper);
     }
 
     @Override
     public RestResult handleCreateUseOrder(Integer cid, String token, String boxId, String terminalId) {
-        // 查询充电宝信息
-        BDeviceTerminal terminal = bDeviceTerminalService.getTerminalById(terminalId);
-        // 校验-充电宝不存在或者充电宝状态不是充电中
-        if (terminal == null || !FunctionUtils.isEquals(terminal.getStatus(), TerminalStatusEnums.CHARGING.getStatus())) {
-            return RestResult.fail("data_exception");
-        }
+        // // 查询充电宝信息
+        // BDeviceTerminal terminal = bDeviceTerminalService.getTerminalById(terminalId);
+        // // 校验-充电宝不存在或者充电宝状态不是充电中
+        // if (terminal == null || !FunctionUtils.isEquals(terminal.getStatus(), TerminalStatusEnums.CHARGING.getStatus())) {
+        //     return RestResult.fail("data _exception");
+        // }
         // 查询机柜信息
         BDevice device = bDeviceService.getByCode(boxId);
         if (device == null) {

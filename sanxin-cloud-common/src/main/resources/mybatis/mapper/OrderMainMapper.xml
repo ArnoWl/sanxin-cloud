@@ -79,4 +79,10 @@
         select sum(pay_money) from order_main where order_status = 3
     </select>
 
+    <select id="queryExpiredOrder" parameterType="java.lang.Integer" resultType="com.sanxin.cloud.entity.OrderMain">
+        SELECT * from order_main
+        where order_status = 0
+        and del = 0
+        and TIMESTAMPDIFF(MINUTE,create_time, NOW()) &gt; #{num, jdbcType=INTEGER}
+    </select>
 </mapper>

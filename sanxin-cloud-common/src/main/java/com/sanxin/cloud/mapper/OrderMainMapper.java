@@ -31,4 +31,11 @@ public interface OrderMainMapper extends BaseMapper<OrderMain> {
      * @return
      */
     BigDecimal sumOrderMoney();
+
+    /**
+     * 查询过期订单
+     * @param num
+     * @return
+     */
+    List<OrderMain> queryExpiredOrder(@Param("num") Integer num);
 }

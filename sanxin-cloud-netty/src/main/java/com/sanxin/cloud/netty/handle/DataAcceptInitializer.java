@@ -35,8 +35,7 @@ public class DataAcceptInitializer extends ChannelInitializer<SocketChannel> {
         log.info("==================netty报告完毕==================");
         ChannelPipeline pipeline = socketChannel.pipeline();
         // 添加超时 机柜表示30S发送心跳我们设置32S表示没有连接上就重新来
-        // pipeline.addLast(new IdleStateHandler(0, 0, 3, TimeUnit.SECONDS));
-        pipeline.addLast(new IdleStateHandler(0, 0, 0, TimeUnit.SECONDS));
+        pipeline.addLast(new IdleStateHandler(0, 0, 25, TimeUnit.SECONDS));
 //        pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
 //        pipeline.addLast(new LengthFieldPrepender(4));
         pipeline.addLast(new NettyDecode());

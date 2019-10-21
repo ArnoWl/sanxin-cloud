@@ -58,7 +58,8 @@ public class HandleBatteryService {
     public RestResult handleLendBattery(String boxId, String terminalId, String slot) {
         // 查询是否有订单信息
         QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
-        wrapper.eq("terminal_id", terminalId).eq("order_status", OrderStatusEnums.CREATE.getId());
+        wrapper.eq("terminal_id", terminalId).eq("del", StaticUtils.STATUS_NO)
+                .eq("order_status", OrderStatusEnums.CREATE.getId());
         wrapper.orderByDesc("create_time");
         List<OrderMain> orderList = orderMainService.list(wrapper);
         if (orderList == null || orderList.size() <= 0) {
@@ -66,23 +67,23 @@ public class HandleBatteryService {
         }
         OrderMain orderMain = orderList.get(0);
         // 查询充电宝信息
-        BDeviceTerminal terminal = bDeviceTerminalService.getTerminalById(terminalId);
-        // 校验-充电宝不存在或者充电宝状态不是充电中
-        if (terminal == null || !FunctionUtils.isEquals(terminal.getStatus(), TerminalStatusEnums.CHARGING.getStatus())) {
-            throw new ThrowJsonException("data_exception");
-        }
+        // BDeviceTerminal terminal = bDeviceTerminalService.getTerminalById(terminalId);
+        // // 校验-充电宝不存在或者充电宝状态不是充电中
+        // if (terminal == null || !FunctionUtils.isEquals(terminal.getStatus(), TerminalStatusEnums.CHARGING.getStatus())) {
+        //     throw new ThrowJsonException("data_exception");
+        // }
         // 查询机柜信息
         BDevice device = bDeviceService.getByCode(boxId);
         if (device == null) {
             throw new ThrowJsonException("data_exception");
         }
-        // 借出-更新充电宝信息
-        boolean result = handleLendTerminalMsg(terminal);
-        if (!result) {
-            throw new ThrowJsonException(LanguageUtils.getMessage("fail"));
-        }
+        // // 借出-更新充电宝信息
+        // boolean result = handleLendTerminalMsg(terminal);
+        // if (!result) {
+        //     throw new ThrowJsonException(LanguageUtils.getMessage("fail"));
+        // }
         // 借出-更新机柜信息
-        result = handleLendDeviceMsg(device);
+        Boolean result = handleLendDeviceMsg(device);
         if (!result) {
             throw new ThrowJsonException(LanguageUtils.getMessage("fail"));
         }
@@ -215,7 +216,8 @@ public class HandleBatteryService {
         BBusiness business = businessService.validById(device.getBid());
         // 操作订单数据
         QueryWrapper<OrderMain> wrapperOrder = new QueryWrapper<>();
-        wrapperOrder.eq("terminal_id", terminalId).eq("order_status", OrderStatusEnums.USING.getId());
+        wrapperOrder.eq("terminal_id", terminalId).eq("del", StaticUtils.STATUS_NO)
+                .eq("order_status", OrderStatusEnums.USING.getId());
         List<OrderMain> list = orderMainService.list(wrapperOrder);
         if (list == null || list.size()!=1) {
             return RestResult.fail("fail", "00");

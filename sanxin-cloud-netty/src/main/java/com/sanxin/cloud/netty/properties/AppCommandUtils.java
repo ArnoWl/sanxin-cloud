@@ -12,7 +12,7 @@ import com.sanxin.cloud.entity.BDeviceTerminal;
 import com.sanxin.cloud.entity.OrderMain;
 import com.sanxin.cloud.enums.OrderStatusEnums;
 import com.sanxin.cloud.exception.LoginOutException;
-import com.sanxin.cloud.exception.ThrowJsonException;
+import com.sanxin.cloud.netty.config.CommandResult;
 import com.sanxin.cloud.netty.enums.AppCommandEnums;
 import com.sanxin.cloud.netty.enums.CommandEnums;
 import com.sanxin.cloud.netty.service.HandleService;
@@ -20,13 +20,16 @@ import com.sanxin.cloud.service.OrderMainService;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * app指令
@@ -46,14 +49,16 @@ public class AppCommandUtils {
      * @param content  机器发送过来的16进制
      * @return
      */
-    public static String command(ChannelHandlerContext ctx, String content) {
-        String out_str = "";//输入字符串 不需要16进制
+    public static String command(ChannelHandlerContext ctx, String content) throws InterruptedException {
+        log.info("App发送的内容"+content);
+        //输入字符串 不需要16进制
+        String out_str = "";
         if (!StringUtils.isEmpty(content)) {
             JSONObject json = JSONObject.parseObject(content);
             String command = json.getString("command");
             AppCommandEnums enums = AppCommandEnums.getCommandFun(command);
             if (enums == null) {
-                return JSON.toJSONString(RestResult.fail("fail"));
+                return CommandResult.fail("fail");
             }
             String token = json.getString("token");
             switch (enums) {
@@ -64,14 +69,13 @@ public class AppCommandUtils {
                         //登陆记录
                         AppNettySocketHolder.put(cid.toString(), ctx);
                     } catch (Exception ex) {
-                        ex.printStackTrace();
-                        return JSON.toJSONString(RestResult.fail("1001","Token is invalid, please log in again",null,null));
+                        return CommandResult.fail("1001","Token is invalid, please log in again", null);
                     }
-                    out_str = JSON.toJSONString(RestResult.success("success"));
+                    out_str = CommandResult.success("success");
                     break;
                 case x10001:
                     // app用户端登录连接和响应
-                    out_str = content;
+                    out_str = CommandResult.success("success", content);
                     break;
                 case x10002:
                     // 借充电宝信息及响应
@@ -81,13 +85,14 @@ public class AppCommandUtils {
                     try {
                         cid = loginTokenService.validLoginCid(token);
                     } catch (LoginOutException ex) {
-                        return JSON.toJSONString(RestResult.fail("1001","Token is invalid, please log in again",null,null));
+                        return CommandResult.fail("1001", "Token is invalid, please log in again", null);
                     }
                     QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
-                    wrapper.eq("cid", cid).in("order_status", OrderStatusEnums.USING.getId(), OrderStatusEnums.CONFIRMED.getId());
+                    wrapper.eq("cid", cid).in("order_status", OrderStatusEnums.USING.getId(), OrderStatusEnums.CONFIRMED.getId())
+                        .eq("del", StaticUtils.STATUS_NO);
                     Integer orderNum = orderMainService.count(wrapper);
                     if (orderNum>0) {
-                        return JSON.toJSONString(RestResult.fail("您还有未完成订单"));
+                        return CommandResult.fail("您还有未完成订单");
                     }
 
                     BTerminalVo mostCharge = null;
@@ -96,41 +101,70 @@ public class AppCommandUtils {
                         // 获取电量最多的充电宝
                         try {
                             mostCharge = RedisUtils.getInstance().getMostCharge(boxId, index);
-                        } catch (ArrayIndexOutOfBoundsException e) {
+                            log.info("Redis里面取到的充电宝信息"+mostCharge);
+                        } catch (Exception e) {
                             // 机柜库存没有可借用的充电宝了
-                            return JSON.toJSONString(RestResult.fail("fail"));
+                            return CommandResult.fail("fail");
                         }
                         if (mostCharge == null) {
-                            return JSON.toJSONString(RestResult.fail("fail"));
+                            return CommandResult.fail("fail");
                         }
+                        log.info("获取到的充电宝"+mostCharge.getTerminalId()+"槽位"+mostCharge.getSlot());
                         // 查询该充电宝是否被使用(是否有人已创建过订单)
                         List<OrderMain> orderList = handleService.queryUseOrderByTerminal(mostCharge.getTerminalId());
+                        System.out.println("订单信息"+orderList.toString());
                         // 充电宝被使用中
                         if (orderList != null && orderList.size()>0) {
+                            log.info("充电宝被使用中");
                             mostCharge = null;
                             index ++;
                         }
                     }
+                    // TODO 1
+                    JSONObject reObj = new JSONObject();
+                    reObj.put("command", AppCommandEnums.x10002.getCommand());
+                    reObj.put("per", new Random().nextInt(10) + 30);
+                    ctx.channel().writeAndFlush(new TextWebSocketFrame(CommandResult.success(reObj))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                     // 生成一个创建中的订单，代表该充电宝已被使用
                     RestResult returnResult = handleService.handleCreateUseOrder(cid, token, boxId, mostCharge.getTerminalId());
                     if (!returnResult.status) {
-                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                         return JSON.toJSONString(returnResult);
                     }
+                    // TODO 2
+                    reObj.put("per", new Random().nextInt(20) + 50);
+                    ctx.channel().writeAndFlush(new TextWebSocketFrame(CommandResult.success(reObj))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+                    Thread.sleep(1000);
                     // 修改充电宝当前使用用户
                     BDeviceTerminal terminal = new BDeviceTerminal();
                     BeanUtils.copyProperties(mostCharge, terminal);
                     terminal.setUseCid(cid);
                     boolean result = handleService.handleUpdateTerminal(terminal);
                     if (!result) {
-                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                        return JSON.toJSONString(RestResult.fail("借用失败"));
+                        return CommandResult.fail("借用失败");
                     }
+                    // TODO 3
+                    reObj.put("per", new Random().nextInt(20) + 80);
+                    ctx.channel().writeAndFlush(new TextWebSocketFrame(CommandResult.success(reObj))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                     log.info("APP_发送借充电宝指令");
                     // 发送借充电宝指令
                     ChannelHandlerContext otherCtx = NettySocketHolder.get(boxId);
+                    if (otherCtx == null) {
+                        out_str = CommandResult.fail("借用失败");
+                    }
                     otherCtx.channel().writeAndFlush(CommandUtils.sendCommand(CommandEnums.x65.getCommand(), mostCharge.getSlot())).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                     log.info("APP_发送借充电宝指令完成");
+                    break;
+                case x10003:
+                    reObj = new JSONObject();
+                    reObj.put("command", AppCommandEnums.x10002.getCommand());
+                    reObj.put("per", new Random().nextInt(10) + 30);
+                    ctx.channel().writeAndFlush(new TextWebSocketFrame(CommandResult.success(reObj))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+                    Thread.sleep(1000);
+                    reObj.put("per", new Random().nextInt(20) + 50);
+                    ctx.channel().writeAndFlush(new TextWebSocketFrame(CommandResult.success(reObj))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+                    Thread.sleep(1000);
+                    reObj.put("per", new Random().nextInt(20) + 80);
+                    ctx.channel().writeAndFlush(new TextWebSocketFrame(CommandResult.success(reObj))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                     break;
                 default:
                     break;
@@ -156,9 +190,9 @@ public class AppCommandUtils {
                 log.info("APP_借充电宝响应");
                 String status = params[0];
                 if ("0".equals(status)) {
-                    out_str = JSON.toJSONString(RestResult.success("借用失败"));
+                    out_str = CommandResult.fail("借用失败");
                 } else {
-                    out_str = JSON.toJSONString(RestResult.success("success"));
+                    out_str = CommandResult.success("success");
                 }
                 break;
             case x10003:
@@ -166,17 +200,19 @@ public class AppCommandUtils {
                 // flag null支付成功  1 免密支付余额不足  2 非免密支付
                 status = params[0];
                 if ("0".equals(status)) {
-                    return JSON.toJSONString(RestResult.success("归还失败"));
+                    return CommandResult.success("归还失败");
                 }
                 String cid = params[1];
                 String flag = params[2];
                 String terminalId = params[3];
                 if (StaticUtils.RETURN_NOT_FREE_SECRET.equals(flag)) {
-                    out_str = JSON.toJSONString(RestResult.success("归还成功", null, flag));
+                    out_str = CommandResult.success("归还成功", flag);
                 } else {
                     RestResult result = handleService.queryReturnMsg(cid, terminalId);
                     out_str = JSON.toJSONString(result);
                 }
+                break;
+            default:
                 break;
         }
         log.info("发送内容----------【" + out_str + "】----------");

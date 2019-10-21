@@ -92,7 +92,7 @@ public class RedisUtils {
         List<BTerminalVo> list = getTerminalByBoxId(boxId);
         if (list != null && list.size()>0) {
             Collections.sort(list);
-            return list.get(0);
+            return list.get(index);
         }
         return null;
     }

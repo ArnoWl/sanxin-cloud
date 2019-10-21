@@ -35,24 +35,25 @@ public class PayTask {
     @Scheduled(cron = "0/30 * * * * ? ")
     public void handleSCBPayAuto() {
         QueryWrapper<CPayLog> wrapper = new QueryWrapper<>();
-        wrapper.eq("pay_type", PayTypeEnums.SCB_PAY.getId()).eq("status", StaticUtils.STATUS_NO);
+        wrapper.eq("pay_type", PayTypeEnums.SCB_PAY.getId()).eq("del", StaticUtils.STATUS_NO)
+                .eq("status", StaticUtils.STATUS_NO);
         List<CPayLog> list = cPayLogService.list(wrapper);
         for (CPayLog log : list) {
-            JSONObject object = scbPayService.transactionRecord(log.getCid(), log.getTransCode());
-            if ("1".equals(object.getString("status"))) {
-                Integer statusCode = -1;
-                try {
-                    statusCode = Integer.parseInt(object.getString("statusCode"));
-                } catch (NumberFormatException e) {
-                }
-                // 支付成功
-                if (FunctionUtils.isEquals(statusCode, 1)) {
-                    payService.handlePayCallBack(log.getPayCode(), log.getTransCode());
-                } else if (statusCode > 1) {
-                    log.setStatus(2);
-                    cPayLogService.updateById(log);
-                }
-            }
+            // JSONObject object = scbPayService.transactionRecord(log.getCid(), log.getTransCode());
+            // if ("1".equals(object.getString("status"))) {
+            //     Integer statusCode = -1;
+            //     try {
+            //         statusCode = Integer.parseInt(object.getString("statusCode"));
+            //     } catch (NumberFormatException e) {
+            //     }
+            //     // 支付成功
+            //     if (FunctionUtils.isEquals(statusCode, 1)) {
+            //         payService.handlePayCallBack(log.getPayCode(), log.getTransCode());
+            //     } else if (statusCode > 1) {
+            //         log.setStatus(2);
+            //         cPayLogService.updateById(log);
+            //     }
+            // }
         }
     }
 }
