@@ -42,7 +42,7 @@ public class DeviceServiceImpl implements DeviceService {
         QueryWrapper<BDevice> wrapper = new QueryWrapper<>();
         wrapper.eq("bid", bid).ge("status", DeviceStatusEnums.RUN.getStatus())
                 .like(StringUtils.isNotBlank(key), "code", key);;
-        if (StringUtils.isNotBlank(key)) {
+        if (StringUtils.isBlank(key)) {
             wrapper.eq("type", type);
         }
 
