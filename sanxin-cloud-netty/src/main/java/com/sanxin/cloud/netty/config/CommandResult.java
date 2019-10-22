@@ -39,6 +39,10 @@ public class CommandResult implements Serializable {
      * 返回结果集
      */
     public Object data;
+    /**
+     * WebSocket功能码标识
+     */
+    public String command;
 
     private static String getLanguageMsg(String msg) {
         String languageMsg = LanguageUtils.getMessage(msg);
@@ -51,17 +55,18 @@ public class CommandResult implements Serializable {
 
     /**
      * 成功返回
-     * @param code
      * @param msg
      * @param data
+     * @param command
      * @return
      */
-    public static String success(String code, String msg, Object data){
+    public static String success(String msg, Object data, String command){
         CommandResult restResult=new CommandResult();
         restResult.status=true;
-        restResult.code=code;
+        restResult.code="1";
         restResult.msg=getLanguageMsg(msg);
         restResult.data=data;
+        restResult.command = command;
         return JSON.toJSONString(restResult);
     }
 
@@ -110,17 +115,36 @@ public class CommandResult implements Serializable {
 
     /**
      * 失败返回
+     * @param msg
+     * @param data
+     * @param command
+     * @return
+     */
+    public static String fail(String msg, Object data, String command){
+        CommandResult restResult=new CommandResult();
+        restResult.status=false;
+        restResult.code="-1";
+        restResult.msg=getLanguageMsg(msg);
+        restResult.data=data;
+        restResult.command=command;
+        return JSON.toJSONString(restResult);
+    }
+
+    /**
+     * 失败返回
      * @param code
      * @param msg
      * @param data
+     * @param command
      * @return
      */
-    public static String fail(String code, String msg, Object data){
+    public static String fail(String code, String msg, Object data, String command){
         CommandResult restResult=new CommandResult();
         restResult.status=false;
         restResult.code=code;
         restResult.msg=getLanguageMsg(msg);
         restResult.data=data;
+        restResult.command=command;
         return JSON.toJSONString(restResult);
     }
 

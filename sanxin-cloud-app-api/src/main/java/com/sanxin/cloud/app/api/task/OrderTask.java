@@ -24,7 +24,7 @@ public class OrderTask {
     /**
      * 定期处理过期订单
      */
-    @Scheduled(cron = "* 0/1 * * * ? ")
+    @Scheduled(cron = "0 0/1 * * * ? ")
     public void handleExpiredOrderAuto() {
         // 订单创建到过期时间
         // TODO 写死
