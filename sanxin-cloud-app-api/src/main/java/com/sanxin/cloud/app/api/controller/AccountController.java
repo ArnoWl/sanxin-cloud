@@ -4,6 +4,7 @@ import com.sanxin.cloud.app.api.common.AccountMapping;
 import com.sanxin.cloud.app.api.common.OrderMapping;
 import com.sanxin.cloud.app.api.service.AccountService;
 import com.sanxin.cloud.common.BaseUtil;
+import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
@@ -12,9 +13,12 @@ import com.sanxin.cloud.entity.CAccount;
 import com.sanxin.cloud.entity.CMarginDetail;
 import com.sanxin.cloud.entity.CMoneyDetail;
 import com.sanxin.cloud.entity.CTimeDetail;
+import com.sanxin.cloud.enums.PayTypeEnums;
 import com.sanxin.cloud.service.CAccountService;
 import com.sanxin.cloud.service.SysRuleTextService;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
+import com.sanxin.cloud.service.system.pay.scb.SCBPayService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +37,8 @@ public class AccountController {
     private CAccountService cAccountService;
     @Autowired
     private SysRuleTextService sysRuleTextService;
+    @Autowired
+    private SCBPayService scbPayService;
 
     /**
      * 我的押金明细
@@ -119,8 +125,18 @@ public class AccountController {
      * @return
      */
     @RequestMapping(value = AccountMapping.PAY_TIME_GIFT)
-    public RestResult payTimeGift(Integer giftId,Integer payType,String payWord) {
+    public RestResult payTimeGift(Integer giftId,Integer payType,String payWord, String authcode) {
         String token = BaseUtil.getUserToken();
+        // 判断参数值
+        if (payType == null) {
+            return RestResult.fail("pay_type_empty");
+        }
+        if (FunctionUtils.isEquals(payType, PayTypeEnums.SCB_PAY.getType())) {
+            String scbToken=scbPayService.getToken(token, authcode);
+            if(StringUtils.isEmpty(scbToken)){
+                return  RestResult.fail("1011","Authorization failed, please re authorize","","");
+            }
+        }
         Integer cid = loginTokenService.validLoginCid(token);
         return accountService.payTimeGift(cid,giftId,payType,payWord);
     }
@@ -146,11 +162,22 @@ public class AccountController {
      * @param payType 支付方式
      * @param payChannel 支付渠道
      * @param freeSecret 是否免密支付
+     * @param authcode 渣打银行支付需要
      * @return
      */
     @RequestMapping(value = AccountMapping.RECHARGE_DEPOSIT)
-    public RestResult rechargeDeposit(String payWord, Integer payType, Integer payChannel, Integer freeSecret) {
+    public RestResult rechargeDeposit(String payWord, Integer payType, Integer payChannel, Integer freeSecret, String authcode) {
         String token = BaseUtil.getUserToken();
+        // 判断参数值
+        if (payType == null) {
+            return RestResult.fail("pay_type_empty");
+        }
+        if (FunctionUtils.isEquals(payType, PayTypeEnums.SCB_PAY.getType())) {
+            String scbToken=scbPayService.getToken(token,authcode);
+            if(StringUtils.isEmpty(scbToken)){
+                return  RestResult.fail("1011","Authorization failed, please re authorize","","");
+            }
+        }
         Integer cid = loginTokenService.validLoginCid(token);
         return accountService.handleRechargeDeposit(cid, payWord, payType, payChannel, freeSecret);
     }
