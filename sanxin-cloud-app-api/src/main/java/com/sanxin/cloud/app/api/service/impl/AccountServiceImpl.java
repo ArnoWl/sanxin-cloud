@@ -211,7 +211,7 @@ public class AccountServiceImpl implements AccountService {
         String payCode = FunctionUtils.getOrderCode("T");
         CPayLog log = new CPayLog();
         log.setCid(cid);
-        log.setPayType(PayTypeEnums.MONEY.getId());
+        log.setPayType(payType);
         log.setPayChannel(LoginChannelEnums.APP.getChannel());
         log.setPayMoney(giftHour.getMoney());
         log.setHandleType(HandleTypeEnums.BUY_TIEM_GIFT.getId());
