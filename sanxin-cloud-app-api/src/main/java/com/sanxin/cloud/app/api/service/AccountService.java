@@ -96,6 +96,13 @@ public interface AccountService {
     Map<String, Object> queryPayTypeList(Integer type, Integer cid);
 
     /**
+     * 支付方式列表——小程序
+     * @param cid 用户id
+     * @return
+     */
+    Map<String, Object> queryPayTypeListForProgram(Integer cid);
+
+    /**
      * 获取充值页面数据
      * @return
      */

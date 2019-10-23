@@ -6,6 +6,7 @@ import com.sanxin.cloud.config.redis.RedisUtils;
 import com.sanxin.cloud.config.redis.SpringBeanFactoryUtils;
 import com.sanxin.cloud.dto.BTerminalVo;
 import com.sanxin.cloud.enums.RandNumType;
+import com.sanxin.cloud.netty.config.CommandResult;
 import com.sanxin.cloud.netty.enums.AppCommandEnums;
 import com.sanxin.cloud.netty.enums.CommandEnums;
 import com.sanxin.cloud.netty.hex.HexUtils;
@@ -155,13 +156,17 @@ public class CommandUtils {
                         boxId = NettySocketHolder.get(ctx);
                         System.out.println("借出充电宝的机柜id");
                         Integer status = Integer.parseInt(result, 16);
+                        Integer useCid = handleService.queryCidByTerminalId(terminalId);
+                        ChannelHandlerContext otherCtx = AppNettySocketHolder.get(useCid.toString());
                         if (status == 1) {
                             // 借充电宝成功
                             handleBatteryService.handleLendBattery(boxId, terminalId, slot);
+                            log.info("借充电宝发送响应cid" + useCid);
+                            Integer per = 100;
+                            if (otherCtx != null) {
+                                otherCtx.channel().writeAndFlush(new TextWebSocketFrame(CommandResult.success("success", per, AppCommandEnums.x10004.getCommand()))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+                            }
                         }
-                        Integer useCid = handleService.queryCidByTerminalId(terminalId);
-                        log.info("借充电宝发送响应cid" + useCid);
-                        ChannelHandlerContext otherCtx = AppNettySocketHolder.get(useCid.toString());
                         if (otherCtx != null) {
                             otherCtx.channel().writeAndFlush(new TextWebSocketFrame(AppCommandUtils.sendCommand(AppCommandEnums.x10002.getCommand(), status.toString()))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                         }

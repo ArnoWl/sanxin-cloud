@@ -139,13 +139,15 @@ public class OrderController {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginCid(token);
         QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
-        wrapper.eq("cid", cid).eq("order_status", OrderStatusEnums.USING.getId());
+        wrapper.eq("cid", cid).eq("del", StaticUtils.STATUS_NO)
+                .eq("order_status", OrderStatusEnums.USING.getId());
         List<OrderMain> list = orderMainService.list(wrapper);
         if (list != null && list.size() > 0) {
             return RestResult.success("success", OrderStatusEnums.USING.getId(), list.get(0).getOrderCode());
         } else {
             wrapper = new QueryWrapper<>();
-            wrapper.eq("cid", cid).eq("order_status", OrderStatusEnums.CONFIRMED.getId());
+            wrapper.eq("cid", cid).eq("del", StaticUtils.STATUS_NO)
+                    .eq("order_status", OrderStatusEnums.CONFIRMED.getId());
             list = orderMainService.list(wrapper);
             if (list != null && list.size() > 0) {
                 return RestResult.success("success", OrderStatusEnums.CONFIRMED.getId(), list.get(0).getOrderCode());

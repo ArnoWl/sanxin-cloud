@@ -72,22 +72,37 @@ public class AppCommandUtils {
             switch (enums) {
                 case x10000:
                     // app用户端登录连接和响应
+                    Integer cid = null;
                     try {
-                        Integer cid = loginTokenService.validLoginCid(token);
+                        cid = loginTokenService.validLoginCid(token);
                         //登陆记录
                         AppNettySocketHolder.put(cid.toString(), ctx);
                     } catch (Exception ex) {
                         return CommandResult.fail("1001","Token is invalid, please log in again", null, command);
                     }
+                    QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
+                    wrapper.eq("cid", cid).eq("del", StaticUtils.STATUS_NO)
+                            .eq("order_status", OrderStatusEnums.USING.getId());
+                    List<OrderMain> list = orderMainService.list(wrapper);
+                    if (list != null && list.size() > 0) {
+                        return CommandResult.success("1000", "success", null, command);
+                    } else {
+                        wrapper = new QueryWrapper<>();
+                        wrapper.eq("cid", cid).eq("del", StaticUtils.STATUS_NO)
+                                .eq("order_status", OrderStatusEnums.CONFIRMED.getId());
+                        list = orderMainService.list(wrapper);
+                        if (list != null && list.size() > 0) {
+                            return CommandResult.success("1000", "success", null, command);
+                        }
+                    }
                     out_str = CommandResult.success("success", null, command);
                     break;
                 case x10001:
                     // app用户端登录连接和响应
-                    out_str = CommandResult.success("success", content, command);
+                    out_str = CommandResult.success("success", json, command);
                     break;
                 case x10002:
                     // 借充电宝信息及响应
-                    Integer cid = null;
                     // 机柜编号
                     String boxId = json.getString("boxId");
                     try {
@@ -95,7 +110,7 @@ public class AppCommandUtils {
                     } catch (LoginOutException ex) {
                         return CommandResult.fail("1001", "Token is invalid, please log in again", null, command);
                     }
-                    QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
+                    wrapper = new QueryWrapper<>();
                     wrapper.eq("cid", cid).in("order_status", OrderStatusEnums.USING.getId(), OrderStatusEnums.CONFIRMED.getId())
                         .eq("del", StaticUtils.STATUS_NO);
                     Integer orderNum = orderMainService.count(wrapper);
@@ -130,12 +145,12 @@ public class AppCommandUtils {
                     }
                     // TODO 1
                     String perCommand = AppCommandEnums.x10004.getCommand();
-                    Integer per = new Random().nextInt(20) + 50;
+                    Integer per = new Random().nextInt(20) + 30;
                     ctx.channel().writeAndFlush(new TextWebSocketFrame(CommandResult.success("success", per, perCommand))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                     // 生成一个创建中的订单，代表该充电宝已被使用
                     RestResult returnResult = handleService.handleCreateUseOrder(cid, token, boxId, mostCharge.getTerminalId());
                     if (!returnResult.status) {
-                        return JSON.toJSONString(CommandResult.fail(returnResult.getMsg(), returnResult.getData(), command));
+                        return CommandResult.fail(returnResult.getMsg(), returnResult.getData(), command);
                     }
                     // TODO 2
                     per = new Random().nextInt(20) + 50;

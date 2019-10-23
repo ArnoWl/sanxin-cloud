@@ -326,6 +326,24 @@ public class AccountServiceImpl implements AccountService {
         return map;
     }
 
+    /**
+     * 支付方式列表——小程序
+     * @param cid 用户id
+     * @return
+     */
+    @Override
+    public Map<String, Object> queryPayTypeListForProgram(Integer cid) {
+        CAccount cAccount = cAccountService.getByCid(cid);
+        if (cAccount == null) {
+            throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("list", PayTypeEnums.queryListForProgramByPayPage());
+        map.put("money", cAccount.getMoney());
+        return map;
+    }
+
     @Override
     public Map<String, Object> getRechargeMsg() {
         String value = infoParamService.getValueByCode(ParamCodeEnums.RECHARGE_DEPOSIT_MONEY.getCode());

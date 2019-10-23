@@ -196,6 +196,18 @@ public class AccountController {
     }
 
     /**
+     * 支付方式——小程序
+     * @return
+     */
+    @RequestMapping(value = AccountMapping.QUERY_PAY_TYPE_LIST_FOR_PROGRAM)
+    public RestResult queryPayTypeListForProgram() {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginCid(token);
+        Map<String, Object> map = accountService.queryPayTypeListForProgram(cid);
+        return RestResult.success("success", map);
+    }
+
+    /**
      * 充值押金页面数据
      * @return
      */

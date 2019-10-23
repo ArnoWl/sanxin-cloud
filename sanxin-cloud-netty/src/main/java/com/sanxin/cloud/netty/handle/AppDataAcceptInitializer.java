@@ -36,7 +36,7 @@ public class AppDataAcceptInitializer extends ChannelInitializer<SocketChannel> 
         log.info("==================netty报告完毕==================");
         ChannelPipeline pipeline = socketChannel.pipeline();
         // 添加超时 APP表示5S发送心跳我们设置7S表示没有连接上就重新来
-        pipeline.addLast(new IdleStateHandler(0, 0, 7, TimeUnit.SECONDS));
+        pipeline.addLast(new IdleStateHandler(7, 0, 0, TimeUnit.SECONDS));
 
         // webSocket基于http协议，所以要有http编译器
         pipeline.addLast(new HttpServerCodec());

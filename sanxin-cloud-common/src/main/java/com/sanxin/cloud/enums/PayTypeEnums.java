@@ -14,6 +14,9 @@ import java.util.Map;
  * @date 2019-09-04
  */
 public enum PayTypeEnums {
+    /**
+     * 支付方式
+     */
     MONEY(1, "Balance", "http://47.106.131.191:8004//files/20191016/5295229.png", 1, 6, 1),
     SCB_PAY(2, "SCB", "http://47.106.131.191:8004//files/20191016/5250577.png", 1, 6, 0),
     VISA_CARD(3, "VISA Card", "http://47.106.131.191:8004//files/20191016/52834612.png", 1, 6, 0),
@@ -132,6 +135,27 @@ public enum PayTypeEnums {
             if (FunctionUtils.isEquals(o.getStatus(), StaticUtils.STATUS_YES)
                     && (FunctionUtils.isEquals(payPageType, o.getType())
                     || FunctionUtils.isEquals(o.getType(), 6))) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("id", o.getId());
+                map.put("name", o.getName());
+                map.put("logo", o.getLogo());
+                map.put("freeSecret", o.getFreeSecret());
+                list.add(map);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 查询小程序支付方式
+     * @return
+     */
+    public static List<Map<String, Object>> queryListForProgramByPayPage() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (PayTypeEnums o : PayTypeEnums.values()) {
+            if (FunctionUtils.isEquals(o.getStatus(), StaticUtils.STATUS_YES)
+                    && (FunctionUtils.isEquals(o.getId(), 1)
+                    || FunctionUtils.isEquals(o.getId(), 5))) {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("id", o.getId());
                 map.put("name", o.getName());

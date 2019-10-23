@@ -72,6 +72,24 @@ public class CommandResult implements Serializable {
 
     /**
      * 成功返回
+     * @param code
+     * @param msg
+     * @param data
+     * @param command
+     * @return
+     */
+    public static String success(String code, String msg, Object data, String command){
+        CommandResult restResult=new CommandResult();
+        restResult.status=true;
+        restResult.code=code;
+        restResult.msg=getLanguageMsg(msg);
+        restResult.data=data;
+        restResult.command = command;
+        return JSON.toJSONString(restResult);
+    }
+
+    /**
+     * 成功返回
      * @param msg
      * @param data
      * @return

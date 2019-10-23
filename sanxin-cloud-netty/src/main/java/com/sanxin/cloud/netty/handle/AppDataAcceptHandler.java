@@ -75,11 +75,11 @@ public class AppDataAcceptHandler extends SimpleChannelInboundHandler<TextWebSoc
             log.info("state"+event.state());
             if (event.state() == IdleState.READER_IDLE) {
                 log.info("===APP客户端["+ctx.channel().remoteAddress()+"]===(READER_IDLE 读超时)");
+                channelInactive(ctx);
             } else if (event.state() == IdleState.WRITER_IDLE) {
                 log.info("===APP客户端["+ctx.channel().remoteAddress()+"]===(WRITER_IDLE 写超时)！");
             }else if (event.state() == IdleState.ALL_IDLE) {
                 log.info("===APP客户端["+ctx.channel().remoteAddress()+"]===(ALL_IDLE 总超时 重新连接)");
-                channelInactive(ctx);
             }
         }
     }
