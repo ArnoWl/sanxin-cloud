@@ -54,13 +54,21 @@ public class AppCommandUtils {
         //输入字符串 不需要16进制
         String out_str = "";
         if (!StringUtils.isEmpty(content)) {
-            JSONObject json = JSONObject.parseObject(content);
-            String command = json.getString("command");
-            AppCommandEnums enums = AppCommandEnums.getCommandFun(command);
-            if (enums == null) {
-                return CommandResult.fail("fail");
+            JSONObject json = null;
+            String command = null;
+            AppCommandEnums enums = null;
+            String token = null;
+            try {
+                json = JSONObject.parseObject(content);
+                command = json.getString("command");
+                enums = AppCommandEnums.getCommandFun(command);
+                if (enums == null) {
+                    return CommandResult.fail("fail");
+                }
+                token = json.getString("token");
+            } catch (Exception e) {
+                return content;
             }
-            String token = json.getString("token");
             switch (enums) {
                 case x10000:
                     // app用户端登录连接和响应
@@ -167,6 +175,7 @@ public class AppCommandUtils {
                     ctx.channel().writeAndFlush(new TextWebSocketFrame(CommandResult.success(reObj))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                     break;
                 default:
+                    out_str = content;
                     break;
             }
         }

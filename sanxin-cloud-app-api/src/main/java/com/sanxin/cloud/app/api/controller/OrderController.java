@@ -151,7 +151,7 @@ public class OrderController {
                 return RestResult.success("success", OrderStatusEnums.CONFIRMED.getId(), list.get(0).getOrderCode());
             }
         }
-        return RestResult.success("success");
+        return RestResult.success("success", "");
     }
 
     /**

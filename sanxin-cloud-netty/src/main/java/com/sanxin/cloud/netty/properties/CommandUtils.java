@@ -185,10 +185,12 @@ public class CommandUtils {
                         useCid = handleService.queryCidByTerminalId(terminalId);
                         log.info("归还充电宝cid" + useCid);
                         otherCtx = AppNettySocketHolder.get(useCid.toString());
-                        if (returnResult.status) {
-                            otherCtx.channel().writeAndFlush(new TextWebSocketFrame(AppCommandUtils.sendCommand(AppCommandEnums.x10003.getCommand(), "1", useCid.toString(), returnResult.getFlag(), terminalId))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
-                        } else {
-                            otherCtx.channel().writeAndFlush(new TextWebSocketFrame(AppCommandUtils.sendCommand(AppCommandEnums.x10003.getCommand(), "0"))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+                        if (otherCtx != null) {
+                            if (returnResult.status) {
+                                otherCtx.channel().writeAndFlush(new TextWebSocketFrame(AppCommandUtils.sendCommand(AppCommandEnums.x10003.getCommand(), "1", useCid.toString(), returnResult.getFlag(), terminalId))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+                            } else {
+                                otherCtx.channel().writeAndFlush(new TextWebSocketFrame(AppCommandUtils.sendCommand(AppCommandEnums.x10003.getCommand(), "0"))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+                            }
                         }
                         break;
                     case x67:
