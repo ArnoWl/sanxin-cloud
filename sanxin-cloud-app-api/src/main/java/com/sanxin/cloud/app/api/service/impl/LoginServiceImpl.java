@@ -1,36 +1,53 @@
 package com.sanxin.cloud.app.api.service.impl;
 
-import com.alipay.api.AlipayApiException;
-import com.alipay.api.response.AlipaySystemOauthTokenResponse;
-import com.alipay.api.response.AlipayUserUserinfoShareResponse;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alipay.api.domain.Account;
+import com.alipay.api.domain.CustomerEntity;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.netflix.client.http.HttpRequest;
 import com.sanxin.cloud.app.api.service.BusinessService;
 import com.sanxin.cloud.app.api.service.LoginService;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
-import com.sanxin.cloud.common.alipay.AliLoginUtil;
+import com.sanxin.cloud.common.http.HttpUtil;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
-import com.sanxin.cloud.entity.CPushLog;
+import com.sanxin.cloud.common.verification.TripartiteVerificationUtil;
+import com.sanxin.cloud.dto.VerificationVO;
+import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.enums.CashTypeEnums;
+import com.sanxin.cloud.mapper.CAccountMapper;
 import com.sanxin.cloud.mapper.CPushLogMapper;
+import com.sanxin.cloud.mapper.CVerificationMapper;
 import com.sanxin.cloud.service.system.login.LoginDto;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
 import com.sanxin.cloud.dto.BusinessHomeVo;
 import com.sanxin.cloud.dto.CustomerHomeVo;
 import com.sanxin.cloud.dto.LoginRegisterVo;
-import com.sanxin.cloud.entity.BBusiness;
-import com.sanxin.cloud.entity.CCustomer;
 import com.sanxin.cloud.enums.LoginChannelEnums;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.mapper.CCustomerMapper;
 import com.sanxin.cloud.service.BBusinessService;
 import com.sanxin.cloud.service.CCustomerService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.Date;
 
 /**
  * @author xiaoky
@@ -54,6 +71,185 @@ public class LoginServiceImpl implements LoginService {
     private BusinessService businessService;
     @Autowired
     private CPushLogMapper pushLogMapper;
+    @Autowired
+    private CVerificationMapper verificationMapper;
+    @Autowired
+    private CAccountMapper accountMapper;
+
+    /**
+     * 第三方登录(用户)
+     * @param accessToken
+     * @param id
+     * @param type
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public RestResult tripartiteLogin(String accessToken, String id, Integer type) throws Exception {
+        switch (type) {
+            case 1:
+                VerificationVO facebook = TripartiteVerificationUtil.verification(accessToken, type);
+                if (facebook == null || facebook.getId() != id) {
+                    return RestResult.fail("verification_fail");
+                }
+                CVerification facebookId = verificationMapper.selectOne(new QueryWrapper<CVerification>().eq("facebook_id", id));
+                if (facebookId == null) {
+                    return RestResult.fail("00", "binding_phone");
+                }
+                LoginDto facebookLoginDto = LoginDto.getInstance();
+                //加密 封装 存入redis
+                facebookLoginDto.setChannel(LoginChannelEnums.APP.getChannel());
+                facebookLoginDto.setTid(facebookId.getCid());
+                facebookLoginDto.setType(StaticUtils.LOGIN_CUSTOMER);
+                // 生成token
+                RestResult loginToken = loginTokenService.getLoginToken(facebookLoginDto, LoginChannelEnums.APP);
+                if (!loginToken.status) {
+                    return loginToken;
+                }
+            case 2:
+                VerificationVO google = TripartiteVerificationUtil.verification(accessToken, type);
+                if (google == null || google.getId() != id) {
+                    return RestResult.fail("verification_fail");
+                }
+                CVerification googleId = verificationMapper.selectOne(new QueryWrapper<CVerification>().eq("facebook_id", id));
+                if (googleId == null) {
+                    return RestResult.fail("00", "binding_phone");
+                }
+                LoginDto googleLoginDto = LoginDto.getInstance();
+                //加密 封装 存入redis
+                googleLoginDto.setChannel(LoginChannelEnums.APP.getChannel());
+                googleLoginDto.setTid(googleId.getCid());
+                googleLoginDto.setType(StaticUtils.LOGIN_CUSTOMER);
+                // 生成token
+                RestResult googleLoginToken = loginTokenService.getLoginToken(googleLoginDto, LoginChannelEnums.APP);
+                if (!googleLoginToken.status) {
+                    return googleLoginToken;
+                }
+        }
+        return RestResult.fail("fail");
+    }
+
+    /**
+     * 第三方绑定(用户)
+     *
+     * @param accessToken 第三方token
+     * @param id          第三方id
+     * @param name        第三方namme
+     * @param type        1facebook 登录  2google登录
+     * @param passWord    密码
+     * @param phone       手机号
+     * @param verCode     验证码
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public RestResult bindingPhone(String accessToken, String id, Integer type, String passWord, String phone, String verCode, String areaCode, String picture) {
+        switch (type) {
+            case 1:
+                VerificationVO facebook = TripartiteVerificationUtil.verification(accessToken, type);
+                if (facebook == null) {
+                    return RestResult.fail("verification_fail");
+                }
+                if (!facebook.getId().equals(id)) {
+                    return RestResult.fail("verification_fail");
+                }
+                //验证成功之后查询数据库有此用户数据
+                CCustomer facebookPhone = customerMapper.selectOne(new QueryWrapper<CCustomer>().eq("phone", phone));
+                //如果没有就创建账户
+                if (facebookPhone == null) {
+                    CCustomer customer = new CCustomer();
+                    CAccount account = new CAccount();
+                    customer.setPhone(phone);
+                    customer.setNickName(facebook.getName());
+                    //加密密码
+                    String pass = PwdEncode.encodePwd(passWord);
+                    customer.setPassWord(pass);
+                    customer.setAreaCode(areaCode);
+                    customer.setCreateTime(new Date());
+                    customer.setEmail(facebook.getEmail());
+                    customer.setHeadUrl(facebook.getPicture());
+                    int cusCount = customerMapper.insert(customer);
+                    account.setCid(customer.getId());
+                    int AccCount = accountMapper.insert(account);
+                    if (cusCount > 0 && AccCount > 0) {
+                        return RestResult.success("binding_register_success");
+                    }
+                } else {
+                    //查询关联的Facebook是否存在
+                    CVerification facebookVerification = verificationMapper.selectOne(new QueryWrapper<CVerification>().eq("cid", facebookPhone.getId()));
+                    //不存在就创建
+                    if (facebookVerification == null) {
+                        facebookVerification.setCid(facebookPhone.getId());
+                        facebookVerification.setFacebookId(facebook.getId());
+                        verificationMapper.insert(facebookVerification);
+                        return RestResult.success("binding_phone_success");
+                    } else {
+                        //如果存在 判断facebookId是否为null
+                        if (facebookVerification.getFacebookId() == null) {
+                            facebookVerification.setFacebookId(facebook.getId());
+                            verificationMapper.updateById(facebookVerification);
+                            return RestResult.success("binding_phone_success");
+                        }
+                        return RestResult.fail("binding_phone_not_empty");
+                    }
+
+                }
+                break;
+
+            case 2:
+                VerificationVO google = TripartiteVerificationUtil.verification(accessToken, type);
+                if (google == null) {
+                    return RestResult.fail("verification_fail");
+                }
+                if (!google.getId().equals(id)) {
+                    return RestResult.fail("verification_fail");
+                }
+                //验证成功之后查询数据库有此用户数据
+                CCustomer googlePhone = customerMapper.selectOne(new QueryWrapper<CCustomer>().eq("phone", phone));
+                //如果没有就创建账户
+                if (googlePhone == null) {
+                    CCustomer customer = new CCustomer();
+                    CAccount account = new CAccount();
+                    customer.setPhone(phone);
+                    customer.setNickName(google.getName());
+                    //加密密码
+                    String pass = PwdEncode.encodePwd(passWord);
+                    customer.setPassWord(pass);
+                    customer.setAreaCode(areaCode);
+                    customer.setCreateTime(new Date());
+                    customer.setEmail(google.getEmail());
+                    customer.setHeadUrl(picture);
+                    int cusCount = customerMapper.insert(customer);
+                    account.setCid(customer.getId());
+                    int AccCount = accountMapper.insert(account);
+                    if (cusCount > 0 && AccCount > 0) {
+                        return RestResult.success("success");
+                    }
+                } else {
+                    //查询关联的Facebook是否存在
+                    CVerification facebookVerification = verificationMapper.selectOne(new QueryWrapper<CVerification>().eq("cid", googlePhone.getId()));
+                    //不存在就创建
+                    if (facebookVerification == null) {
+                        facebookVerification.setCid(googlePhone.getId());
+                        facebookVerification.setFacebookId(google.getId());
+                        verificationMapper.insert(facebookVerification);
+                        return RestResult.success("binding_phone_success");
+                    } else {
+                        //如果存在 判断facebookId是否为null
+                        if (facebookVerification.getFacebookId() == null) {
+                            facebookVerification.setFacebookId(google.getId());
+                            verificationMapper.updateById(facebookVerification);
+                            return RestResult.success("binding_phone_success");
+                        }
+                        return RestResult.fail("binding_phone_not_empty");
+                    }
+
+                }
+                break;
+        }
+        return RestResult.fail("fail");
+    }
+
     /**
      * 登录
      *
@@ -217,6 +413,7 @@ public class LoginServiceImpl implements LoginService {
 
     /**
      * 修改个人资料
+     *
      * @param customer
      * @return
      */

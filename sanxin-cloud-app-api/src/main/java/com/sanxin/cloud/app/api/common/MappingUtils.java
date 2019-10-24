@@ -12,6 +12,12 @@ public class MappingUtils {
     /**登录*/
     public static final String LOGIN="/login";
 
+    /**第三方登录*/
+    public static final String TRIPARTITE_LOGIN="/tripartiteLogin";
+
+    /**第三方登录绑定*/
+    public static final String BINDING_PHONE="/bindingPhone";
+
     /** 发送忘记密码验证码 */
     public static final String SEND_FORGET_CODE = "/sendForgetCode";
 

@@ -45,6 +45,10 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/agree/**")
                 .excludePathPatterns("/business/**")
                 .excludePathPatterns("/base/**")
+                //第三方登录
+                .excludePathPatterns("/register/tripartiteLogin")
+                //第三方绑定
+                .excludePathPatterns("/register/bindingPhone")
                 //首页广告
                 .excludePathPatterns("/message/queryHomeAdvert")
                 //发现广告

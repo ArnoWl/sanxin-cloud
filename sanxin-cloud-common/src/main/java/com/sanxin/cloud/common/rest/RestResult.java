@@ -51,179 +51,205 @@ public class RestResult implements Serializable {
 
     /**
      * 成功返回
+     *
      * @param code
      * @param msg
      * @param data
      * @param flag
      * @return
      */
-    public static RestResult success(String code,String msg,Object data, String flag){
-        RestResult restResult=new RestResult();
-        restResult.status=true;
-        restResult.code=code;
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=data;
-        restResult.flag=flag;
+    public static RestResult success(String code, String msg, Object data, String flag) {
+        RestResult restResult = new RestResult();
+        restResult.status = true;
+        restResult.code = code;
+        restResult.msg = getLanguageMsg(msg);
+        restResult.data = data;
+        restResult.flag = flag;
         return restResult;
     }
 
     /**
      * 成功返回
+     *
      * @param msg
      * @param data
      * @param flag
      * @return
      */
-    public static RestResult success(String msg,Object data, String flag){
-        RestResult restResult=new RestResult();
-        restResult.status=true;
-        restResult.code="1";
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=data;
-        restResult.flag=flag;
+    public static RestResult success(String msg, Object data, String flag) {
+        RestResult restResult = new RestResult();
+        restResult.status = true;
+        restResult.code = "1";
+        restResult.msg = getLanguageMsg(msg);
+        restResult.data = data;
+        restResult.flag = flag;
         return restResult;
     }
 
     /**
      * 成功返回
+     *
      * @param msg
      * @param data
      * @return
      */
-    public static RestResult success(String msg,Object data){
-        RestResult restResult=new RestResult();
-        restResult.status=true;
-        restResult.code="1";
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=data;
+    public static RestResult success(String msg, Object data) {
+        RestResult restResult = new RestResult();
+        restResult.status = true;
+        restResult.code = "1";
+        restResult.msg = getLanguageMsg(msg);
+        restResult.data = data;
         return restResult;
     }
 
     /**
      * 成功返回
+     *
      * @param msg
      * @return
      */
-    public static RestResult success(String msg){
-        RestResult restResult=new RestResult();
-        restResult.status=true;
-        restResult.code="1";
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=null;
+    public static RestResult success(String msg) {
+        RestResult restResult = new RestResult();
+        restResult.status = true;
+        restResult.code = "1";
+        restResult.msg = getLanguageMsg(msg);
+        restResult.data = null;
         return restResult;
     }
 
     /**
      * 成功返回
+     *
      * @param data
      * @return
      */
-    public static RestResult success(Object data){
-        RestResult restResult=new RestResult();
-        restResult.status=true;
-        restResult.code="1";
-        restResult.msg=getLanguageMsg("success");
-        restResult.data=data;
+    public static RestResult success(Object data) {
+        RestResult restResult = new RestResult();
+        restResult.status = true;
+        restResult.code = "1";
+        restResult.msg = getLanguageMsg("success");
+        restResult.data = data;
         return restResult;
     }
 
     /**
      * 失败返回
+     *
      * @param code
      * @param msg
      * @param data
      * @return
      */
-    public static RestResult fail(String code,String msg,Object data, String flag){
-        RestResult restResult=new RestResult();
-        restResult.status=false;
-        restResult.code=code;
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=data;
-        restResult.flag=flag;
+    public static RestResult fail(String code, String msg, Object data, String flag) {
+        RestResult restResult = new RestResult();
+        restResult.status = false;
+        restResult.code = code;
+        restResult.msg = getLanguageMsg(msg);
+        restResult.data = data;
+        restResult.flag = flag;
         return restResult;
     }
 
     /**
      * 失败返回
+     *
      * @param msg
      * @param data
      * @param flag
      * @return
      */
-    public static RestResult fail(String msg,Object data, String flag){
-        RestResult restResult=new RestResult();
-        restResult.status=false;
-        restResult.code="-1";
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=data;
-        restResult.flag=flag;
+    public static RestResult fail(String msg, Object data, String flag) {
+        RestResult restResult = new RestResult();
+        restResult.status = false;
+        restResult.code = "-1";
+        restResult.msg = getLanguageMsg(msg);
+        restResult.data = data;
+        restResult.flag = flag;
+        return restResult;
+    }
+
+
+    /**
+     * 失败返回
+     *
+     * @param code
+     * @param mag
+     * @return
+     */
+    public static RestResult fail(String code, String mag) {
+        RestResult restResult = new RestResult();
+        restResult.status = false;
+        restResult.code = code;
+        restResult.msg = getLanguageMsg(mag);
         return restResult;
     }
 
     /**
      * 失败返回
+     *
      * @param msg
      * @param data
      * @return
      */
-    public static RestResult fail(String msg,Object data){
-        RestResult restResult=new RestResult();
-        restResult.status=false;
-        restResult.code="-1";
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=data;
+    public static RestResult fail(String msg, Object data) {
+        RestResult restResult = new RestResult();
+        restResult.status = false;
+        restResult.code = "-1";
+        restResult.msg = getLanguageMsg(msg);
+        restResult.data = data;
         return restResult;
     }
 
     /**
      * 成功返回
+     *
      * @param msg
      * @return
      */
-    public static RestResult fail(String msg){
-        RestResult restResult=new RestResult();
-        restResult.status=false;
-        restResult.code="-1";
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=null;
+    public static RestResult fail(String msg) {
+        RestResult restResult = new RestResult();
+        restResult.status = false;
+        restResult.code = "-1";
+        restResult.msg = getLanguageMsg(msg);
+        restResult.data = null;
         return restResult;
     }
 
     /**
      * 失败返回
+     *
      * @param data
      * @return
      */
-    public static RestResult fail(Object data){
-        RestResult restResult=new RestResult();
-        restResult.status=false;
-        restResult.code="-1";
-        restResult.msg=getLanguageMsg("fail");
-        restResult.data=data;
+    public static RestResult fail(Object data) {
+        RestResult restResult = new RestResult();
+        restResult.status = false;
+        restResult.code = "-1";
+        restResult.msg = getLanguageMsg("fail");
+        restResult.data = data;
         return restResult;
     }
 
-    public static RestResult result(boolean status){
-        if(status){
+    public static RestResult result(boolean status) {
+        if (status) {
             return RestResult.success("success");
-        }else {
+        } else {
             return RestResult.fail("fail");
         }
     }
 
-    public static RestResult result(boolean status,String msg){
-        if(status){
+    public static RestResult result(boolean status, String msg) {
+        if (status) {
             return RestResult.success("success");
-        }else {
+        } else {
             return RestResult.fail(getLanguageMsg(msg));
         }
     }
 
-    public static RestResult result(boolean status,Object data){
-        if(status){
+    public static RestResult result(boolean status, Object data) {
+        if (status) {
             return RestResult.success(data);
-        }else {
+        } else {
             return RestResult.fail(data);
         }
     }

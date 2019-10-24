@@ -7,9 +7,9 @@ import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.MessageAttributeValue;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import javax.sound.midi.ShortMessage;
 import java.util.HashMap;
@@ -40,6 +40,20 @@ public class SnsUtils {
         AWS_SECRET_KEY = key;
     }
 
+
+    /*public boolean send2SNS(String phoneNumber, String message) {
+        if (phoneNumber.contains("_")) {
+            phoneNumber = StringUtils.replace(phoneNumber, "_", "");
+        }
+        if (!phoneNumber.startsWith("+")) {
+            phoneNumber = "+" + phoneNumber;
+        }
+        PublishResult result = sendSMSMessage(phoneNumber, message, getDefaultSMSAttributes());
+        if (result != null && !StringUtils.isEmpty(result.getMessageId())) return true;
+        return false;
+    }*/
+
+
     public Map<String, MessageAttributeValue> getDefaultSMSAttributes() {
         if (smsAttributes == null) {
             smsAttributes = new HashMap<>();
@@ -64,12 +78,12 @@ public class SnsUtils {
         AWSCredentials awsCredentials = new AWSCredentials() {
             @Override
             public String getAWSAccessKeyId() {
-                return "xxxxxxxx"; // 带有发短信权限的 IAM 的 ACCESS_KEY
+                return "AKIAYQ6W6T34JZKM4QTL"; // 带有发短信权限的 IAM 的 ACCESS_KEY
             }
 
             @Override
             public String getAWSSecretKey() {
-                return "xxxxxxxx"; // 带有发短信权限的 IAM 的 SECRET_KEY
+                return "b2pAHUHI3DKGUERf9bIdOmxE7+egk+aEnYyyms77"; // 带有发短信权限的 IAM 的 SECRET_KEY
             }
         };
         AWSCredentialsProvider provider = new AWSCredentialsProvider() {
@@ -101,9 +115,9 @@ public class SnsUtils {
         //AWSCredentialsProviderChain chain = new AWSCredentialsProviderChain(credentialsProvider);
         //chain.setReuseLastProvider(true);
         //credentialsProvider.getCredentials();
-        ShortMessage shortMessage = new ShortMessage();
-        //PublishResult publishResult = shortMessage.sendSMSMessage("+8613958942952", "test1");
-        //System.out.println(publishResult);
+        SnsUtils shortMessage = new SnsUtils();
+        PublishResult result = shortMessage.sendSMSMessage("+8618823317272", "蔡徐坤传人");
+        System.out.println("jieguo:"+result);
     }
 
 }
