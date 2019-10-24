@@ -71,9 +71,9 @@ public class AdvertController {
         advert.setCheckTime(new Date());
         boolean result = advertService.updateById(advert);
         if (result) {
-            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+            return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
         }
-        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+        return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
     }
 
     /**
@@ -128,38 +128,38 @@ public class AdvertController {
     @PostMapping(value = "/handleEditAdvertContent")
     public RestResult handleEditAdvertContent(AAdvertContent advertContent) {
         if (StringUtils.isBlank(advertContent.getCnTitle())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_CN_TITLE));
+            return RestResult.fail(AdminLanguageStatic.ADVERT_CN_TITLE);
         }
         if (StringUtils.isBlank(advertContent.getEnTitle())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_EN_TITLE));
+            return RestResult.fail(AdminLanguageStatic.ADVERT_EN_TITLE);
         }
         if (StringUtils.isBlank(advertContent.getThaiTitle())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_THAI_TITLE));
+            return RestResult.fail(AdminLanguageStatic.ADVERT_THAI_TITLE);
         }
         if (StringUtils.isBlank(advertContent.getCnContent())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_CN_CONTENT));
+            return RestResult.fail(AdminLanguageStatic.ADVERT_CN_CONTENT);
         }
         if (StringUtils.isBlank(advertContent.getEnContent())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_EN_CONTENT));
+            return RestResult.fail(AdminLanguageStatic.ADVERT_EN_CONTENT);
         }
         if (StringUtils.isBlank(advertContent.getThaiContent())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_THAI_CONTENT));
+            return RestResult.fail(AdminLanguageStatic.ADVERT_THAI_CONTENT);
         }
         if (StringUtils.isBlank(advertContent.getEvent())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_EVENT_TYPE));
+            return RestResult.fail(AdminLanguageStatic.ADVERT_EVENT_TYPE);
         }
         if (EventEnums.EXTERNAL_LINK.getUrl().equals(advertContent.getEvent())
                 && StringUtils.isBlank(advertContent.getUrl())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_EXTERNAL_LINK));
+            return RestResult.fail(AdminLanguageStatic.ADVERT_EXTERNAL_LINK);
         }
         if (advertContent.getId() == null && StringUtils.isBlank(advertContent.getFrameImg())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_FRAME_IMG));
+            return RestResult.fail(AdminLanguageStatic.ADVERT_FRAME_IMG);
         }
         /*if (advertContent.getId() == null && StringUtils.isBlank(advertContent.getImg())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_IMG));
+            return RestResult.fail(AdminLanguageStatic.ADVERT_IMG));
         }
         if (advertContent.getSort() == null) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ADVERT_SORT));
+            return RestResult.fail(AdminLanguageStatic.ADVERT_SORT));
         }*/
         LanguageVo titleVo = new LanguageVo(advertContent.getCnTitle(), advertContent.getEnTitle(), advertContent.getThaiTitle());
         String titleObj = JSONObject.toJSONString(titleVo);
@@ -169,9 +169,9 @@ public class AdvertController {
         advertContent.setContent(contentObj);
         boolean result = advertContentService.saveOrUpdate(advertContent);
         if (!result) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
-        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
     }
 
     /**
@@ -184,14 +184,14 @@ public class AdvertController {
     public RestResult handleAdvertContentStatus(Integer id, Integer status) {
         AAdvertContent advert = advertContentService.getById(id);
         if (status != null && FunctionUtils.isEquals(advert.getStatus(), status)) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_REPEAT_SUBMIT));
+            return RestResult.fail(AdminLanguageStatic.BASE_REPEAT_SUBMIT);
         }
         advert.setStatus(status);
         boolean result = advertContentService.updateById(advert);
         if (!result) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
-        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
     }
 
     /**
@@ -203,10 +203,10 @@ public class AdvertController {
     public RestResult handleAdvertContentHomeShow(Integer id) {
         AAdvertContent advertContent = advertContentService.getById(id);
         if (FunctionUtils.isEquals(advertContent.getStatus(), StaticUtils.STATUS_NO)) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
         if (FunctionUtils.isEquals(advertContent.getHomeShow(), StaticUtils.STATUS_YES)) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_REPEAT_SUBMIT));
+            return RestResult.fail(AdminLanguageStatic.BASE_REPEAT_SUBMIT);
         }
         RestResult result = advertContentService.updateHomeShow(id);
         return result;

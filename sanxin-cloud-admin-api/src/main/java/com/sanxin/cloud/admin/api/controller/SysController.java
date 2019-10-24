@@ -113,14 +113,14 @@ public class SysController {
     public RestResult handleAdvertContentStatus(Integer id, Integer status) {
         CFeedbackLog cFeedbackLog = cFeedbackLogService.getById(id);
         if (status != null && FunctionUtils.isEquals(cFeedbackLog.getStatus(), status)) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_REPEAT_SUBMIT));
+            return RestResult.fail(AdminLanguageStatic.BASE_REPEAT_SUBMIT);
         }
         cFeedbackLog.setStatus(status);
         boolean result = cFeedbackLogService.updateById(cFeedbackLog);
         if (!result) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
-        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
     }
 
 
@@ -168,19 +168,19 @@ public class SysController {
     public RestResult updateAgreementDetail(SysAgreement agreement) {
         if (StringUtils.isBlank(agreement.getCnTitle()) || StringUtils.isBlank(agreement.getEnTitle())
                 || StringUtils.isBlank(agreement.getThaiTitle())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.SYSTEM_AGREE_TITLE));
+            return RestResult.fail(AdminLanguageStatic.SYSTEM_AGREE_TITLE);
         }
         if (StringUtils.isBlank(agreement.getCnContent()) || StringUtils.isBlank(agreement.getEnContent())
                 || StringUtils.isBlank(agreement.getThaiContent())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.SYSTEM_AGREE_CONTENT));
+            return RestResult.fail(AdminLanguageStatic.SYSTEM_AGREE_CONTENT);
         }
         LanguageVo languageVo = new LanguageVo(agreement.getCnTitle(), agreement.getEnTitle(), agreement.getThaiTitle());
         agreement.setTitle(JSON.toJSONString(languageVo));
         boolean result = sysAgreementService.updateById(agreement);
         if (!result) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
-        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
     }
 
     /**
@@ -275,9 +275,9 @@ public class SysController {
     public RestResult deleteGiftHour(Integer id) {
         boolean result = giftHourService.removeById(id);
         if (!result) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
-        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
     }
 
 
@@ -289,21 +289,21 @@ public class SysController {
     @PostMapping("/updateGiftHour")
     public RestResult updateGiftHour(GiftHour hour) {
         if (hour.getMoney() == null) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.SYSTEM_GIFT_MONEY));
+            return RestResult.fail(AdminLanguageStatic.SYSTEM_GIFT_MONEY);
         }
         if (hour.getHour() == null) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.SYSTEM_GIFT_HOUR));
+            return RestResult.fail(AdminLanguageStatic.SYSTEM_GIFT_HOUR);
         }
         if (BigDecimal.ZERO.compareTo(hour.getMoney())>=0 || BigDecimal.ZERO.compareTo(hour.getHour())>=0) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.SYSTEM_GIFT_NUM));
+            return RestResult.fail(AdminLanguageStatic.SYSTEM_GIFT_NUM);
         }
         BigDecimal discountMoney = FunctionUtils.sub(hour.getHour(), hour.getMoney(), 2);
         hour.setDiscountMoney(discountMoney);
         boolean result = giftHourService.updateById(hour);
         if (!result) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
-        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
     }
 
     @GetMapping("/importDeviceSn")

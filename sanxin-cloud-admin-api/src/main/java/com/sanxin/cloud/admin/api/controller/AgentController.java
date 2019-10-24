@@ -75,7 +75,7 @@ public class AgentController {
     @PostMapping(value = "/handleStatus")
     public RestResult handleStatus(Integer status, Integer id, String passWord) {
         if (StringUtils.isBlank(passWord)) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.AGENT_PASSWORD));
+            return RestResult.fail(AdminLanguageStatic.AGENT_PASSWORD);
         }
         AgAgent agent = new AgAgent();
         agent.setStatus(status);
@@ -84,9 +84,9 @@ public class AgentController {
         agent.setCheckTime(new Date());
         boolean result = agentService.updateById(agent);
         if (result) {
-            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+            return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
         }
-        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+        return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
     }
 
     /**
@@ -98,13 +98,13 @@ public class AgentController {
     public RestResult resetLoginPass(Integer id) {
         AgAgent agent = agentService.getById(id);
         if (agent == null || !FunctionUtils.isEquals(StaticUtils.STATUS_SUCCESS, agent.getStatus())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
         agent.setPassWord(PwdEncode.encodePwd(StaticUtils.DEFAULT_PWD));
         boolean result = agentService.updateById(agent);
         if (result) {
-            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+            return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
         }
-        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+        return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
     }
 }

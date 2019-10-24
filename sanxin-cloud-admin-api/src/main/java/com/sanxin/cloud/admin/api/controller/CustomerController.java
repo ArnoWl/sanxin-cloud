@@ -60,9 +60,9 @@ public class CustomerController {
         customer.setStatus(status);
         boolean result = customerService.updateById(customer);
         if (!result) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
-        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
     }
 
     /**
@@ -78,9 +78,9 @@ public class CustomerController {
         customer.setPayWord(PwdEncode.encodePwd(payWord));
         boolean result = customerService.updateById(customer);
         if (!result) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
-        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
     }
 
     /**
@@ -96,9 +96,9 @@ public class CustomerController {
         customer.setPassWord(PwdEncode.encodePwd(passWord));
         boolean result = customerService.updateById(customer);
         if (!result) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
-        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
     }
 
 

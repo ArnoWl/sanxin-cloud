@@ -93,6 +93,7 @@ public class LanguageUtils {
         if (StringUtils.isEmpty(languageToken)) {
             languageToken = LanguageEnums.CN.name();
         }
+        languageToken = languageToken.toUpperCase();
         return languageToken;
     }
 

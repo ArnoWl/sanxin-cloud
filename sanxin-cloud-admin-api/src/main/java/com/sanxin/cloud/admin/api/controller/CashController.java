@@ -65,22 +65,22 @@ public class CashController {
     @PostMapping("/updateCashRule")
     public RestResult updateCashRule(SysCashRule sysCashRule) {
         if (sysCashRule == null || sysCashRule.getType() == null || sysCashRule.getIsOpen() == null) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
         if (sysCashRule.getNum() == null) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.CASH_NUM));
+            return RestResult.fail(AdminLanguageStatic.CASH_NUM);
         }
         if (sysCashRule.getScale() == null) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.CASH_SCALE));
+            return RestResult.fail(AdminLanguageStatic.CASH_SCALE);
         }
         if (sysCashRule.getMinVal() == null) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.CASH_MINVAL));
+            return RestResult.fail(AdminLanguageStatic.CASH_MINVAL);
         }
         if (sysCashRule.getMaxVal() == null) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.CASH_MAXVAL));
+            return RestResult.fail(AdminLanguageStatic.CASH_MAXVAL);
         }
         if (sysCashRule.getMultiple() == null) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.CASH_MULTIPLE));
+            return RestResult.fail(AdminLanguageStatic.CASH_MULTIPLE);
         }
         if (!FunctionUtils.isEquals(sysCashRule.getType(), CashTypeEnums.BUSINESS.getId())) {
             sysCashRule.setTaxOne(BigDecimal.ZERO);
@@ -88,9 +88,9 @@ public class CashController {
         }
         boolean result = sysCashRuleService.updateById(sysCashRule);
         if (result) {
-            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+            return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
         }
-        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+        return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
     }
 
     /**
@@ -149,14 +149,14 @@ public class CashController {
     public RestResult handleBankTypeStatus(Integer id, Integer status) {
         BankType bankType = bankTypeService.getById(id);
         if (status != null && FunctionUtils.isEquals(bankType.getStatus(), status)) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_REPEAT_SUBMIT));
+            return RestResult.fail(AdminLanguageStatic.BASE_REPEAT_SUBMIT);
         }
         bankType.setStatus(status);
         boolean result = bankTypeService.updateById(bankType);
         if (!result) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
-        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
     }
 
     /**
@@ -167,15 +167,15 @@ public class CashController {
     @PostMapping(value = "/handleBankType")
     public RestResult handleBankType(BankType bankType) {
         if (StringUtils.isBlank(bankType.getBankName())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
         if (bankType.getId() == null && bankType.getLogo() == null) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.CASH_LOGO));
+            return RestResult.fail(AdminLanguageStatic.CASH_LOGO);
         }
         boolean result = bankTypeService.saveOrUpdate(bankType);
         if (!result) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
-        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
     }
 }

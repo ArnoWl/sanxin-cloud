@@ -34,7 +34,6 @@ public class SysRuleTextServiceImpl extends ServiceImpl<SysRuleTextMapper, SysRu
         if (list != null && list.size()>0) {
             SysRuleText ruleText = list.get(0);
             String language = LanguageUtils.getLanguage();
-            language = language.toUpperCase();
             JSONObject titleObj = JSONObject.parseObject(ruleText.getTitle());
             vo.setTitle(titleObj.getString(language));
             JSONObject contentObj = JSONObject.parseObject(ruleText.getContent());

@@ -93,7 +93,7 @@ public class RoleController {
     @RequestMapping("/role/queryMyroleMenus")
     public RestResult queryMyroleMenus(String roleid){
         if(StringUtils.isEmpty(roleid)){
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.ROLE_EMPTY));
+            return RestResult.fail(AdminLanguageStatic.ROLE_EMPTY);
         }
         Integer role=Integer.parseInt(roleid);
         String token=BaseUtil.getToken();

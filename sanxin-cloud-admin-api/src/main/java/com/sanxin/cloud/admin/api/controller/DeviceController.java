@@ -50,7 +50,7 @@ public class DeviceController {
     public RestResult handleDeviceStatus(Integer id, Integer status) {
         BDevice device = bDeviceService.getById(id);
         if (status != null && FunctionUtils.isEquals(device.getStatus(), status)) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_REPEAT_SUBMIT));
+            return RestResult.fail(AdminLanguageStatic.BASE_REPEAT_SUBMIT);
         }
         RestResult result = bDeviceService.handleDeviceStatus(id, status);
         return result;
@@ -65,7 +65,7 @@ public class DeviceController {
     public RestResult getDeviceDetail(Integer id) {
         BDevice device = bDeviceService.getDeviceDetail(id);
         if (device == null) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
         return RestResult.success("", device);
     }
@@ -99,8 +99,8 @@ public class DeviceController {
         }
         boolean result = bDeviceService.saveOrUpdate(device);
         if (!result) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
-        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
     }
 }
