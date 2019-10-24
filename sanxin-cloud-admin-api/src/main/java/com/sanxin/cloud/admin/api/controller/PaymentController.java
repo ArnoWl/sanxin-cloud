@@ -55,33 +55,33 @@ public class PaymentController {
         infoAli.setRefundApp(null);
         infoAli.setRefundWeb(null);
         if (StringUtils.isBlank(infoAli.getPartner())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.P_ALI_PARTNER));
+            return RestResult.fail(AdminLanguageStatic.P_ALI_PARTNER);
         }
         if (StringUtils.isBlank(infoAli.getPartnerAccount())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.P_ALI_PARTNER_ACCOUNT));
+            return RestResult.fail(AdminLanguageStatic.P_ALI_PARTNER_ACCOUNT);
         }
         if (StringUtils.isBlank(infoAli.getPrivateKey())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.P_ALI_PRIVATE_KEY));
+            return RestResult.fail(AdminLanguageStatic.P_ALI_PRIVATE_KEY);
         }
         if (StringUtils.isBlank(infoAli.getAliPublicKey())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.P_ALI_ALI_PUBLIC_KEY));
+            return RestResult.fail(AdminLanguageStatic.P_ALI_ALI_PUBLIC_KEY);
         }
         if (StringUtils.isBlank(infoAli.getAliPrivateKey())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.P_ALI_ALI_PRIVATE_KEY));
+            return RestResult.fail(AdminLanguageStatic.P_ALI_ALI_PRIVATE_KEY);
         }
         if (StringUtils.isBlank(infoAli.getReturnUrl())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.P_ALI_RETURNURL));
+            return RestResult.fail(AdminLanguageStatic.P_ALI_RETURNURL);
         }
         if (StringUtils.isBlank(infoAli.getRefundPublicKey())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.P_ALI_REFUND_PUBLIC_KEY));
+            return RestResult.fail(AdminLanguageStatic.P_ALI_REFUND_PUBLIC_KEY);
         }
         if (StringUtils.isBlank(infoAli.getRefundPrivateKey())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.P_ALI_REFUND_PRIVATE_KEY));
+            return RestResult.fail(AdminLanguageStatic.P_ALI_REFUND_PRIVATE_KEY);
         }
         boolean result = infoAliService.updateById(infoAli);
         if (result) {
-            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+            return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
         }
-        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+        return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
     }
 }

@@ -25,13 +25,14 @@ spring:
     testOnReturn: false
     poolPreparedStatements: true
   redis:
-    host: 47.244.167.166
+    host: 35.240.194.196
     port: 39182
     password: N5Y6NZ7MO5WzBNI2
     jedis:
       pool:
         max-wait: 1000ms
-        max-active: 8
+        max-active: 600
+        max-idle: 300
 
 mybatis-plus:
   mapper-locations:  classpath:mybatis/mapper/*.xml

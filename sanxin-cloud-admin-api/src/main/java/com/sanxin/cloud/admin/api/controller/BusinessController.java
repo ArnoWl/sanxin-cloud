@@ -111,9 +111,9 @@ public class BusinessController {
         }
         Boolean result = businessService.updateById(business);
         if (!result) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
-        return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+        return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
     }
 
     /**
@@ -134,9 +134,9 @@ public class BusinessController {
         int insert = accountMapper.insert(account);
         boolean result = businessService.updateById(business);
         if (result && insert > 0) {
-            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+            return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
         }
-        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+        return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
     }
 
     /**
@@ -149,14 +149,14 @@ public class BusinessController {
     public RestResult resetLoginPass(Integer id) {
         BBusiness business = businessService.getById(id);
         if (business == null || !FunctionUtils.isEquals(StaticUtils.STATUS_SUCCESS, business.getStatus())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
         business.setPassWord(PwdEncode.encodePwd(StaticUtils.DEFAULT_PWD));
         boolean result = businessService.updateById(business);
         if (result) {
-            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+            return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
         }
-        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+        return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
     }
 
     /**
@@ -169,13 +169,13 @@ public class BusinessController {
     public RestResult resetPayPass(Integer id) {
         BBusiness business = businessService.getById(id);
         if (business == null || !FunctionUtils.isEquals(StaticUtils.STATUS_SUCCESS, business.getStatus())) {
-            return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
         business.setPayWord(PwdEncode.encodePwd(StaticUtils.DEFAULT_PWD));
         boolean result = businessService.updateById(business);
         if (result) {
-            return RestResult.success(LanguageUtils.getMessage(AdminLanguageStatic.BASE_SUCCESS));
+            return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
         }
-        return RestResult.fail(LanguageUtils.getMessage(AdminLanguageStatic.BASE_FAIL));
+        return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
     }
 }

@@ -1,16 +1,18 @@
 package com.sanxin.cloud.admin.api.controller;
 
-import com.sanxin.cloud.common.http.HttpUtil;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.common.times.DateUtil;
+import com.sanxin.cloud.config.image.RestUploadFileInfo;
 import com.sanxin.cloud.enums.EventEnums;
+import com.sanxin.cloud.exception.ThrowJsonException;
+import com.sanxin.cloud.admin.api.remote.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +23,8 @@ import java.util.Map;
  */
 @RestController
 public class ConfigController {
+    @Resource
+    ImagesRemote imagesRemote;
 
     /**
      * 返回文件上传路径
@@ -29,8 +33,16 @@ public class ConfigController {
      */
     @PostMapping("/uploadOne")
     public RestResult uploadOne(@RequestParam(value = "file") MultipartFile file) {
-        String msg = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1567404165178&di=18d023d8dd3c541a2b52ee1c544219cf&imgtype=0&src=http%3A%2F%2Fimgup04.iefans.net%2Fiefans%2F2019-02%2F11%2F11%2F15498570716693_1.jpg";
-        return RestResult.success("", msg);
+        if (file == null) {
+            return RestResult.fail("fail");
+        }
+        String path = "/" + DateUtil.toDateString(DateUtil.currentDate(), "yyyyMMdd");
+        RestUploadFileInfo uploadFileInfo = imagesRemote.uploadImg(file, path);
+        if (!uploadFileInfo.isStatus()) {
+            throw new ThrowJsonException(uploadFileInfo.getDesc());
+        }
+        String url = uploadFileInfo.getServiceName() + uploadFileInfo.getFilePath() + uploadFileInfo.getFileName();
+        return RestResult.success("success", url);
     }
 
     /**

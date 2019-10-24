@@ -169,12 +169,18 @@ public class AppCommandUtils {
                     ctx.channel().writeAndFlush(new TextWebSocketFrame(CommandResult.success("success", per, perCommand))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                     log.info("APP_发送借充电宝指令");
                     // 发送借充电宝指令
-                    ChannelHandlerContext otherCtx = NettySocketHolder.get(boxId);
-                    if (otherCtx == null) {
-                        out_str = CommandResult.fail("借用失败", null, command);
-                    } else {
-                        otherCtx.channel().writeAndFlush(CommandUtils.sendCommand(CommandEnums.x65.getCommand(), mostCharge.getSlot())).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
-                    }
+                    // ChannelHandlerContext otherCtx = NettySocketHolder.get(boxId);
+                    // if (otherCtx == null) {
+                    //     out_str = CommandResult.fail("借用失败", null, command);
+                    // } else {
+                    //     otherCtx.channel().writeAndFlush(CommandUtils.sendCommand(CommandEnums.x65.getCommand(), mostCharge.getSlot())).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+                    // }
+                    //
+                    Thread.sleep(1000);
+                    per = 100;
+                    ctx.channel().writeAndFlush(new TextWebSocketFrame(CommandResult.success("success", per, AppCommandEnums.x10004.getCommand()))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+                    Thread.sleep(1000);
+                    out_str = CommandResult.success("借用成功", null, command);
                     log.info("APP_发送借充电宝指令完成");
                     break;
                 case x10003:
