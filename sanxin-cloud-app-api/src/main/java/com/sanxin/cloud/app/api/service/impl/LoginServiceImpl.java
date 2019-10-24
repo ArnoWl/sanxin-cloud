@@ -78,6 +78,7 @@ public class LoginServiceImpl implements LoginService {
 
     /**
      * 第三方登录(用户)
+     *
      * @param accessToken
      * @param id
      * @param type
@@ -89,12 +90,18 @@ public class LoginServiceImpl implements LoginService {
         switch (type) {
             case 1:
                 VerificationVO facebook = TripartiteVerificationUtil.verification(accessToken, type);
+                //判断不为null或者校验google不等于传过来的id
                 if (facebook == null || facebook.getId() != id) {
                     return RestResult.fail("verification_fail");
                 }
                 CVerification facebookId = verificationMapper.selectOne(new QueryWrapper<CVerification>().eq("facebook_id", id));
+                //校验是否存在数据库 如果不存在返回绑定
                 if (facebookId == null) {
                     return RestResult.fail("00", "binding_phone");
+                }
+                //校验数据库的id是否和传过来的id匹配
+                if (!facebookId.getFacebookId().equals(id)) {
+                    return RestResult.fail("verification_fail");
                 }
                 LoginDto facebookLoginDto = LoginDto.getInstance();
                 //加密 封装 存入redis
@@ -108,12 +115,18 @@ public class LoginServiceImpl implements LoginService {
                 }
             case 2:
                 VerificationVO google = TripartiteVerificationUtil.verification(accessToken, type);
+                //判断不为null或者校验google不等于传过来的id
                 if (google == null || google.getId() != id) {
                     return RestResult.fail("verification_fail");
                 }
                 CVerification googleId = verificationMapper.selectOne(new QueryWrapper<CVerification>().eq("facebook_id", id));
+                //校验是否存在数据库 如果不存在返回绑定
                 if (googleId == null) {
                     return RestResult.fail("00", "binding_phone");
+                }
+                //校验数据库的id是否和传过来的id匹配
+                if (!googleId.getGoogleId().equals(id)) {
+                    return RestResult.fail("verification_fail");
                 }
                 LoginDto googleLoginDto = LoginDto.getInstance();
                 //加密 封装 存入redis
