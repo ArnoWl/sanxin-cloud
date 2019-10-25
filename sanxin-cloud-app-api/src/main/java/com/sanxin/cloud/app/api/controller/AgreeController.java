@@ -44,4 +44,16 @@ public class AgreeController {
         SysAgreement agreement = sysAgreementService.getByTypeAndLanguage(type, language);
         return RestResult.success(LanguageUtils.getMessage("success"), agreement);
     }
+
+    /**
+     * 借充电宝协议
+     * @return
+     */
+    @RequestMapping(value = "/powerBankProtocol")
+    public RestResult powerBankProtocol() {
+        Integer type = 3;
+        String language = BaseUtil.getLanguage();
+        SysAgreement agreement = sysAgreementService.getByTypeAndLanguage(type, language);
+        return RestResult.success(LanguageUtils.getMessage("success"), agreement);
+    }
 }

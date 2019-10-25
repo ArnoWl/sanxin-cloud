@@ -53,6 +53,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/message/queryHomeAdvert")
                 //发现广告
                 .excludePathPatterns("/message/queryAdvertList")
+                //借充电宝中间提示
+                .excludePathPatterns("/order/powerBankPrompt")
                 // 排除swagger相关请求
                 .excludePathPatterns("/webjars/**", "/v2/**");
     }

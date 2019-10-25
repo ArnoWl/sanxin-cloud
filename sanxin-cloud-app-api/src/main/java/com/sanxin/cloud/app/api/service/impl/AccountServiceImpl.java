@@ -16,16 +16,14 @@ import com.sanxin.cloud.enums.*;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.mapper.*;
 import com.sanxin.cloud.service.*;
+import com.sanxin.cloud.service.system.pay.HandleAccountChangeService;
 import com.sanxin.cloud.service.system.pay.PayService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author xiaoky
@@ -56,6 +54,14 @@ public class AccountServiceImpl implements AccountService {
     private GiftHourMapper giftHourMapper;
     @Autowired
     private SysRuleTextService sysRuleTextService;
+    @Autowired
+    private OrderMainMapper orderMainMapper;
+    @Autowired
+    private HandleAccountChangeService handleAccountChangeService;
+    @Autowired
+    private OrderMainService orderMainService;
+    @Autowired
+    private BBusinessMapper businessMapper;
 
     /**
      * 我的押金
@@ -227,6 +233,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 购买充电宝
+     *
      * @param cid
      * @param payType
      * @param payWord
@@ -234,8 +241,100 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public RestResult payBuyPowerBank(Integer cid, Integer payType, String payWord) {
-        BigDecimal money =new BigDecimal(Integer.parseInt(infoParamService.getValueByCode("buyPowerBankPrice"))) ;
-        if (money == null) {
+        BigDecimal money = new BigDecimal(Integer.parseInt(infoParamService.getValueByCode("buyPowerBankPrice")));
+        OrderMain orderMain = orderMainMapper.selectOne(new QueryWrapper<OrderMain>().eq("cid", cid).eq("status", 1));
+        BBusiness business = businessMapper.selectOne(new QueryWrapper<BBusiness>().eq("cid", orderMain.getCid()));
+        // 计算一共使用了多少个小时
+        orderMain.setReturnTime(DateUtil.currentDate());
+        // 操作时长-余额
+        int hour = DateUtil.dateDiffHour(orderMain.getRentTime(), orderMain.getReturnTime());
+        // 查询是否有时长
+        CAccount account = cAccountService.getByCid(orderMain.getCid());
+        if (account == null) {
+            return RestResult.fail("fail", "00");
+        }
+        String flag = null;
+        String msg = "";
+        Integer orderStatus = OrderStatusEnums.CONFIRMED.getId();
+        String valueStr = infoParamService.getValueByCode(ParamCodeEnums.USE_HOUR_MONEY.getCode());
+        // 一小时多少钱
+        BigDecimal value = FunctionUtils.getValueByClass(BigDecimal.class, valueStr);
+        // 租金总额
+        BigDecimal rentMoney = FunctionUtils.mul(value, new BigDecimal(hour), 2);
+        // 实际扣除时长
+        Integer realHour = hour;
+        // 实际扣除余额
+        BigDecimal payMoney = BigDecimal.ZERO;
+        // 有时长，先扣时长
+        // 时长足够
+        if (account.getHour() > 0 && account.getHour() >= hour) {
+            // 时长足够，不管是否开启免密支付，订单都会使用时长支付-变成已完成
+            orderMain.setPayType(PayTypeEnums.MONEY.getId());
+            orderMain.setOverTime(DateUtil.currentDate());
+            orderStatus = OrderStatusEnums.OVER.getId();
+        } else {
+            // 时长不足——先有多少扣多少
+            realHour = account.getHour();
+            // 扣除时长后计算应该扣多少余额
+            payMoney = FunctionUtils.mul(value, new BigDecimal(hour - realHour), 2);
+            // 判断是否免密支付-免密支付余额充足的情况下，订单状态变成已完成
+            if (FunctionUtils.isEquals(StaticUtils.STATUS_YES, account.getFreeSecret())) {
+                // 开启了免密支付-扣除余额
+                msg = handleAccountChangeService.insertCMoneyDetail(new CMoneyDetail(orderMain.getCid(), HandleTypeEnums.ORDER.getId(),
+                        StaticUtils.PAY_OUT, orderMain.getPayCode(), payMoney, HandleTypeEnums.getName(HandleTypeEnums.ORDER.getId())));
+                // 余额充足
+                if (StringUtils.isEmpty(msg)) {
+                    orderMain.setPayType(PayTypeEnums.MONEY.getId());
+                    orderMain.setOverTime(DateUtil.currentDate());
+                    orderStatus = OrderStatusEnums.OVER.getId();
+                } else {
+                    // 余额不足或其它情况,flag标识余额不足
+                    flag = StaticUtils.RETURN_MONEY_NOT_ENOUGH;
+                }
+            } else {
+                // 未开启免密支付-余额不用扣除
+                flag = StaticUtils.RETURN_NOT_FREE_SECRET;
+            }
+        }
+        // 统一扣除时长
+        if (realHour > 0) {
+            msg = handleAccountChangeService.insertCHourDetail(new CHourDetail(orderMain.getCid(), HandleTypeEnums.ORDER.getId(),
+                    StaticUtils.PAY_OUT, orderMain.getPayCode(), realHour, HandleTypeEnums.getName(HandleTypeEnums.ORDER.getId())));
+            if (StringUtils.isNotEmpty(msg)) {
+                return RestResult.fail("fail", "00");
+            }
+        }
+        // 操作赋值
+        BigDecimal realMoney = payMoney;
+        orderMain.setRentMoney(rentMoney);
+        orderMain.setRealMoney(realMoney);
+        orderMain.setPayMoney(payMoney);
+        orderMain.setHour(realHour);
+        orderMain.setOrderStatus(orderStatus);
+        orderMain.setReturnAddr(business.getAddressDetail());
+        boolean update = orderMainService.updateById(orderMain);
+        if (!update) {
+            // 数据操作失败
+            return RestResult.fail("fail", "00");
+        }
+
+        //扣除押金
+        account.setDeposit(FunctionUtils.sub(account.getDeposit(), money, 2));
+        account.setRechargeDeposit(0);
+        CMarginDetail marginDetail = new CMarginDetail();
+        marginDetail.setCid(orderMain.getCid());
+        marginDetail.setIsout(1);
+        marginDetail.setCost(money);
+        marginDetail.setCreateTime(new Date());
+        //marginDetail.setPayCode(orderMain.getPayCode());
+        marginDetail.setRemark("购买充电宝");
+        int insert = marginDetailMapper.insert(marginDetail);
+        if (insert == 0) {
+            return RestResult.success("fail");
+        }
+        return RestResult.success("success");
+
+        /*if (money == null) {
             return RestResult.fail("param_abnormal");
         }
         CCustomer customer = customerService.getById(cid);
@@ -260,7 +359,6 @@ public class AccountServiceImpl implements AccountService {
                 if (account.getMoney().compareTo(money) != 1) {
                 return RestResult.fail("pay_balance_error");
             }
-
         }
         String payCode = FunctionUtils.getOrderCode("T");
         CPayLog log = new CPayLog();
@@ -276,7 +374,7 @@ public class AccountServiceImpl implements AccountService {
         if (!flag) {
             throw new ThrowJsonException(LanguageUtils.getMessage("pay_log_create_fail"));
         }
-        return payService.handleSign(log);
+        return payService.handleSign(log);*/
     }
 
     /**

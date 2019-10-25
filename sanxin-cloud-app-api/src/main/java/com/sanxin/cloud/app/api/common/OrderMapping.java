@@ -8,6 +8,8 @@ package com.sanxin.cloud.app.api.common;
 public class OrderMapping {
     /** 借充电宝*/
     public static final String GET_BORROW_POWER_BANK = "/getBorrowPowerBank";
+    /** 借充电宝中间提示*/
+    public static final String GET_POWER_BANK_PROMPT = "/powerBankPrompt";
     /** 查询加盟商订单列表*/
     public static final String QUERY_BUSINESS_ORDER_LIST = "/queryBusinessOrderList";
     /** 查询加盟商订单详情*/

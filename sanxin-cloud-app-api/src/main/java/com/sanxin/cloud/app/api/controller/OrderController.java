@@ -34,7 +34,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 订单Controller
@@ -58,6 +60,8 @@ public class OrderController {
     private PayOrderService payOrderService;
     @Autowired
     private SCBPayService scbPayService;
+    @Autowired
+    private InfoParamService infoParamService;
 
     /**
      * 借充电宝
@@ -71,6 +75,21 @@ public class OrderController {
         orderService.getBorrowPowerBank(cid, terminalId);
         return RestResult.success("");
     }
+
+    /**
+     * 借充电宝中间提示
+     * @return
+     */
+    @RequestMapping(value = OrderMapping.GET_POWER_BANK_PROMPT)
+    public RestResult getPowerBankPrompt() {
+        String useHourMoney = infoParamService.getValueByCode("useHourMoney");
+        String rechargeDepositMoney =infoParamService.getValueByCode("rechargeDepositMoney");
+        Map<String, String> map =new HashMap<>();
+        map.put("standard",useHourMoney);
+        map.put("deposit",rechargeDepositMoney);
+        return RestResult.success(map);
+    }
+
 
     /**
      * 查询订单列表(加盟商)
