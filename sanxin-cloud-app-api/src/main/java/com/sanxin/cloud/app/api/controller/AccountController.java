@@ -1,12 +1,15 @@
 package com.sanxin.cloud.app.api.controller;
 
 import com.sanxin.cloud.app.api.common.AccountMapping;
+import com.sanxin.cloud.app.api.common.BaseMapping;
+import com.sanxin.cloud.app.api.common.MappingUtils;
 import com.sanxin.cloud.app.api.common.OrderMapping;
 import com.sanxin.cloud.app.api.service.AccountService;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.common.sms.SMSSender;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.RuleTextVo;
 import com.sanxin.cloud.entity.CAccount;
@@ -23,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,28 +46,31 @@ public class AccountController {
 
     /**
      * 我的押金明细
+     *
      * @return
      */
     @RequestMapping(value = AccountMapping.MY_DEPOSIT)
     public RestResult queryMyDeposit(SPage<CMarginDetail> page) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginCid(token);
-        return accountService.queryMyDeposit(page,cid);
+        return accountService.queryMyDeposit(page, cid);
     }
 
     /**
      * 开启关闭免密支付
+     *
      * @return
      */
     @RequestMapping(value = AccountMapping.FREE_SECRET)
     public RestResult freeSecret(String payWord) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginCid(token);
-        return accountService.freeSecret(cid,payWord);
+        return accountService.freeSecret(cid, payWord);
     }
 
     /**
      * 我的钱包
+     *
      * @return
      */
     @RequestMapping(value = AccountMapping.MY_PURSE)
@@ -75,17 +82,19 @@ public class AccountController {
 
     /**
      * 余额明细
+     *
      * @return
      */
     @RequestMapping(value = AccountMapping.BALANCE_DETAIL)
     public RestResult queryBalanceDetail(SPage<CMoneyDetail> page) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginCid(token);
-        return accountService.queryBalanceDetail(page,cid);
+        return accountService.queryBalanceDetail(page, cid);
     }
 
     /**
      * 我要充值显示余额
+     *
      * @return
      */
     @RequestMapping(value = AccountMapping.GET_BALANCE)
@@ -97,17 +106,19 @@ public class AccountController {
 
     /**
      * 用户时长明细
+     *
      * @return
      */
     @RequestMapping(value = AccountMapping.TIME_DETAIL)
     public RestResult queryTimeDetail(SPage<CTimeDetail> page) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginCid(token);
-        return accountService.queryTimeDetail(page,cid);
+        return accountService.queryTimeDetail(page, cid);
     }
 
     /**
      * 购买时长礼包
+     *
      * @return
      */
     @RequestMapping(value = AccountMapping.GET_BUY_GIFT)
@@ -119,30 +130,32 @@ public class AccountController {
 
     /**
      * 支付购买时长
-     * @param giftId 礼包id
+     *
+     * @param giftId  礼包id
      * @param payType 支付类型1余额
      * @param payWord 支付密码
      * @return
      */
     @RequestMapping(value = AccountMapping.PAY_TIME_GIFT)
-    public RestResult payTimeGift(Integer giftId,Integer payType,String payWord, String authcode) {
+    public RestResult payTimeGift(Integer giftId, Integer payType, String payWord, String authcode) {
         String token = BaseUtil.getUserToken();
         // 判断参数值
         if (payType == null) {
             return RestResult.fail("pay_type_empty");
         }
         if (FunctionUtils.isEquals(payType, PayTypeEnums.SCB_PAY.getType())) {
-            String scbToken=scbPayService.getToken(token, authcode);
-            if(StringUtils.isEmpty(scbToken)){
-                return  RestResult.fail("1011","Authorization failed, please re authorize","","");
+            String scbToken = scbPayService.getToken(token, authcode);
+            if (StringUtils.isEmpty(scbToken)) {
+                return RestResult.fail("1011", "Authorization failed, please re authorize", "", "");
             }
         }
         Integer cid = loginTokenService.validLoginCid(token);
-        return accountService.payTimeGift(cid,giftId,payType,payWord);
+        return accountService.payTimeGift(cid, giftId, payType, payWord);
     }
 
     /**
      * 借充电宝扫码时判断是否交了押金
+     *
      * @return
      */
     @RequestMapping(AccountMapping.VALID_RECHARGE_DEPOSIT)
@@ -158,11 +171,12 @@ public class AccountController {
 
     /**
      * 充值押金
-     * @param payWord 支付密码-选择余额支付需要
-     * @param payType 支付方式
+     *
+     * @param payWord    支付密码-选择余额支付需要
+     * @param payType    支付方式
      * @param payChannel 支付渠道
      * @param freeSecret 是否免密支付
-     * @param authcode 渣打银行支付需要
+     * @param authcode   渣打银行支付需要
      * @return
      */
     @RequestMapping(value = AccountMapping.RECHARGE_DEPOSIT)
@@ -173,9 +187,9 @@ public class AccountController {
             return RestResult.fail("pay_type_empty");
         }
         if (FunctionUtils.isEquals(payType, PayTypeEnums.SCB_PAY.getType())) {
-            String scbToken=scbPayService.getToken(token,authcode);
-            if(StringUtils.isEmpty(scbToken)){
-                return  RestResult.fail("1011","Authorization failed, please re authorize","","");
+            String scbToken = scbPayService.getToken(token, authcode);
+            if (StringUtils.isEmpty(scbToken)) {
+                return RestResult.fail("1011", "Authorization failed, please re authorize", "", "");
             }
         }
         Integer cid = loginTokenService.validLoginCid(token);
@@ -184,6 +198,7 @@ public class AccountController {
 
     /**
      * 支付方式
+     *
      * @param type 支付渠道类型
      * @return
      */
@@ -191,12 +206,13 @@ public class AccountController {
     public RestResult queryPayTypeList(Integer type) {
         String token = BaseUtil.getUserToken();
         Integer cid = loginTokenService.validLoginCid(token);
-        Map<String, Object> map = accountService.queryPayTypeList(type,cid);
+        Map<String, Object> map = accountService.queryPayTypeList(type, cid);
         return RestResult.success("success", map);
     }
 
     /**
      * 支付方式——小程序
+     *
      * @return
      */
     @RequestMapping(value = AccountMapping.QUERY_PAY_TYPE_LIST_FOR_PROGRAM)
@@ -209,6 +225,7 @@ public class AccountController {
 
     /**
      * 充值押金页面数据
+     *
      * @return
      */
     @RequestMapping(value = AccountMapping.GET_RECHARGE_MSG)
@@ -219,6 +236,7 @@ public class AccountController {
 
     /**
      * 借充电宝成功页面显示数据
+     *
      * @return
      */
     @RequestMapping(value = AccountMapping.GET_LEND_SUCCESS_MSG)
@@ -229,5 +247,20 @@ public class AccountController {
         map.put("ruleMoney", ruleMoney);
         map.put("ruleDeposit", ruleDeposit);
         return RestResult.success("success", map);
+    }
+
+    /**
+     * 发送短信
+     *
+     * @return
+     */
+    @RequestMapping(value = MappingUtils.SEND_FORGET_CODE)
+    public RestResult sendMsg() {
+        try {
+            SMSSender.sendSMSDtac("Hello World", "66993456432");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return RestResult.success("success");
     }
 }
