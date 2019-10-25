@@ -98,7 +98,7 @@ public class SMSSender {
         final String url = "https://dtacsmsapi.dtac.co.th/servlet/com.iess.socket.SmsCorplink"; // TODO: config or env var
         final String user = "api1618934"; // TODO: config or env var
         final String password = "llttqe8h"; // TODO: config or env var
-        final String sender = "1618934"; // TODO: config or env var
+        final String sender = "PowerPlusIT"; // TODO: config or env var
 
         String timeStamp = new SimpleDateFormat("yyMMddHHmmss").format(new Date());
 
