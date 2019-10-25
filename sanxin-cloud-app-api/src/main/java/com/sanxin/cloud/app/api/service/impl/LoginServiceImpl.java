@@ -87,6 +87,7 @@ public class LoginServiceImpl implements LoginService {
      */
     @Override
     public RestResult tripartiteLogin(String accessToken, String id, Integer type) throws Exception {
+        CustomerHomeVo vo = new CustomerHomeVo();
         switch (type) {
             case 1:
                 /*VerificationVO facebook = TripartiteVerificationUtil.verification(accessToken, type);
@@ -94,11 +95,11 @@ public class LoginServiceImpl implements LoginService {
                 if (facebook == null || facebook.getId() != id) {
                     return RestResult.fail("verification_fail");
                 }*/
-                VerificationVO facebook=new VerificationVO();
+                VerificationVO facebook = new VerificationVO();
                 facebook.setId(id);
                 CVerification facebookId = verificationMapper.selectOne(new QueryWrapper<CVerification>().eq("facebook_id", id));
                 //校验是否存在数据库 如果不存在返回绑定
-                if (facebookId.getFacebookId() == null) {
+                if (facebookId == null) {
                     return RestResult.fail("00", "binding_phone");
                 }
                 //校验数据库的id是否和传过来的id匹配
@@ -111,22 +112,24 @@ public class LoginServiceImpl implements LoginService {
                 facebookLoginDto.setTid(facebookId.getCid());
                 facebookLoginDto.setType(StaticUtils.LOGIN_CUSTOMER);
                 // 生成token
-                RestResult loginToken = loginTokenService.getLoginToken(facebookLoginDto, LoginChannelEnums.APP);
-                if (loginToken.status) {
-                    return loginToken;
+                RestResult facebookLoginToken = loginTokenService.getLoginToken(facebookLoginDto, LoginChannelEnums.APP);
+                if (!facebookLoginToken.status) {
+                    return facebookLoginToken;
                 }
-                break;
+                vo = personalInform(facebookId.getCid());
+                vo.setToken(facebookLoginToken.getData().toString());
+                return RestResult.success("success", vo);
             case 2:
                 /*VerificationVO google = TripartiteVerificationUtil.verification(accessToken, type);
                 //判断不为null或者校验google不等于传过来的id
                 if (google == null || google.getId() != id) {
                     return RestResult.fail("verification_fail");
                 }*/
-                VerificationVO google=new VerificationVO();
+                VerificationVO google = new VerificationVO();
                 google.setId(id);
-                CVerification googleId = verificationMapper.selectOne(new QueryWrapper<CVerification>().eq("facebook_id", id));
+                CVerification googleId = verificationMapper.selectOne(new QueryWrapper<CVerification>().eq("google_id", id));
                 //校验是否存在数据库 如果不存在返回绑定
-                if (googleId.getGoogleId() == null) {
+                if (googleId == null) {
                     return RestResult.fail("00", "binding_phone");
                 }
                 //校验数据库的id是否和传过来的id匹配
@@ -140,9 +143,12 @@ public class LoginServiceImpl implements LoginService {
                 googleLoginDto.setType(StaticUtils.LOGIN_CUSTOMER);
                 // 生成token
                 RestResult googleLoginToken = loginTokenService.getLoginToken(googleLoginDto, LoginChannelEnums.APP);
-                if (googleLoginToken.status) {
+                if (!googleLoginToken.status) {
                     return googleLoginToken;
                 }
+                vo = personalInform(googleId.getCid());
+                vo.setToken(googleLoginToken.getData().toString());
+                return RestResult.success("success", vo);
         }
         return RestResult.fail("fail");
     }
@@ -171,7 +177,7 @@ public class LoginServiceImpl implements LoginService {
                 if (!facebook.getId().equals(id)) {
                     return RestResult.fail("verification_fail");
                 }*/
-                VerificationVO facebook=new VerificationVO();
+                VerificationVO facebook = new VerificationVO();
                 facebook.setId(id);
                 //验证成功之后查询数据库有此用户数据
                 CCustomer facebookPhone = customerMapper.selectOne(new QueryWrapper<CCustomer>().eq("phone", phone));
@@ -199,7 +205,7 @@ public class LoginServiceImpl implements LoginService {
                     CVerification facebookVerification = verificationMapper.selectOne(new QueryWrapper<CVerification>().eq("cid", facebookPhone.getId()));
                     //不存在就创建
                     if (facebookVerification == null) {
-                        CVerification inster=new CVerification();
+                        CVerification inster = new CVerification();
                         inster.setCid(facebookPhone.getId());
                         inster.setFacebookId(facebook.getId());
                         verificationMapper.insert(inster);
@@ -225,7 +231,7 @@ public class LoginServiceImpl implements LoginService {
                 if (!google.getId().equals(id)) {
                     return RestResult.fail("verification_fail");
                 }*/
-                VerificationVO google=new VerificationVO();
+                VerificationVO google = new VerificationVO();
                 google.setId(id);
                 //验证成功之后查询数据库有此用户数据
                 CCustomer googlePhone = customerMapper.selectOne(new QueryWrapper<CCustomer>().eq("phone", phone));
@@ -250,18 +256,22 @@ public class LoginServiceImpl implements LoginService {
                     }
                 } else {
                     //查询关联的Google是否存在
-                    CVerification facebookVerification = verificationMapper.selectOne(new QueryWrapper<CVerification>().eq("cid", googlePhone.getId()));
+                    CVerification googleVerification = verificationMapper.selectOne(new QueryWrapper<CVerification>().eq("cid", googlePhone.getId()));
                     //不存在就创建
-                    if (facebookVerification == null) {
-                        facebookVerification.setCid(googlePhone.getId());
-                        facebookVerification.setFacebookId(google.getId());
-                        verificationMapper.insert(facebookVerification);
+                    if (googleVerification == null) {
+                        googleVerification.setCid(googlePhone.getId());
+                        googleVerification.setFacebookId(google.getId());
+                        verificationMapper.insert(googleVerification);
                         return RestResult.success("binding_phone_success");
                     } else {
                         //如果存在 判断facebookId是否为null
-                        if (facebookVerification.getFacebookId() == null) {
-                            facebookVerification.setFacebookId(google.getId());
-                            verificationMapper.updateById(facebookVerification);
+                        if (googleVerification.getGoogleId() == null) {
+                            googleVerification.setGoogleId(google.getId());
+                            try {
+                                verificationMapper.update(googleVerification,new QueryWrapper<CVerification>().eq("cid",googleVerification.getCid()));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             return RestResult.success("binding_phone_success");
                         }
                         return RestResult.fail("binding_phone_not_empty");

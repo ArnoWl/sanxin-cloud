@@ -1,5 +1,7 @@
 package com.sanxin.cloud.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -10,6 +12,7 @@ import java.io.Serializable;
  * @author Arno
  * @since 2019-10-23
  */
+@Data
 public class CVerification implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,35 +31,4 @@ public class CVerification implements Serializable {
      * facebookId
      */
     private String facebookId;
-
-    public Integer getCid() {
-        return cid;
-    }
-
-    public void setCid(Integer cid) {
-        this.cid = cid;
-    }
-    public String getGoogleId() {
-        return googleId;
-    }
-
-    public void setGoogleId(String googleId) {
-        this.googleId = googleId;
-    }
-    public String getFacebookId() {
-        return facebookId;
-    }
-
-    public void setFacebookId(String facebookId) {
-        this.facebookId = facebookId;
-    }
-
-    @Override
-    public String toString() {
-        return "CVerification{" +
-        "cid=" + cid +
-        ", googleId=" + googleId +
-        ", facebookId=" + facebookId +
-        "}";
-    }
 }
