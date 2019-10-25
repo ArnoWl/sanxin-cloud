@@ -152,7 +152,7 @@ public class PayService {
             throw new ThrowJsonException(LanguageUtils.getMessage("order_is_processed"));
         }
         OrderMain orderMain = list.get(0);
-        orderMain.setPayType(PayTypeEnums.MONEY.getId());
+        orderMain.setPayType(cPayLog.getPayType());
         orderMain.setOverTime(DateUtil.currentDate());
         orderMain.setOrderStatus(OrderStatusEnums.OVER.getId());
         orderMain.setTransCode(cPayLog.getTransCode());

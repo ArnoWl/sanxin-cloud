@@ -11,6 +11,7 @@ import com.sanxin.cloud.entity.CAccount;
 import com.sanxin.cloud.entity.CMoneyDetail;
 import com.sanxin.cloud.enums.OrderStatusEnums;
 import com.sanxin.cloud.enums.ParamCodeEnums;
+import com.sanxin.cloud.enums.PayTypeEnums;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.service.CAccountService;
 import com.sanxin.cloud.service.InfoParamService;
@@ -25,6 +26,8 @@ import com.sanxin.cloud.entity.OrderMain;
 import com.sanxin.cloud.service.BBusinessService;
 import com.sanxin.cloud.service.system.pay.HandleBatteryService;
 import com.sanxin.cloud.service.system.pay.PayOrderService;
+import com.sanxin.cloud.service.system.pay.scb.SCBPayService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,6 +56,8 @@ public class OrderController {
     private HandleBatteryService handleBatteryService;
     @Autowired
     private PayOrderService payOrderService;
+    @Autowired
+    private SCBPayService scbPayService;
 
     /**
      * 借充电宝
@@ -165,7 +170,18 @@ public class OrderController {
      * @return
      */
     @RequestMapping(value = OrderMapping.HANDLE_ORDER_PAY)
-    public RestResult handleOrderPay(String orderCode, String payWord, Integer payType, Integer payChannel) {
+    public RestResult handleOrderPay(String authcode, String orderCode, String payWord, Integer payType, Integer payChannel) {
+        String token = BaseUtil.getUserToken();
+        // 判断参数值
+        if (payType == null) {
+            return RestResult.fail("pay_type_empty");
+        }
+        if (FunctionUtils.isEquals(payType, PayTypeEnums.SCB_PAY.getType())) {
+            String scbToken=scbPayService.getToken(token, authcode);
+            if(StringUtils.isEmpty(scbToken)){
+                return  RestResult.fail("1011","Authorization failed, please re authorize","","");
+            }
+        }
         RestResult result = payOrderService.handleOrderPay(orderCode, payWord, payType, payChannel);
         return result;
     }

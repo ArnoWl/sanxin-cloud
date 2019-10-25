@@ -18,6 +18,8 @@ public class LanguageUtils {
 
     private static String file = "language";
 
+    private static String commonFile = "config.language";
+
     private HttpServletRequest request = null;
 
     private static LanguageUtils languageUtils = null;
@@ -45,7 +47,13 @@ public class LanguageUtils {
             ResourceBundle rb = ResourceBundle.getBundle(fileName);
             result = rb.getString(code);
         } catch (Exception e) {
-            result = code;
+            try {
+                String fileName = getCommonFileName();
+                ResourceBundle rb = ResourceBundle.getBundle(fileName);
+                result = rb.getString(code);
+            } catch (Exception ex) {
+                result = code;
+            }
         }
         return result;
     }
@@ -63,7 +71,14 @@ public class LanguageUtils {
             result = rb.getString(code);
             result = MessageFormat.format(result, params);
         } catch (Exception e) {
-            result = code;
+            try {
+                String fileName = getCommonFileName();
+                ResourceBundle rb = ResourceBundle.getBundle(fileName);
+                result = rb.getString(code);
+                result = MessageFormat.format(result, params);
+            } catch (Exception ex) {
+                result = code;
+            }
         }
         return result;
     }
@@ -74,6 +89,22 @@ public class LanguageUtils {
      */
     private static String getFileName () {
         String fileName = file;
+        String languageToken = getLanguage();
+        if (StringUtils.isNotBlank(languageToken)) {
+            fileName += "_" + languageToken;
+        } else {
+            // 默认中文
+            fileName += "_CN";
+        }
+        return fileName;
+    }
+
+    /**
+     * 公共层找国际化文件
+     * @return
+     */
+    private static String getCommonFileName () {
+        String fileName = commonFile;
         String languageToken = getLanguage();
         if (StringUtils.isNotBlank(languageToken)) {
             fileName += "_" + languageToken;
