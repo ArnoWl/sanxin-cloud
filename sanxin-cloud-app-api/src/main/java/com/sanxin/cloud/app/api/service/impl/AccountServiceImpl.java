@@ -182,7 +182,7 @@ public class AccountServiceImpl implements AccountService {
     public RestResult payTimeGift(Integer cid, Integer giftId, Integer payType, String payWord) {
         GiftHour giftHour = giftHourMapper.selectById(giftId);
         if (giftHour == null) {
-            return RestResult.fail("礼包异常");
+            return RestResult.fail("gift_abnormal");
         }
         CCustomer customer = customerService.getById(cid);
         if (customer == null) {
@@ -225,11 +225,18 @@ public class AccountServiceImpl implements AccountService {
         return payService.handleSign(log);
     }
 
+    /**
+     * 购买充电宝
+     * @param cid
+     * @param payType
+     * @param payWord
+     * @return
+     */
     @Override
     public RestResult payBuyPowerBank(Integer cid, Integer payType, String payWord) {
         BigDecimal money =new BigDecimal(Integer.parseInt(infoParamService.getValueByCode("buyPowerBankPrice"))) ;
         if (money == null) {
-            return RestResult.fail("参数异常");
+            return RestResult.fail("param_abnormal");
         }
         CCustomer customer = customerService.getById(cid);
         if (customer == null) {
