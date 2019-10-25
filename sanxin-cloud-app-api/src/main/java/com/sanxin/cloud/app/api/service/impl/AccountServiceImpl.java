@@ -225,6 +225,53 @@ public class AccountServiceImpl implements AccountService {
         return payService.handleSign(log);
     }
 
+    @Override
+    public RestResult payBuyPowerBank(Integer cid, Integer payType, String payWord) {
+        BigDecimal money =new BigDecimal(Integer.parseInt(infoParamService.getValueByCode("buyPowerBankPrice"))) ;
+        if (money == null) {
+            return RestResult.fail("参数异常");
+        }
+        CCustomer customer = customerService.getById(cid);
+        if (customer == null) {
+            return RestResult.fail("register_user_empty");
+        }
+        CAccount account = cAccountService.getByCid(cid);
+        switch (payType) {
+            //余额支付
+            case 1:
+                //密码加密
+                String pass = PwdEncode.encodePwd(payWord);
+                //交易密码是否为空
+                if (StringUtils.isBlank(customer.getPayWord())) {
+                    return RestResult.fail("not_set_pay_word", null, "1");
+                }
+                //交易密码是否匹配
+                if (!pass.equals(customer.getPayWord())) {
+                    return RestResult.fail("pay_word_error");
+                }
+                //余额是否大于系统设置金额
+                if (account.getMoney().compareTo(money) != 1) {
+                return RestResult.fail("pay_balance_error");
+            }
+
+        }
+        String payCode = FunctionUtils.getOrderCode("T");
+        CPayLog log = new CPayLog();
+        log.setCid(cid);
+        log.setPayType(payType);
+        log.setPayChannel(LoginChannelEnums.APP.getChannel());
+        log.setPayMoney(money);
+        log.setHandleType(HandleTypeEnums.BUY_TIEM_GIFT.getId());
+        log.setServiceType(ServiceEnums.BUY_TIEM_GIFT.getId());
+        log.setPayCode(payCode);
+        log.setCreateTime(DateUtil.currentDate());
+        boolean flag = cPayLogService.save(log);
+        if (!flag) {
+            throw new ThrowJsonException(LanguageUtils.getMessage("pay_log_create_fail"));
+        }
+        return payService.handleSign(log);
+    }
+
     /**
      * 获取用户账户
      *
@@ -328,6 +375,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 支付方式列表——小程序
+     *
      * @param cid 用户id
      * @return
      */
@@ -374,7 +422,7 @@ public class AccountServiceImpl implements AccountService {
                 if (!pass.equals(customer.getPayWord())) {
                     return RestResult.fail("pay_word_error");
                 }
-            }else {
+            } else {
                 return RestResult.fail("pay_word_empty");
             }
             account.setFreeSecret(1);

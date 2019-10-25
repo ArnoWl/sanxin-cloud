@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -151,6 +152,30 @@ public class AccountController {
         }
         Integer cid = loginTokenService.validLoginCid(token);
         return accountService.payTimeGift(cid, giftId, payType, payWord);
+    }
+
+    /**
+     * 支付购买充电宝
+     *
+     * @param payType 支付类型1余额
+     * @param payWord 支付密码
+     * @return
+     */
+    @RequestMapping(value = AccountMapping.PAY_BUY_POWER_BANK)
+    public RestResult payBuyPowerBank(Integer payType, String payWord, String authcode) {
+        String token = BaseUtil.getUserToken();
+        // 判断参数值
+        if (payType == null) {
+            return RestResult.fail("pay_type_empty");
+        }
+        if (FunctionUtils.isEquals(payType, PayTypeEnums.SCB_PAY.getType())) {
+            String scbToken = scbPayService.getToken(token, authcode);
+            if (StringUtils.isEmpty(scbToken)) {
+                return RestResult.fail("1011", "Authorization failed, please re authorize", "", "");
+            }
+        }
+        Integer cid = loginTokenService.validLoginCid(token);
+        return accountService.payBuyPowerBank(cid, payType, payWord);
     }
 
     /**
