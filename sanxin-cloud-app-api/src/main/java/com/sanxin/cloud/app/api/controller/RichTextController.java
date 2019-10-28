@@ -4,14 +4,12 @@ import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.SysRichText;
-import com.sanxin.cloud.enums.AddressEnums;
 import com.sanxin.cloud.service.AddressService;
+import com.sanxin.cloud.service.CCountryMobileService;
 import com.sanxin.cloud.service.SysRichTextService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.*;
 
 /**
  * 关于我们,使用指南Controller
@@ -26,6 +24,8 @@ public class RichTextController {
     private SysRichTextService sysRichTextService;
     @Autowired
     private AddressService addressService;
+    @Autowired
+    private CCountryMobileService countryMobileService;
 
     /**
      * 使用充电宝指南
@@ -67,13 +67,9 @@ public class RichTextController {
      * 获取地址
      * @return
      */
-    @RequestMapping(value = "/region")
-    public RestResult getAddress() {
-        List<AddressEnums> list = AddressEnums.getList();
-        Map<String,List> map=new HashMap<>();
-        map.put("popular",list);
-        map.put("ordinary",list);
-        return RestResult.success(LanguageUtils.getMessage("password_empty"), map);
+    @RequestMapping(value = "/areaCode")
+    public RestResult getAreaCode() {
+        return countryMobileService.getAreaCode();
     }
 
     /**
