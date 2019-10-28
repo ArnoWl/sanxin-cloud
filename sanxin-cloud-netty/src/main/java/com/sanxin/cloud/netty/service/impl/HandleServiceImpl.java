@@ -189,9 +189,6 @@ public class HandleServiceImpl implements HandleService {
         BDevice bDevice = new BDevice();
         bDevice.setCode(boxId);
         bDevice.setAllPort(terminalNum);
-        if (terminalNum > 8) {
-            bDevice.setType(DeviceTypeEnums.LARGE_CABINET.getType());
-        }
         UpdateWrapper<BDevice> wrapper = new UpdateWrapper<>();
         wrapper.eq("code", boxId);
         BDevice queryDevice = bDeviceService.getOne(wrapper);

@@ -18,23 +18,19 @@ import java.io.Serializable;
 @Data
 public class CommandResult implements Serializable {
 
-
     /**
      * 请求是否成功
      * true成功 false 失败
      */
     public boolean status;
-
     /**
      * 状态码 1表示成功  -1表示失败
      */
     public String code;
-
     /**
      * 返回描述类容
      */
     public String msg;
-
     /**
      * 返回结果集
      */
@@ -44,15 +40,6 @@ public class CommandResult implements Serializable {
      */
     public String command;
 
-    private static String getLanguageMsg(String msg) {
-        String languageMsg = LanguageUtils.getMessage(msg);
-        if (StringUtils.isNotBlank(languageMsg)) {
-            return languageMsg;
-        } else {
-            return msg;
-        }
-    }
-
     /**
      * 成功返回
      * @param msg
@@ -60,12 +47,12 @@ public class CommandResult implements Serializable {
      * @param command
      * @return
      */
-    public static String success(String msg, Object data, String command){
-        CommandResult restResult=new CommandResult();
-        restResult.status=true;
-        restResult.code="1";
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=data;
+    public static String success(String msg, Object data, String command) {
+        CommandResult restResult = new CommandResult();
+        restResult.status = true;
+        restResult.code = "1";
+        restResult.msg = msg;
+        restResult.data = data;
         restResult.command = command;
         return JSON.toJSONString(restResult);
     }
@@ -78,12 +65,12 @@ public class CommandResult implements Serializable {
      * @param command
      * @return
      */
-    public static String success(String code, String msg, Object data, String command){
-        CommandResult restResult=new CommandResult();
-        restResult.status=true;
-        restResult.code=code;
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=data;
+    public static String success(String code, String msg, Object data, String command) {
+        CommandResult restResult = new CommandResult();
+        restResult.status = true;
+        restResult.code = code;
+        restResult.msg = msg;
+        restResult.data = data;
         restResult.command = command;
         return JSON.toJSONString(restResult);
     }
@@ -94,12 +81,12 @@ public class CommandResult implements Serializable {
      * @param data
      * @return
      */
-    public static String success(String msg, Object data){
-        CommandResult restResult=new CommandResult();
-        restResult.status=true;
-        restResult.code="1";
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=data;
+    public static String success(String msg, Object data) {
+        CommandResult restResult = new CommandResult();
+        restResult.status = true;
+        restResult.code = "1";
+        restResult.msg = msg;
+        restResult.data = data;
         return JSON.toJSONString(restResult);
     }
 
@@ -108,12 +95,12 @@ public class CommandResult implements Serializable {
      * @param msg
      * @return
      */
-    public static String success(String msg){
-        CommandResult restResult=new CommandResult();
-        restResult.status=true;
-        restResult.code="1";
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=null;
+    public static String success(String msg) {
+        CommandResult restResult = new CommandResult();
+        restResult.status = true;
+        restResult.code = "1";
+        restResult.msg = msg;
+        restResult.data = null;
         return JSON.toJSONString(restResult);
     }
 
@@ -122,12 +109,12 @@ public class CommandResult implements Serializable {
      * @param data
      * @return
      */
-    public static String success(Object data){
-        CommandResult restResult=new CommandResult();
-        restResult.status=true;
-        restResult.code="1";
-        restResult.msg=getLanguageMsg("success");
-        restResult.data=data;
+    public static String success(Object data) {
+        CommandResult restResult = new CommandResult();
+        restResult.status = true;
+        restResult.code = "1";
+        restResult.msg = "success";
+        restResult.data = data;
         return JSON.toJSONString(restResult);
     }
 
@@ -138,13 +125,13 @@ public class CommandResult implements Serializable {
      * @param command
      * @return
      */
-    public static String fail(String msg, Object data, String command){
-        CommandResult restResult=new CommandResult();
-        restResult.status=false;
-        restResult.code="-1";
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=data;
-        restResult.command=command;
+    public static String fail(String msg, Object data, String command) {
+        CommandResult restResult = new CommandResult();
+        restResult.status = false;
+        restResult.code = "-1";
+        restResult.msg = msg;
+        restResult.data = data;
+        restResult.command = command;
         return JSON.toJSONString(restResult);
     }
 
@@ -156,13 +143,13 @@ public class CommandResult implements Serializable {
      * @param command
      * @return
      */
-    public static String fail(String code, String msg, Object data, String command){
-        CommandResult restResult=new CommandResult();
-        restResult.status=false;
-        restResult.code=code;
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=data;
-        restResult.command=command;
+    public static String fail(String code, String msg, Object data, String command) {
+        CommandResult restResult = new CommandResult();
+        restResult.status = false;
+        restResult.code = code;
+        restResult.msg = msg;
+        restResult.data = data;
+        restResult.command = command;
         return JSON.toJSONString(restResult);
     }
 
@@ -172,12 +159,12 @@ public class CommandResult implements Serializable {
      * @param data
      * @return
      */
-    public static String fail(String msg, Object data){
-        CommandResult restResult=new CommandResult();
-        restResult.status=false;
-        restResult.code="-1";
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=data;
+    public static String fail(String msg, Object data) {
+        CommandResult restResult = new CommandResult();
+        restResult.status = false;
+        restResult.code = "-1";
+        restResult.msg = msg;
+        restResult.data = data;
         return JSON.toJSONString(restResult);
     }
 
@@ -186,12 +173,12 @@ public class CommandResult implements Serializable {
      * @param msg
      * @return
      */
-    public static String fail(String msg){
-        CommandResult restResult=new CommandResult();
-        restResult.status=false;
-        restResult.code="-1";
-        restResult.msg=getLanguageMsg(msg);
-        restResult.data=null;
+    public static String fail(String msg) {
+        CommandResult restResult = new CommandResult();
+        restResult.status = false;
+        restResult.code = "-1";
+        restResult.msg = msg;
+        restResult.data = null;
         return JSON.toJSONString(restResult);
     }
 
@@ -200,37 +187,36 @@ public class CommandResult implements Serializable {
      * @param data
      * @return
      */
-    public static String fail(Object data){
-        CommandResult restResult=new CommandResult();
-        restResult.status=false;
-        restResult.code="-1";
-        restResult.msg=getLanguageMsg("fail");
-        restResult.data=data;
+    public static String fail(Object data) {
+        CommandResult restResult = new CommandResult();
+        restResult.status = false;
+        restResult.code = "-1";
+        restResult.msg = "fail";
+        restResult.data = data;
         return JSON.toJSONString(restResult);
     }
 
-    public static String result(boolean status){
-        if(status){
+    public static String result(boolean status) {
+        if (status) {
             return CommandResult.success("success");
-        }else {
+        } else {
             return CommandResult.fail("fail");
         }
     }
 
-    public static String result(boolean status, String msg){
-        if(status){
+    public static String result(boolean status, String msg) {
+        if (status) {
             return CommandResult.success("success");
-        }else {
-            return CommandResult.fail(getLanguageMsg(msg));
+        } else {
+            return CommandResult.fail(msg);
         }
     }
 
-    public static String result(boolean status, Object data){
-        if(status){
+    public static String result(boolean status, Object data) {
+        if (status) {
             return CommandResult.success(data);
-        }else {
+        } else {
             return CommandResult.fail(data);
         }
     }
-
 }

@@ -1,6 +1,5 @@
 package com.sanxin.cloud.netty.properties;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.common.StaticUtils;
@@ -11,6 +10,7 @@ import com.sanxin.cloud.dto.BTerminalVo;
 import com.sanxin.cloud.entity.BDeviceTerminal;
 import com.sanxin.cloud.entity.OrderMain;
 import com.sanxin.cloud.enums.OrderStatusEnums;
+import com.sanxin.cloud.enums.TerminalStatusEnums;
 import com.sanxin.cloud.exception.LoginOutException;
 import com.sanxin.cloud.netty.config.CommandResult;
 import com.sanxin.cloud.netty.enums.AppCommandEnums;
@@ -25,9 +25,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -49,7 +49,7 @@ public class AppCommandUtils {
      * @param content  机器发送过来的16进制
      * @return
      */
-    public static String command(ChannelHandlerContext ctx, String content) throws InterruptedException {
+    public static String handleCommand(ChannelHandlerContext ctx, String content) throws InterruptedException {
         log.info("App发送的内容"+content);
         //输入字符串 不需要16进制
         String out_str = "";
@@ -115,7 +115,22 @@ public class AppCommandUtils {
                         .eq("del", StaticUtils.STATUS_NO);
                     Integer orderNum = orderMainService.count(wrapper);
                     if (orderNum>0) {
-                        return CommandResult.fail("您还有未完成订单", null, command);
+                        return CommandResult.fail("You have unfinished orders", null, command);
+                    }
+
+                    // 将充电宝信息更新到数据库
+                    List<BTerminalVo> terminalByBoxIdList = RedisUtils.getInstance().getTerminalByBoxId(boxId);
+                    if (CollectionUtils.isEmpty(terminalByBoxIdList)) {
+                        return CommandResult.fail("fail", null, command);
+                    }
+                    // 更新数据
+                    for (BTerminalVo vo : terminalByBoxIdList) {
+                        BDeviceTerminal deviceTerminal = new BDeviceTerminal();
+                        BeanUtils.copyProperties(vo, deviceTerminal);
+                        Boolean result = handleService.handleUpdateTerminal(deviceTerminal);
+                        if (!result) {
+                            return CommandResult.fail("fail", null, command);
+                        }
                     }
 
                     BTerminalVo mostCharge = null;
@@ -162,7 +177,7 @@ public class AppCommandUtils {
                     terminal.setUseCid(cid);
                     boolean result = handleService.handleUpdateTerminal(terminal);
                     if (!result) {
-                        return CommandResult.fail("借用失败", null, command);
+                        return CommandResult.fail("Borrowing failure", null, command);
                     }
                     // TODO 3
                     per = new Random().nextInt(20) + 80;
@@ -171,7 +186,7 @@ public class AppCommandUtils {
                     // 发送借充电宝指令
                     ChannelHandlerContext otherCtx = NettySocketHolder.get(boxId);
                     if (otherCtx == null) {
-                        out_str = CommandResult.fail("借用失败", null, command);
+                        out_str = CommandResult.fail("Borrowing failed, connection exception", null, command);
                     } else {
                         otherCtx.channel().writeAndFlush(CommandUtils.sendCommand(CommandEnums.x65.getCommand(), mostCharge.getSlot())).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                     }

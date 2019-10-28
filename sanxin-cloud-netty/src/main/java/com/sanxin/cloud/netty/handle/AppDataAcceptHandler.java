@@ -48,7 +48,7 @@ public class AppDataAcceptHandler extends SimpleChannelInboundHandler<TextWebSoc
         //获取客户端传输过来的信息
         String content = msg.text();
         System.out.println("接收到的数据：" + content);
-        String out_remark = AppCommandUtils.command(ctx, content);
+        String out_remark = AppCommandUtils.handleCommand(ctx, content);
         if(!StringUtils.isEmpty(out_remark)) {
             ctx.channel().writeAndFlush(new TextWebSocketFrame(out_remark)).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
         }

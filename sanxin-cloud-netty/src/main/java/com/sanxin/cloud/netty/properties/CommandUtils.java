@@ -76,6 +76,8 @@ public class CommandUtils {
                             boxStr.append(hex_arr[16 + i]);
                         }
                         String boxId = HexUtils.hexStr2Str(boxStr.toString()).trim();
+                        // 更新机柜信息
+                        handleService.handleSaveDevice(boxId, 0);
                         log.info("登陆机器码----------【" + boxId + "】----------");
                         //将16进制转字符串
                         out_str = "0008" + enums.getCommand() + "0100" + hex_token + "01";
@@ -157,7 +159,9 @@ public class CommandUtils {
                         System.out.println("借出充电宝的机柜id");
                         Integer status = Integer.parseInt(result, 16);
                         Integer useCid = handleService.queryCidByTerminalId(terminalId);
+                        System.out.println("借用充电宝对应的用户id"+useCid);
                         ChannelHandlerContext otherCtx = AppNettySocketHolder.get(useCid.toString());
+                        System.out.println("借用充电宝获取到的渠道"+otherCtx);
                         if (status == 1) {
                             // 借充电宝成功
                             handleBatteryService.handleLendBattery(boxId, terminalId, slot);

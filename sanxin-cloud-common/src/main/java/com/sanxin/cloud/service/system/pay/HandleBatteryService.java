@@ -67,11 +67,15 @@ public class HandleBatteryService {
         }
         OrderMain orderMain = orderList.get(0);
         // 查询充电宝信息
-        // BDeviceTerminal terminal = bDeviceTerminalService.getTerminalById(terminalId);
-        // // 校验-充电宝不存在或者充电宝状态不是充电中
-        // if (terminal == null || !FunctionUtils.isEquals(terminal.getStatus(), TerminalStatusEnums.CHARGING.getStatus())) {
-        //     throw new ThrowJsonException("data_exception");
-        // }
+        BDeviceTerminal terminal = bDeviceTerminalService.getTerminalById(terminalId);
+        // 校验-充电宝不存在或者充电宝状态不是充电中
+        if (terminal == null || !FunctionUtils.isEquals(terminal.getStatus(), TerminalStatusEnums.CHARGING.getStatus())) {
+            throw new ThrowJsonException("data_exception");
+        }
+        terminal.setSlot("0");
+        terminal.setdCode("");
+        terminal.setStatus(TerminalStatusEnums.LENT.getStatus());
+        bDeviceTerminalService.updateById(terminal);
         // 查询机柜信息
         BDevice device = bDeviceService.getByCode(boxId);
         if (device == null) {
