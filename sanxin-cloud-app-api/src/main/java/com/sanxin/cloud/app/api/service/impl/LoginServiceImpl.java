@@ -13,6 +13,7 @@ import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.http.HttpUtil;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.common.sms.SMSSender;
 import com.sanxin.cloud.common.verification.TripartiteVerificationUtil;
 import com.sanxin.cloud.dto.VerificationVO;
 import com.sanxin.cloud.entity.*;
@@ -168,6 +169,12 @@ public class LoginServiceImpl implements LoginService {
      */
     @Override
     public RestResult bindingPhone(String accessToken, String id, Integer type, String passWord, String phone, String verCode, String areaCode, String picture) {
+        // 校验验证码
+        RestResult result = SMSSender.validSms(phone, verCode);
+        if (!result.status) {
+            return result;
+        }
+        CustomerHomeVo vo = new CustomerHomeVo();
         switch (type) {
             case 1:
                 /*VerificationVO facebook = TripartiteVerificationUtil.verification(accessToken, type);
@@ -200,6 +207,19 @@ public class LoginServiceImpl implements LoginService {
                     if (cusCount > 0 && AccCount > 0) {
                         return RestResult.success("binding_register_success");
                     }
+                    LoginDto googleLoginDto = LoginDto.getInstance();
+                    //加密 封装 存入redis
+                    googleLoginDto.setChannel(LoginChannelEnums.APP.getChannel());
+                    googleLoginDto.setTid(customer.getId());
+                    googleLoginDto.setType(StaticUtils.LOGIN_CUSTOMER);
+                    // 生成token
+                    RestResult googleLoginToken = loginTokenService.getLoginToken(googleLoginDto, LoginChannelEnums.APP);
+                    if (!googleLoginToken.status) {
+                        return googleLoginToken;
+                    }
+                    vo = personalInform(customer.getId());
+                    vo.setToken(googleLoginToken.getData().toString());
+                    return RestResult.success("success", vo);
                 } else {
                     //查询关联的Facebook是否存在
                     CVerification facebookVerification = verificationMapper.selectOne(new QueryWrapper<CVerification>().eq("cid", facebookPhone.getId()));
@@ -221,7 +241,6 @@ public class LoginServiceImpl implements LoginService {
                     }
 
                 }
-                break;
 
             case 2:
                 /*VerificationVO google = TripartiteVerificationUtil.verification(accessToken, type);
@@ -254,6 +273,19 @@ public class LoginServiceImpl implements LoginService {
                     if (cusCount > 0 && AccCount > 0) {
                         return RestResult.success("success");
                     }
+                    LoginDto googleLoginDto = LoginDto.getInstance();
+                    //加密 封装 存入redis
+                    googleLoginDto.setChannel(LoginChannelEnums.APP.getChannel());
+                    googleLoginDto.setTid(customer.getId());
+                    googleLoginDto.setType(StaticUtils.LOGIN_CUSTOMER);
+                    // 生成token
+                    RestResult googleLoginToken = loginTokenService.getLoginToken(googleLoginDto, LoginChannelEnums.APP);
+                    if (!googleLoginToken.status) {
+                        return googleLoginToken;
+                    }
+                    vo = personalInform(customer.getId());
+                    vo.setToken(googleLoginToken.getData().toString());
+                    return RestResult.success("success", vo);
                 } else {
                     //查询关联的Google是否存在
                     CVerification googleVerification = verificationMapper.selectOne(new QueryWrapper<CVerification>().eq("cid", googlePhone.getId()));
@@ -268,7 +300,7 @@ public class LoginServiceImpl implements LoginService {
                         if (googleVerification.getGoogleId() == null) {
                             googleVerification.setGoogleId(google.getId());
                             try {
-                                verificationMapper.update(googleVerification,new QueryWrapper<CVerification>().eq("cid",googleVerification.getCid()));
+                                verificationMapper.update(googleVerification, new QueryWrapper<CVerification>().eq("cid", googleVerification.getCid()));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -278,7 +310,6 @@ public class LoginServiceImpl implements LoginService {
                     }
 
                 }
-                break;
         }
         return RestResult.fail("fail");
     }
@@ -572,8 +603,11 @@ public class LoginServiceImpl implements LoginService {
         if (customer == null) {
             return RestResult.fail("login_not_exist");
         }
-        //TODO 短信验证未写
-
+        // 校验验证码
+        RestResult result = SMSSender.validSms(customer.getPhone(), customer.getVerCode());
+        if (!result.status) {
+            return result;
+        }
         //密码加密
         String pass = PwdEncode.encodePwd(password);
 

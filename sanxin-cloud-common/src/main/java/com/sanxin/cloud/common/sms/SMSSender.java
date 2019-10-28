@@ -6,6 +6,13 @@ import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.MessageAttributeValue;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
+import com.sanxin.cloud.common.radoms.RandNumUtils;
+import com.sanxin.cloud.common.regular.RpxUtils;
+import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.config.redis.RedisUtilsService;
+import com.sanxin.cloud.config.redis.SpringBeanFactoryUtils;
+import com.sanxin.cloud.enums.RandNumType;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -73,10 +80,70 @@ public class SMSSender {
 
     public static void main(String[] args) {
         try {
-            sendSMSDtac("Hello World","66993456432");
+            sendSMSDtac("Hello World", "66993456432");
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public static RestResult sendSms(String phone) {
+        String validCode = RandNumUtils.getInstance().get(RandNumType.NUMBER, 6);
+        //防止重复点击发送验证码
+        String send_flag = "sendflag_sms_" + phone;
+        boolean flag = getRedisUtilsService().setIncrSecond(send_flag, 60);
+        if (!flag) {
+            return RestResult.fail("sms_fail");
+        }
+        try {
+            sendSMSDtac(validCode, phone);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return RestResult.fail("fail");
+        }
+        //保存验证码到缓存
+        String key = "send_sms_" + phone;
+        getRedisUtilsService().setKey(key, validCode, 300);
+        return RestResult.success("");
+    }
+
+
+    /**
+     * 校验验证码
+     * @param phone
+     * @param validcode
+     * @return
+     */
+    public static RestResult validSms(String phone,String validcode){
+        String validphone= RpxUtils.getInstance().valid_phone(phone);
+        if(!StringUtils.isBlank(validphone)) {
+            return RestResult.fail(validphone);
+        }
+        if(StringUtils.isEmpty(validcode)) {
+            return RestResult.fail("sms_empty");
+        }
+        //保存验证码到缓存
+        String key="send_sms_"+phone;
+        String val=getRedisUtilsService().getKey(key);
+        if(StringUtils.isEmpty(val)) {
+            return RestResult.fail("sms_expired");
+        }
+        if(!val.equals(validcode)) {
+            return RestResult.fail("sms_error");
+        }
+        //校验成功后删除
+        getRedisUtilsService().deleteKey(key);
+        return RestResult.success("sms_pass");
+    }
+
+
+    /**
+     * 注入redis
+     *
+     * @return
+     */
+    private static RedisUtilsService getRedisUtilsService() {
+        return SpringBeanFactoryUtils.getApplicationContext().getBean(RedisUtilsService.class);
     }
 
 

@@ -7,21 +7,14 @@ import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.rest.RestResult;
-import com.sanxin.cloud.entity.CAccount;
-import com.sanxin.cloud.entity.CMoneyDetail;
+import com.sanxin.cloud.config.redis.RedisUtils;
+import com.sanxin.cloud.dto.*;
 import com.sanxin.cloud.enums.OrderStatusEnums;
-import com.sanxin.cloud.enums.ParamCodeEnums;
 import com.sanxin.cloud.enums.PayTypeEnums;
-import com.sanxin.cloud.exception.ThrowJsonException;
-import com.sanxin.cloud.service.CAccountService;
 import com.sanxin.cloud.service.InfoParamService;
 import com.sanxin.cloud.service.OrderMainService;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
 import com.sanxin.cloud.config.pages.SPage;
-import com.sanxin.cloud.dto.OrderBusDetailVo;
-import com.sanxin.cloud.dto.OrderBusVo;
-import com.sanxin.cloud.dto.OrderUserDetailVo;
-import com.sanxin.cloud.dto.OrderUserVo;
 import com.sanxin.cloud.entity.OrderMain;
 import com.sanxin.cloud.service.BBusinessService;
 import com.sanxin.cloud.service.system.pay.HandleBatteryService;
@@ -29,17 +22,16 @@ import com.sanxin.cloud.service.system.pay.PayOrderService;
 import com.sanxin.cloud.service.system.pay.scb.SCBPayService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * 订单Controller
+ *
  * @author xiaoky
  * @date 2019-09-21
  */
@@ -65,6 +57,7 @@ public class OrderController {
 
     /**
      * 借充电宝
+     *
      * @param terminalId 充电宝ID
      * @return
      */
@@ -78,23 +71,30 @@ public class OrderController {
 
     /**
      * 借充电宝中间提示
+     *
      * @return
      */
     @RequestMapping(value = OrderMapping.GET_POWER_BANK_PROMPT)
-    public RestResult getPowerBankPrompt() {
+    public RestResult getPowerBankPrompt(String boxId) {
+        List<BTerminalVo> list = RedisUtils.getInstance().getTerminalByBoxId(boxId);
+        String status = "0";
+        if (list.size() > 0) {
+            status = "1";
+        }
         String useHourMoney = infoParamService.getValueByCode("useHourMoney");
-        String rechargeDepositMoney =infoParamService.getValueByCode("rechargeDepositMoney");
-        Map<String, String> map =new HashMap<>();
-        map.put("standard",useHourMoney);
-        map.put("deposit",rechargeDepositMoney);
+        String rechargeDepositMoney = infoParamService.getValueByCode("rechargeDepositMoney");
+        Map<String, String> map = new HashMap<>();
+        map.put("standard", useHourMoney);
+        map.put("deposit", rechargeDepositMoney);
+        map.put("status", status);
         return RestResult.success(map);
     }
 
-
     /**
      * 查询订单列表(加盟商)
+     *
      * @param page
-     * @param key 模糊查询订单编号
+     * @param key  模糊查询订单编号
      * @return
      */
     @RequestMapping(value = OrderMapping.QUERY_BUSINESS_ORDER_LIST)
@@ -112,6 +112,7 @@ public class OrderController {
 
     /**
      * 查询加盟商订单详情(用户)
+     *
      * @param orderCode
      * @return
      */
@@ -125,6 +126,7 @@ public class OrderController {
 
     /**
      * 查询用户订单列表
+     *
      * @param page
      * @param orderStatus 订单状态
      * @return
@@ -142,6 +144,7 @@ public class OrderController {
 
     /**
      * 查询用户订单详情
+     *
      * @param orderCode
      * @return
      */
@@ -156,6 +159,7 @@ public class OrderController {
     /**
      * 查询是否有未支付订单(首页点击借的时候)
      * 失败则弹出提示，成功则需判断data数据
+     *
      * @return
      */
     @RequestMapping(value = OrderMapping.QUERY_NO_COMPLETE_ORDER)
@@ -182,9 +186,10 @@ public class OrderController {
 
     /**
      * 待支付订单支付
-     * @param orderCode 订单编号
-     * @param payType 支付方式见PayTypeEnums
-     * @param payWord 支付密码-余额支付时用到
+     *
+     * @param orderCode  订单编号
+     * @param payType    支付方式见PayTypeEnums
+     * @param payWord    支付密码-余额支付时用到
      * @param payChannel 支付渠道见LoginChannelEnums
      * @return
      */
@@ -196,9 +201,9 @@ public class OrderController {
             return RestResult.fail("pay_type_empty");
         }
         if (FunctionUtils.isEquals(payType, PayTypeEnums.SCB_PAY.getType())) {
-            String scbToken=scbPayService.getToken(token, authcode);
-            if(StringUtils.isEmpty(scbToken)){
-                return  RestResult.fail("1011","Authorization failed, please re authorize","","");
+            String scbToken = scbPayService.getToken(token, authcode);
+            if (StringUtils.isEmpty(scbToken)) {
+                return RestResult.fail("1011", "Authorization failed, please re authorize", "", "");
             }
         }
         RestResult result = payOrderService.handleOrderPay(orderCode, payWord, payType, payChannel);

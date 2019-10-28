@@ -1,11 +1,11 @@
 package com.sanxin.cloud.app.api.service.impl;
 
-import com.alipay.api.domain.Account;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.app.api.service.RegistService;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.common.sms.SMSSender;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
 import com.sanxin.cloud.entity.CAccount;
 import com.sanxin.cloud.entity.CCustomer;
@@ -15,7 +15,6 @@ import com.sanxin.cloud.service.CCustomerService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * 注册Service
@@ -32,18 +31,25 @@ public class RegistServiceImpl implements RegistService {
     @Autowired
     private CAccountMapper accountMapper;
 
+    /**
+     * 发送验证码
+     *
+     * @param phone
+     * @param region
+     * @return
+     */
     @Override
     public RestResult sendVerCode(String phone, String region) {
-        /*CCustomer customer = this.baseMapper.selectOne(new QueryWrapper<CCustomer>().eq("phone", phone));
-        if (customer == null) {
-            throw new ThrowJsonException("用户不存在");
-        }*/
-        return null;
+
+        RestResult result = SMSSender.sendSms(phone);
+        if (!"".equals(result)) {
+            return RestResult.fail("fail");
+        }
+        return RestResult.success("success");
     }
 
     /**
      * 注册
-     *
      * @param customer
      * @return
      * @throws Exception
@@ -56,15 +62,15 @@ public class RegistServiceImpl implements RegistService {
             return RestResult.fail("phone_exist");
         }
         //密码校验格式
-        /*boolean validPwd = FunctionUtils.validLoginPwd(customer.getPassWord());
+        boolean validPwd = FunctionUtils.validLoginPwd(customer.getPassWord());
         if (!validPwd) {
             return RestResult.fail("user_login_pass_error");
-        }*/
-        // 根据手机号获取验证码
-        /*String verCode = redisUtilsService.getKey(Constant.PHONE_VERCODE + customer.getPhone());
-        if (!customer.getVerCode().equals(verCode)) {
-            throw new ThrowJsonException("验证码不匹配");
-        }*/
+        }
+        // 校验验证码
+        RestResult result = SMSSender.validSms((customer.getAreaCode() + customer.getPhone()), customer.getVerCode());
+        if (!result.status) {
+            return result;
+        }
         //加密密码
         String pass = PwdEncode.encodePwd(customer.getPassWord());
         customer.setPassWord(pass);

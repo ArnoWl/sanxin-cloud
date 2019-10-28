@@ -29,6 +29,20 @@ public class SnsUtils {
     private static String AWS_ACCESS_KEYID;
     private static String AWS_SECRET_KEY;
 
+    public static SnsUtils snsUtils = null;
+
+
+    public static SnsUtils getInstance() {
+        if (snsUtils == null) {
+            synchronized (SnsUtils.class) {
+                if (snsUtils == null) {
+                    snsUtils = new SnsUtils();
+                }
+            }
+        }
+        return snsUtils;
+    }
+
 
     @Value("${sns.AWS_ACCESS_KEYID}")
     public void setKeyId(String keyid) {
