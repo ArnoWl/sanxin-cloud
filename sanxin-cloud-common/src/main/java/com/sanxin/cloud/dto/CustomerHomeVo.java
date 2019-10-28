@@ -14,4 +14,5 @@ public class CustomerHomeVo {
     private String headUrl;
     private String nickName;
     private Integer number;
+    private String areaCode;
 }

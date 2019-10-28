@@ -87,7 +87,7 @@ public class SMSSender {
     }
 
 
-    public static RestResult sendSms(String phone) {
+    public static RestResult sendSms(String phone, String areaCode) {
         String validCode = RandNumUtils.getInstance().get(RandNumType.NUMBER, 6);
         //防止重复点击发送验证码
         String send_flag = "sendflag_sms_" + phone;
@@ -95,6 +95,7 @@ public class SMSSender {
         if (!flag) {
             return RestResult.fail("sms_fail");
         }
+        phone = areaCode + phone;
         try {
             sendSMSDtac(validCode, phone);
         } catch (IOException e) {
@@ -110,25 +111,26 @@ public class SMSSender {
 
     /**
      * 校验验证码
+     *
      * @param phone
      * @param validcode
      * @return
      */
-    public static RestResult validSms(String phone,String validcode){
-        String validphone= RpxUtils.getInstance().valid_phone(phone);
-        if(!StringUtils.isBlank(validphone)) {
+    public static RestResult validSms(String phone, String validcode) {
+        String validphone = RpxUtils.getInstance().valid_phone(phone);
+        if (!StringUtils.isBlank(validphone)) {
             return RestResult.fail(validphone);
         }
-        if(StringUtils.isEmpty(validcode)) {
+        if (StringUtils.isEmpty(validcode)) {
             return RestResult.fail("sms_empty");
         }
         //保存验证码到缓存
-        String key="send_sms_"+phone;
-        String val=getRedisUtilsService().getKey(key);
-        if(StringUtils.isEmpty(val)) {
+        String key = "send_sms_" + phone;
+        String val = getRedisUtilsService().getKey(key);
+        if (StringUtils.isEmpty(val)) {
             return RestResult.fail("sms_expired");
         }
-        if(!val.equals(validcode)) {
+        if (!val.equals(validcode)) {
             return RestResult.fail("sms_error");
         }
         //校验成功后删除

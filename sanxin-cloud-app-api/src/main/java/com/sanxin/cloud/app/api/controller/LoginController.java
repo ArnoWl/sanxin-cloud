@@ -35,13 +35,13 @@ public class LoginController {
      * 发送手机验证码
      *
      * @param phone
-     * @param region 1、注册。2、修改密码
+     * @param areaCode 1、注册。2、修改密码
      * @return
      * @throws Exception
      */
     @RequestMapping(value = MappingUtils.SEND_REGISTER_CODE)
-    public RestResult sendVerCode(String phone, String region) throws Exception {
-        return registService.sendVerCode(phone, region);
+    public RestResult sendVerCode(String phone, String areaCode) throws Exception {
+        return registService.sendVerCode(phone, areaCode);
     }
 
     /**

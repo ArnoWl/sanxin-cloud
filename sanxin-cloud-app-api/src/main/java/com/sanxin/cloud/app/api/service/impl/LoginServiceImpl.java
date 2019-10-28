@@ -472,6 +472,7 @@ public class LoginServiceImpl implements LoginService {
         homeVo.setHeadUrl(customer.getHeadUrl());
         homeVo.setNickName(customer.getNickName());
         homeVo.setNumber(number);
+        homeVo.setAreaCode(customer.getAreaCode());
         return homeVo;
     }
 

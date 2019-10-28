@@ -14,7 +14,7 @@ public interface RegistService {
      * @param phone
      * @return
      */
-    RestResult sendVerCode(String phone, String region);
+    RestResult sendVerCode(String phone, String areaCode);
 
 
     /**

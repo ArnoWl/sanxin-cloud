@@ -39,9 +39,8 @@ public class RegistServiceImpl implements RegistService {
      * @return
      */
     @Override
-    public RestResult sendVerCode(String phone, String region) {
-
-        RestResult result = SMSSender.sendSms(phone);
+    public RestResult sendVerCode(String phone, String areaCode) {
+        RestResult result = SMSSender.sendSms(phone,areaCode);
         if (!"".equals(result)) {
             return RestResult.fail("fail");
         }
@@ -100,6 +99,9 @@ public class RegistServiceImpl implements RegistService {
         }
         if (StringUtils.isEmpty(customer.getVerCode())) {
             throw new ThrowJsonException("verifycode_not_exist");
+        }
+        if (StringUtils.isEmpty(customer.getAreaCode())) {
+            throw new ThrowJsonException("areaCode_not_exist");
         }
     }
 }
