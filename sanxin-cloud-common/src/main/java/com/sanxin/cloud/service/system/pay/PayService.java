@@ -10,14 +10,9 @@ import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.common.times.DateUtil;
 import com.sanxin.cloud.entity.*;
-import com.sanxin.cloud.enums.HandleTypeEnums;
-import com.sanxin.cloud.enums.OrderStatusEnums;
-import com.sanxin.cloud.enums.PayTypeEnums;
-import com.sanxin.cloud.enums.ServiceEnums;
+import com.sanxin.cloud.enums.*;
 import com.sanxin.cloud.exception.ThrowJsonException;
-import com.sanxin.cloud.service.CAccountService;
-import com.sanxin.cloud.service.CPayLogService;
-import com.sanxin.cloud.service.OrderMainService;
+import com.sanxin.cloud.service.*;
 import com.sanxin.cloud.service.system.pay.scb.SCBPayService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +40,10 @@ public class PayService {
     private OrderMainService orderMainService;
     @Autowired
     private SCBPayService scbPayService;
-
+    @Autowired
+    private BDeviceTerminalService deviceTerminalService;
+    @Autowired
+    private InfoParamService infoParamService;
     /**
      * 处理支付签名
      * @param log 支付记录数据
@@ -63,7 +61,7 @@ public class PayService {
                 log.setTransCode(transactionId);
                 log.setUserId(userRefId);
                 cPayLogService.updateById(log);
-                return RestResult.success("SUCCESS",obj);
+                return RestResult.success("SUCCESS",obj, log.getPayCode());
             case MONEY:
                 //余额支付
                 Integer handleType = log.getHandleType();
@@ -129,6 +127,57 @@ public class PayService {
             case BUY_TIEM_GIFT:
                 msg = handleAccountChangeService.insertCHourDetail(new CHourDetail(cPayLog.getCid(), HandleTypeEnums.BUY_TIEM_GIFT.getId(),
                         StaticUtils.PAY_IN, cPayLog.getPayCode(), cPayLog.getPayMoney().intValue(), HandleTypeEnums.getName(HandleTypeEnums.BUY_TIEM_GIFT.getId())));
+                if (StringUtils.isNotEmpty(msg)) {
+                    throw new ThrowJsonException(msg);
+                }
+                break;
+            case BUY_POWER:
+                Integer hour = Integer.parseInt(cPayLog.getParams());
+                QueryWrapper<OrderMain> orderWrapper = new QueryWrapper<>();
+                OrderMain orderMain = orderMainService.getOne(orderWrapper.eq("pay_code", cPayLog.getPayCode()));
+                if (orderMain == null) {
+                    throw new ThrowJsonException(LanguageUtils.getMessage("order_data_exception"));
+                }
+                account = cAccountService.getByCid(orderMain.getCid());
+                if (account == null) {
+                    throw new ThrowJsonException(LanguageUtils.getMessage("account_data_exception"));
+                }
+                account.setRechargeDeposit(StaticUtils.STATUS_NO);
+                boolean updateB = cAccountService.updateById(account);
+                if (!updateB) {
+                    throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
+                }
+                String valueStr = infoParamService.getValueByCode(ParamCodeEnums.USE_HOUR_MONEY.getCode());
+                // 一小时多少钱
+                BigDecimal value = FunctionUtils.getValueByClass(BigDecimal.class, valueStr);
+                // 租金总额
+                BigDecimal rentMoney = FunctionUtils.mul(value, new BigDecimal(hour), 2);
+                // 操作订单数据
+                orderMain.setPayType(PayTypeEnums.MONEY.getId());
+                orderMain.setOverTime(DateUtil.currentDate());
+                orderMain.setOrderStatus(OrderStatusEnums.OVER.getId());
+                orderMain.setPayMoney(cPayLog.getPayMoney());
+                orderMain.setRealMoney(cPayLog.getPayMoney());
+                orderMain.setRentMoney(rentMoney);
+                orderMain.setBuy(StaticUtils.STATUS_YES);
+                orderMain.setTerminalMoney(account.getDeposit());
+                orderMain.setDepositMoney(account.getDeposit());
+                orderMain.setTransCode(cPayLog.getTransCode());
+                updateB = orderMainService.updateById(orderMain);
+                if (!updateB) {
+                    throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
+                }
+                // 修改充电宝信息
+                BDeviceTerminal terminal = deviceTerminalService.getTerminalById(orderMain.getTerminalId());
+                terminal.setStatus(TerminalStatusEnums.SOLD.getStatus());
+                terminal.setBuyCid(orderMain.getCid());
+                updateB = deviceTerminalService.updateById(terminal);
+                if (!updateB) {
+                    throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
+                }
+                // 扣除时长
+                msg = handleAccountChangeService.insertCHourDetail(new CHourDetail(orderMain.getCid(), HandleTypeEnums.ORDER.getId(),
+                        StaticUtils.PAY_OUT, orderMain.getPayCode(), hour, HandleTypeEnums.getName(HandleTypeEnums.ORDER.getId())));
                 if (StringUtils.isNotEmpty(msg)) {
                     throw new ThrowJsonException(msg);
                 }

@@ -36,9 +36,6 @@ public class AccountMapping {
     /**提交购买时长*/
     public static final String PAY_TIME_GIFT="/payTimeGift";
 
-    /**提交购买充电宝*/
-    public static final String PAY_BUY_POWER_BANK="/payBuyPowerBank";
-
     /** 借充电宝扫码时判断是否交了押金*/
     public static final String VALID_RECHARGE_DEPOSIT = "/validRechargeDeposit";
 

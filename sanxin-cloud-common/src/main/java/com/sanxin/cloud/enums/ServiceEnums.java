@@ -9,10 +9,15 @@ import com.sanxin.cloud.common.language.LanguageUtils;
  * @date 2019-09-12
  */
 public enum ServiceEnums {
+    /**
+     * 扣除时长
+     */
     ORDER(1,"service_order"),
     RECHARGE_DEPOSIT_MONEY(2,"service_recharge_deposit"),
     CASH(3, "handle_type_cash"),
-    BUY_TIEM_GIFT(4, "buy_type_time");
+    TIME(4, "handle_type_time"),
+    BUY_TIEM_GIFT(5, "buy_type_time"),
+    BUY_POWER(6, "handle_type_buy_power");
 
     private int id;
     private String name;

@@ -29,4 +29,11 @@ public interface OrderMainService extends IService<OrderMain> {
      * @return
      */
     IPage<OrderMain> queryOrderList(SPage<OrderMain> page, OrderMain orderMain);
+
+    /**
+     * 通过支付编号查询订单
+     * @param payCode
+     * @return
+     */
+    OrderMain getByPayCode(String payCode);
 }

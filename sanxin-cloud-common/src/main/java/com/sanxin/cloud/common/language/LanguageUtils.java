@@ -120,7 +120,11 @@ public class LanguageUtils {
      * @return
      */
     public static String getLanguage() {
-        String languageToken = getInstance().getRequest().getHeader("languageToken");
+        String languageToken = null;
+        try {
+            languageToken = getInstance().getRequest().getHeader("languageToken");
+        } catch (Exception e) {
+        }
         if (StringUtils.isEmpty(languageToken)) {
             languageToken = LanguageEnums.CN.name();
         }

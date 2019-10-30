@@ -76,16 +76,6 @@ public interface AccountService {
     RestResult payTimeGift(Integer cid, Integer giftId,Integer payType,String payWord);
 
     /**
-     * 购买充电宝
-     * @param cid
-     * @param payType
-     * @param payWord
-     * @return
-     */
-    RestResult payBuyPowerBank(Integer cid, Integer payType, String payWord);
-
-
-    /**
      * 充值押金处理
      * @param cid
      * @param payWord    支付密码-选择余额支付需要

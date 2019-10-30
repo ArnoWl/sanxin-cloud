@@ -22,4 +22,10 @@ public class OrderMapping {
     public static final String QUERY_NO_COMPLETE_ORDER = "/queryNoCompleteOrder";
     /** 待支付订单支付*/
     public static final String HANDLE_ORDER_PAY = "/handleOrderPay";
+    /** 购买充电宝——时长支付*/
+    public static final String VALID_HOUR_BUY_POWER = "/validHourBuyPower";
+    /** 购买充电宝——其它支付*/
+    public static final String HANDLE_PAY_BUY_POWER="/handlePayBuyPower";
+    /** 通过支付编号查询购买充电宝信息*/
+    public static final String QUERY_BUY_POWER_MSG="/queryBuyPowerMsg";
 }

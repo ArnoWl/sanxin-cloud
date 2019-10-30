@@ -2,6 +2,7 @@ package com.sanxin.cloud.netty.properties;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.redis.RedisUtils;
@@ -16,6 +17,7 @@ import com.sanxin.cloud.netty.config.CommandResult;
 import com.sanxin.cloud.netty.enums.AppCommandEnums;
 import com.sanxin.cloud.netty.enums.CommandEnums;
 import com.sanxin.cloud.netty.service.HandleService;
+import com.sanxin.cloud.service.InfoParamService;
 import com.sanxin.cloud.service.OrderMainService;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
 import io.netty.channel.ChannelFutureListener;
@@ -43,6 +45,7 @@ public class AppCommandUtils {
     private static LoginTokenService loginTokenService = SpringBeanFactoryUtils.getApplicationContext().getBean(LoginTokenService.class);
     private static HandleService handleService = SpringBeanFactoryUtils.getApplicationContext().getBean(HandleService.class);
     private static OrderMainService orderMainService = SpringBeanFactoryUtils.getApplicationContext().getBean(OrderMainService.class);
+    private static InfoParamService infoParamService = SpringBeanFactoryUtils.getApplicationContext().getBean(InfoParamService.class);
 
     /**
      * 接收到机器的指令
@@ -121,7 +124,7 @@ public class AppCommandUtils {
                     // 将充电宝信息更新到数据库
                     List<BTerminalVo> terminalByBoxIdList = RedisUtils.getInstance().getTerminalByBoxId(boxId);
                     if (CollectionUtils.isEmpty(terminalByBoxIdList)) {
-                        return CommandResult.fail("fail", null, command);
+                        return CommandResult.fail("No power bank available", null, command);
                     }
                     // 更新数据
                     for (BTerminalVo vo : terminalByBoxIdList) {
@@ -133,6 +136,12 @@ public class AppCommandUtils {
                         }
                     }
 
+                    // 电量符合要求的充电宝
+                    Integer mayLendLevel = 4;
+                    try {
+                        mayLendLevel = FunctionUtils.getValueByClass(Integer.class, infoParamService.getValueByCode("mayLendLevel"));
+                    } catch (Exception e) {
+                    }
                     BTerminalVo mostCharge = null;
                     Integer index = 0;
                     while (mostCharge == null) {
@@ -142,10 +151,15 @@ public class AppCommandUtils {
                             log.info("Redis里面取到的充电宝信息"+mostCharge);
                         } catch (Exception e) {
                             // 机柜库存没有可借用的充电宝了
-                            return CommandResult.fail("fail", null, command);
+                            return CommandResult.fail("No power bank available", null, command);
                         }
                         if (mostCharge == null) {
-                            return CommandResult.fail("fail", null, command);
+                            return CommandResult.fail("No power bank available", null, command);
+                        }
+                        if (mostCharge.getLevel() < mayLendLevel) {
+                            mostCharge = null;
+                            index ++;
+                            continue;
                         }
                         log.info("获取到的充电宝"+mostCharge.getTerminalId()+"槽位"+mostCharge.getSlot());
                         // 查询该充电宝是否被使用(是否有人已创建过订单)

@@ -1,5 +1,6 @@
 package com.sanxin.cloud.app.api.service;
 
+import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.OrderBusDetailVo;
 import com.sanxin.cloud.dto.OrderBusVo;
@@ -51,5 +52,23 @@ public interface OrderService {
      */
     OrderUserDetailVo getUserOrderDetail(Integer cid, String orderCode);
 
+    /**
+     * 购买充电宝
+     *
+     * @param cid
+     * @param payCode
+     * @param payType
+     * @param payWord
+     * @param payChannel
+     * @return
+     */
+    RestResult handlePayBuyPower(Integer cid, String payCode, Integer payType, String payWord, Integer payChannel);
 
+    /**
+     * 校验购买充电宝是否需要余额或其它支付
+     * @param cid
+     * @param orderCode
+     * @return
+     */
+    RestResult handleValidHourBuyPower(Integer cid, String orderCode, Integer payChannel);
 }

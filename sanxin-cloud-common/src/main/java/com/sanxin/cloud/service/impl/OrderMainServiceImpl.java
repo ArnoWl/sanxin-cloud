@@ -67,4 +67,15 @@ public class OrderMainServiceImpl extends ServiceImpl<OrderMainMapper, OrderMain
         }
         return page;
     }
+
+    @Override
+    public OrderMain getByPayCode(String payCode) {
+        QueryWrapper<OrderMain> wrapper = new QueryWrapper<>();
+        wrapper.eq("pay_code", payCode).eq("del", StaticUtils.STATUS_NO);
+        OrderMain orderMain = super.getOne(wrapper);
+        if (orderMain == null) {
+            throw new ThrowJsonException(LanguageUtils.getMessage("data_empty"));
+        }
+        return orderMain;
+    }
 }

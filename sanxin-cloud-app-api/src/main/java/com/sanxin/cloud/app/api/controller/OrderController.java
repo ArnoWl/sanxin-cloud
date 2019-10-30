@@ -1,6 +1,7 @@
 package com.sanxin.cloud.app.api.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.app.api.common.AccountMapping;
 import com.sanxin.cloud.app.api.common.OrderMapping;
 import com.sanxin.cloud.app.api.service.OrderService;
 import com.sanxin.cloud.common.BaseUtil;
@@ -210,10 +211,55 @@ public class OrderController {
         return result;
     }
 
-    @RequestMapping("/test")
-    public RestResult test() {
-        // RestResult result = handleBatteryService.handleLendBattery(2, "RL1H081905680019", "RL1H96005635", "03", 1);
-        RestResult result = handleBatteryService.handleReturnBattery("RL1H081905680019", "03", "RL1H96005635");
-        return result;
+    /**
+     * 支付购买充电宝
+     * @param payType
+     * @param payChannel
+     * @param payWord
+     * @param authcode
+     * @return
+     */
+    @RequestMapping(value = OrderMapping.HANDLE_PAY_BUY_POWER)
+    public RestResult handlePayBuyPower(String payCode, Integer payType, String payWord, String authcode, Integer payChannel) {
+        String token = BaseUtil.getUserToken();
+        // 判断参数值
+        if (payType == null) {
+            return RestResult.fail("pay_type_empty");
+        }
+        if (FunctionUtils.isEquals(payType, PayTypeEnums.SCB_PAY.getType())) {
+            String scbToken = scbPayService.getToken(token, authcode);
+            if (StringUtils.isEmpty(scbToken)) {
+                return RestResult.fail("1011", "Authorization failed, please re authorize", "", "");
+            }
+        }
+        Integer cid = loginTokenService.validLoginCid(token);
+        return orderService.handlePayBuyPower(cid, payCode, payType, payWord, payChannel);
+    }
+
+    /**
+     * 校验购买充电宝是否需要余额或其它支付
+     * @param orderCode
+     * @return
+     */
+    @RequestMapping(value = OrderMapping.VALID_HOUR_BUY_POWER)
+    public RestResult validHourBuyPower(String orderCode, Integer payChannel) {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginCid(token);
+        return orderService.handleValidHourBuyPower(cid, orderCode, payChannel);
+    }
+
+    /**
+     * 通过支付编号查询购买充电宝信息
+     * @param payCode
+     * @return
+     */
+    @RequestMapping(value = OrderMapping.QUERY_BUY_POWER_MSG)
+    public RestResult queryBuyPowerMsg(String payCode) {
+        OrderMain order = orderMainService.getByPayCode(payCode);
+        Map<String, Object> map = new HashMap<>();
+        map.put("terminalMoney", order.getTerminalMoney());
+        map.put("depositMoney", order.getDepositMoney());
+        map.put("terminalId", order.getTerminalId());
+        return RestResult.success("success", map);
     }
 }

@@ -155,30 +155,6 @@ public class AccountController {
     }
 
     /**
-     * 支付购买充电宝
-     *
-     * @param payType 支付类型1余额
-     * @param payWord 支付密码
-     * @return
-     */
-    @RequestMapping(value = AccountMapping.PAY_BUY_POWER_BANK)
-    public RestResult payBuyPowerBank(Integer payType, String payWord, String authcode) {
-        String token = BaseUtil.getUserToken();
-        // 判断参数值
-        if (payType == null) {
-            return RestResult.fail("pay_type_empty");
-        }
-        if (FunctionUtils.isEquals(payType, PayTypeEnums.SCB_PAY.getType())) {
-            String scbToken = scbPayService.getToken(token, authcode);
-            if (StringUtils.isEmpty(scbToken)) {
-                return RestResult.fail("1011", "Authorization failed, please re authorize", "", "");
-            }
-        }
-        Integer cid = loginTokenService.validLoginCid(token);
-        return accountService.payBuyPowerBank(cid, payType, payWord);
-    }
-
-    /**
      * 借充电宝扫码时判断是否交了押金
      *
      * @return
