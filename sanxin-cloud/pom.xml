@@ -35,7 +35,7 @@
         <velocity.version>2.0</velocity.version>
         <freemarker.version>2.3.28</freemarker.version>
         <ali.fastjson.varsion>1.2.47</ali.fastjson.varsion>
-        <netty.version>4.1.29.Final</netty.version>
+        <netty.version>4.1.42.Final</netty.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <dom4j.version>1.6.1</dom4j.version>
         <alipay.version>3.7.110.ALL</alipay.version>
