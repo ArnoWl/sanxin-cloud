@@ -35,7 +35,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public RestResult queryAdvertList(SPage<AAdvertFind> page) {
         AAdvertContentVO contentVO = new AAdvertContentVO();
-        List<AAdvertFind> transverse = advertFindService.list(new QueryWrapper<AAdvertFind>().eq("type", 0).orderByAsc("sort"));
+        List<AAdvertFind> transverse = advertFindService.list(new QueryWrapper<AAdvertFind>().eq("type", 0).eq("status", 1).orderByAsc("sort"));
         QueryWrapper<AAdvertFind> wrapper = new QueryWrapper<>();
         contentVO.setTransverse(transverse);
         // 设置排序

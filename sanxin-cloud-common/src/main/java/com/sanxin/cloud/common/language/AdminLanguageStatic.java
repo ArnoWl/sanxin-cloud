@@ -23,6 +23,9 @@ public class AdminLanguageStatic {
     public static final String ADVERT_FRAME_IMG = "advert.frameImg";
     public static final String ADVERT_IMG = "advert.img";
     public static final String ADVERT_SORT = "advert.sort";
+    public static final String ADVERT_STATUS = "advert.status";
+    public static final String ADVERT_TYPE = "advert.type";
+    public static final String ADVERT_EVENT = "advert.event";
     /*************代理*******/
     public static final String AGENT_PASSWORD = "agent.password";
     /*************提现*******/

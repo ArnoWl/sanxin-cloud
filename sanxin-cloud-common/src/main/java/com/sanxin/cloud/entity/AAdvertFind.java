@@ -1,5 +1,6 @@
 package com.sanxin.cloud.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
@@ -43,6 +44,11 @@ public class AAdvertFind implements Serializable {
     private Integer type;
 
     /**
+     * 事件类型
+     */
+    private Integer event;
+
+    /**
      * 是否有效(0 无效 1有效)
      */
     private Integer status;
@@ -60,6 +66,7 @@ public class AAdvertFind implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+
     public String getUrl() {
         return url;
     }
@@ -67,6 +74,7 @@ public class AAdvertFind implements Serializable {
     public void setUrl(String url) {
         this.url = url;
     }
+
     public String getImg() {
         return img;
     }
@@ -74,6 +82,7 @@ public class AAdvertFind implements Serializable {
     public void setImg(String img) {
         this.img = img;
     }
+
     public Integer getSort() {
         return sort;
     }
@@ -81,6 +90,7 @@ public class AAdvertFind implements Serializable {
     public void setSort(Integer sort) {
         this.sort = sort;
     }
+
     public Integer getType() {
         return type;
     }
@@ -88,6 +98,15 @@ public class AAdvertFind implements Serializable {
     public void setType(Integer type) {
         this.type = type;
     }
+
+    public Integer getEvent() {
+        return event;
+    }
+
+    public void setEvent(Integer event) {
+        this.event = event;
+    }
+
     public Integer getStatus() {
         return status;
     }
@@ -95,6 +114,7 @@ public class AAdvertFind implements Serializable {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -106,13 +126,14 @@ public class AAdvertFind implements Serializable {
     @Override
     public String toString() {
         return "AAdvertFind{" +
-        "id=" + id +
-        ", url=" + url +
-        ", img=" + img +
-        ", sort=" + sort +
-        ", type=" + type +
-        ", status=" + status +
-        ", createTime=" + createTime +
-        "}";
+                "id=" + id +
+                ", url='" + url + '\'' +
+                ", img='" + img + '\'' +
+                ", sort=" + sort +
+                ", type=" + type +
+                ", event=" + event +
+                ", status=" + status +
+                ", createTime=" + createTime +
+                '}';
     }
 }

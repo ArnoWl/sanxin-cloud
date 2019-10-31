@@ -1,9 +1,12 @@
 package com.sanxin.cloud.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.AAdvertFind;
 import com.sanxin.cloud.mapper.AAdvertFindMapper;
 import com.sanxin.cloud.service.AAdvertFindService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,5 +19,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AAdvertFindServiceImpl extends ServiceImpl<AAdvertFindMapper, AAdvertFind> implements AAdvertFindService {
+    @Autowired
+    private AAdvertFindMapper advertFindMapper;
 
+    @Override
+    public void queryAdvertFindList(SPage<AAdvertFind> page) {
+        super.page(page);
+    }
 }
