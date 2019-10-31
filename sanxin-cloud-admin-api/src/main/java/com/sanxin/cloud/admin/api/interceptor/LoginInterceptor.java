@@ -98,6 +98,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 strs.add("/customer/timeDetails");
                 strs.add("/order/list");
                 strs.add("/order/detail");
+                strs.add("/address/addressList");
+                strs.add("/advert/queryAdvertFindList");
+                strs.add("/advert/getAdvertFindDetail");
                 System.out.println("returnUrl：："+returnUrl);
                 boolean bool = strs.contains(returnUrl);
                 if(!bool) {

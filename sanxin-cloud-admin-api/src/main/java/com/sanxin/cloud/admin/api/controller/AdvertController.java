@@ -111,6 +111,7 @@ public class AdvertController {
         if (StringUtils.isNotBlank(advertContent.getEvent())) {
             wrapper.like("event", advertContent.getEvent());
         }
+        wrapper.orderByDesc("create_time");
         advertContentService.queryAdvertContentList(page, wrapper);
         return RestResult.success("", page);
     }

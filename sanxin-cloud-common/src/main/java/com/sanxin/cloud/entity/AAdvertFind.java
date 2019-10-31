@@ -46,7 +46,7 @@ public class AAdvertFind implements Serializable {
     /**
      * 事件类型
      */
-    private Integer event;
+    private String event;
 
     /**
      * 是否有效(0 无效 1有效)
@@ -99,11 +99,11 @@ public class AAdvertFind implements Serializable {
         this.type = type;
     }
 
-    public Integer getEvent() {
+    public String getEvent() {
         return event;
     }
 
-    public void setEvent(Integer event) {
+    public void setEvent(String event) {
         this.event = event;
     }
 
