@@ -6,6 +6,7 @@ import com.sanxin.cloud.config.redis.RedisUtils;
 import com.sanxin.cloud.config.redis.SpringBeanFactoryUtils;
 import com.sanxin.cloud.dto.BTerminalVo;
 import com.sanxin.cloud.enums.RandNumType;
+import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.netty.config.CommandResult;
 import com.sanxin.cloud.netty.enums.AppCommandEnums;
 import com.sanxin.cloud.netty.enums.CommandEnums;
@@ -161,10 +162,16 @@ public class CommandUtils {
                         Integer useCid = handleService.queryCidByTerminalId(terminalId);
                         System.out.println("借用充电宝对应的用户id"+useCid);
                         ChannelHandlerContext otherCtx = AppNettySocketHolder.get(useCid.toString());
-                        System.out.println("借用充电宝获取到的渠道"+otherCtx);
+                        System.out.println("借用充电宝获取到的用户WebSocket渠道"+otherCtx);
                         if (status == 1) {
                             // 借充电宝成功
-                            handleBatteryService.handleLendBattery(boxId, terminalId, slot);
+                            try {
+                                handleBatteryService.handleLendBattery(boxId, terminalId, slot);
+                            } catch (ThrowJsonException e) {
+                                if (otherCtx != null) {
+                                    otherCtx.channel().writeAndFlush(new TextWebSocketFrame(CommandResult.success(e.getMessage(), null, AppCommandEnums.x10002.getCommand()))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+                                }
+                            }
                             log.info("借充电宝发送响应cid" + useCid);
                             Integer per = 100;
                             if (otherCtx != null) {
@@ -187,8 +194,14 @@ public class CommandUtils {
                         // 查找该充电宝对应的订单，操作订单
                         // String status = handleService.handleReturnTerminal(slot, terminalId, ctx);
                         // System.out.println("归还充电宝  充电宝状态"+status);
-                        RestResult returnResult = handleBatteryService.handleReturnBattery(boxId, slot, terminalId);
-                        out_str = "0009" + enums.getCommand() + "0100" + hex_token + slot + returnResult.getData();
+                        String resultToBox = "00";
+                        RestResult returnResult = null;
+                        try {
+                            returnResult = handleBatteryService.handleReturnBattery(boxId, slot, terminalId);
+                            resultToBox = returnResult.getData().toString();
+                        } catch (Exception e) {
+                        }
+                        out_str = "0009" + enums.getCommand() + "0100" + hex_token + slot + resultToBox;
                         out_str = HexUtils.hexStr2Str(out_str);
                         // 给app发送指令
                         useCid = handleService.queryCidByTerminalId(terminalId);

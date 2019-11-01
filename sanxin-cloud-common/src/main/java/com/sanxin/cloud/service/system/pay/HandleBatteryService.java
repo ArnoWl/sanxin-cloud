@@ -63,31 +63,27 @@ public class HandleBatteryService {
         wrapper.orderByDesc("create_time");
         List<OrderMain> orderList = orderMainService.list(wrapper);
         if (orderList == null || orderList.size() <= 0) {
-            return RestResult.fail("fail");
+            throw new ThrowJsonException("fail");
         }
         OrderMain orderMain = orderList.get(0);
         // 查询充电宝信息
         BDeviceTerminal terminal = bDeviceTerminalService.getTerminalById(terminalId);
         // 校验-充电宝不存在或者充电宝状态不是充电中
         if (terminal == null || !FunctionUtils.isEquals(terminal.getStatus(), TerminalStatusEnums.CHARGING.getStatus())) {
-            throw new ThrowJsonException("data_exception");
+            throw new ThrowJsonException("Data Exception");
         }
-        terminal.setSlot("0");
-        terminal.setdCode("");
-        terminal.setStatus(TerminalStatusEnums.LENT.getStatus());
-        bDeviceTerminalService.updateById(terminal);
         // 查询机柜信息
         BDevice device = bDeviceService.getByCode(boxId);
         if (device == null) {
-            throw new ThrowJsonException("data_exception");
+            throw new ThrowJsonException("Data Exception");
         }
-        // // 借出-更新充电宝信息
-        // boolean result = handleLendTerminalMsg(terminal);
-        // if (!result) {
-        //     throw new ThrowJsonException(LanguageUtils.getMessage("fail"));
-        // }
+        // 借出-更新充电宝信息
+        boolean result = handleLendTerminalMsg(terminal);
+        if (!result) {
+            throw new ThrowJsonException(LanguageUtils.getMessage("fail"));
+        }
         // 借出-更新机柜信息
-        Boolean result = handleLendDeviceMsg(device);
+        result = handleLendDeviceMsg(device);
         if (!result) {
             throw new ThrowJsonException(LanguageUtils.getMessage("fail"));
         }

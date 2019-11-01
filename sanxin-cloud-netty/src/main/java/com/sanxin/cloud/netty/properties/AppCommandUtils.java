@@ -130,6 +130,8 @@ public class AppCommandUtils {
                     for (BTerminalVo vo : terminalByBoxIdList) {
                         BDeviceTerminal deviceTerminal = new BDeviceTerminal();
                         BeanUtils.copyProperties(vo, deviceTerminal);
+                        deviceTerminal.setdCode(boxId);
+                        deviceTerminal.setStatus(TerminalStatusEnums.CHARGING.getStatus());
                         Boolean result = handleService.handleUpdateTerminal(deviceTerminal);
                         if (!result) {
                             return CommandResult.fail("fail", null, command);
@@ -148,7 +150,6 @@ public class AppCommandUtils {
                         // 获取电量最多的充电宝
                         try {
                             mostCharge = RedisUtils.getInstance().getMostCharge(boxId, index);
-                            log.info("Redis里面取到的充电宝信息"+mostCharge);
                         } catch (Exception e) {
                             // 机柜库存没有可借用的充电宝了
                             return CommandResult.fail("No power bank available", null, command);
@@ -161,13 +162,10 @@ public class AppCommandUtils {
                             index ++;
                             continue;
                         }
-                        log.info("获取到的充电宝"+mostCharge.getTerminalId()+"槽位"+mostCharge.getSlot());
                         // 查询该充电宝是否被使用(是否有人已创建过订单)
                         List<OrderMain> orderList = handleService.queryUseOrderByTerminal(mostCharge.getTerminalId());
-                        System.out.println("订单信息"+orderList.toString());
                         // 充电宝被使用中
                         if (orderList != null && orderList.size()>0) {
-                            log.info("充电宝被使用中");
                             mostCharge = null;
                             index ++;
                         }
@@ -199,18 +197,13 @@ public class AppCommandUtils {
                     log.info("APP_发送借充电宝指令");
                     // 发送借充电宝指令
                     ChannelHandlerContext otherCtx = NettySocketHolder.get(boxId);
+                    log.info("借充电宝渠道"+otherCtx);
+                    log.info("当前用户渠道"+ctx);
                     if (otherCtx == null) {
                         out_str = CommandResult.fail("Borrowing failed, connection exception", null, command);
                     } else {
                         otherCtx.channel().writeAndFlush(CommandUtils.sendCommand(CommandEnums.x65.getCommand(), mostCharge.getSlot())).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                     }
-                    // //
-                    // Thread.sleep(1000);
-                    // per = 100;
-                    // ctx.channel().writeAndFlush(new TextWebSocketFrame(CommandResult.success("success", per, AppCommandEnums.x10004.getCommand()))).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
-                    // Thread.sleep(1000);
-                    // out_str = CommandResult.success("借用成功", null, command);
-                    log.info("APP_发送借充电宝指令完成");
                     break;
                 case x10003:
                     JSONObject reObj = new JSONObject();
@@ -249,9 +242,9 @@ public class AppCommandUtils {
                 log.info("APP_借充电宝响应");
                 String status = params[0];
                 if ("0".equals(status)) {
-                    out_str = CommandResult.fail("借用失败", null, command);
+                    out_str = CommandResult.fail("Borrowing failure", null, command);
                 } else {
-                    out_str = CommandResult.success("success", null, command);
+                    out_str = CommandResult.success("Borrow successfully", null, command);
                 }
                 break;
             case x10003:
@@ -259,13 +252,13 @@ public class AppCommandUtils {
                 // flag null支付成功  1 免密支付余额不足  2 非免密支付
                 status = params[0];
                 if ("0".equals(status)) {
-                    return CommandResult.success("归还失败", null, command);
+                    return CommandResult.success("Return failure", null, command);
                 }
                 String cid = params[1];
                 String flag = params[2];
                 String terminalId = params[3];
                 if (StaticUtils.RETURN_NOT_FREE_SECRET.equals(flag)) {
-                    out_str = CommandResult.success("归还成功", flag, command);
+                    out_str = CommandResult.success("Return to success", flag, command);
                 } else {
                     RestResult result = handleService.queryReturnMsg(cid, terminalId);
                     if (result.status) {
