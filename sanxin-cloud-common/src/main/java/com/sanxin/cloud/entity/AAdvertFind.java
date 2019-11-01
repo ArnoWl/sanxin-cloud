@@ -131,7 +131,7 @@ public class AAdvertFind implements Serializable {
                 ", img='" + img + '\'' +
                 ", sort=" + sort +
                 ", type=" + type +
-                ", event=" + event +
+                ", event='" + event + '\'' +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 '}';
