@@ -260,6 +260,7 @@ public class OrderController {
         map.put("terminalMoney", order.getTerminalMoney());
         map.put("depositMoney", order.getDepositMoney());
         map.put("terminalId", order.getTerminalId());
+        map.put("orderCode", order.getOrderCode());
         return RestResult.success("success", map);
     }
 }

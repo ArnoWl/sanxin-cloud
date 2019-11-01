@@ -155,6 +155,7 @@ public class PayService {
                 // 操作订单数据
                 orderMain.setPayType(PayTypeEnums.MONEY.getId());
                 orderMain.setOverTime(DateUtil.currentDate());
+                orderMain.setReturnTime(DateUtil.currentDate());
                 orderMain.setOrderStatus(OrderStatusEnums.OVER.getId());
                 orderMain.setPayMoney(cPayLog.getPayMoney());
                 orderMain.setRealMoney(cPayLog.getPayMoney());

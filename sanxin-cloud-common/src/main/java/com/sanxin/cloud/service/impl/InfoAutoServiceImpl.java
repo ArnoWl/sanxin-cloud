@@ -27,6 +27,6 @@ public class InfoAutoServiceImpl extends ServiceImpl<InfoAutoMapper, InfoAuto> i
         if (list == null || list.size()<=0) {
             throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
         }
-        return list.get(1);
+        return list.get(0);
     }
 }
