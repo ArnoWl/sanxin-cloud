@@ -151,6 +151,11 @@ public class CashController {
      */
     @RequestMapping("/handleCashApply")
     public RestResult handleCashApply(SysCashDetail cashDetail, String payWord, String validCode) {
+        String token = BaseUtil.getUserToken();
+        Integer tid = loginTokenService.validLoginTid(token);
+        Integer type = loginTokenService.validLoginType(token);
+        cashDetail.setType(type);
+        cashDetail.setTargetId(tid);
         return sysCashDetailService.handleCashApply(cashDetail, payWord, validCode);
     }
 
@@ -167,7 +172,7 @@ public class CashController {
     }
 
     /**
-     * 确认申请提现
+     * 确认申请提现(押金)
      * @return
      */
     @RequestMapping(AccountMapping.MARGIN_WITHDRAW)
