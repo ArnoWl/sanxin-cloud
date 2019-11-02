@@ -55,6 +55,8 @@ public class AccountServiceImpl implements AccountService {
     private GiftHourMapper giftHourMapper;
     @Autowired
     private SysRuleTextService sysRuleTextService;
+    @Autowired
+    private CAccountMapper accountMapper;
 
     /**
      * 我的押金
@@ -178,7 +180,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public RestResult payTimeGift(Integer cid, Integer giftId, Integer payType, String payWord) {
+    public RestResult payTimeGift(Integer cid, Integer giftId, Integer payType, String payWord,Integer payChannel) {
         GiftHour giftHour = giftHourMapper.selectById(giftId);
         if (giftHour == null) {
             return RestResult.fail("gift_abnormal");
@@ -211,12 +213,12 @@ public class AccountServiceImpl implements AccountService {
         CPayLog log = new CPayLog();
         log.setCid(cid);
         log.setPayType(payType);
-        log.setPayChannel(LoginChannelEnums.APP.getChannel());
         log.setPayMoney(giftHour.getMoney());
         log.setHandleType(HandleTypeEnums.BUY_TIEM_GIFT.getId());
         log.setServiceType(ServiceEnums.BUY_TIEM_GIFT.getId());
         log.setPayCode(payCode);
         log.setCreateTime(DateUtil.currentDate());
+        log.setPayChannel(payChannel);
         boolean flag = cPayLogService.save(log);
         if (!flag) {
             throw new ThrowJsonException(LanguageUtils.getMessage("pay_log_create_fail"));
@@ -345,8 +347,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Map<String, Object> getRechargeMsg() {
+    public Map<String, Object> getRechargeMsg(Integer id) {
         String value = infoParamService.getValueByCode(ParamCodeEnums.RECHARGE_DEPOSIT_MONEY.getCode());
+        CAccount account = accountMapper.selectById(id);
         BigDecimal depositMoney = FunctionUtils.getValueByClass(BigDecimal.class, value);
         Map<String, Object> map = new HashMap<>();
         map.put("depositMoney", depositMoney);
@@ -354,6 +357,7 @@ public class AccountServiceImpl implements AccountService {
         RuleTextVo ruleDeposit = sysRuleTextService.getByType(2);
         map.put("ruleMoney", ruleMoney);
         map.put("ruleDeposit", ruleDeposit);
+        map.put("freeSecret", account.getFreeSecret());
         return map;
     }
 

@@ -185,7 +185,7 @@ public class SysCashDetailServiceImpl extends ServiceImpl<SysCashDetailMapper, S
     public RestResult marginWithdraw(Integer cid) {
         CMarginDetail detail = marginDetailMapper.selectLimt(cid);
         CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
-        OrderMain orderMain = orderMainMapper.selectOne(new QueryWrapper<OrderMain>().eq("cid", cid).eq("order_status", 1));
+        OrderMain orderMain = orderMainMapper.selectOne(new QueryWrapper<OrderMain>().eq("cid", cid).eq("order_status", 1).eq("del",0));
         if (orderMain != null) {
             return RestResult.success("handle_order_in");
         }

@@ -138,7 +138,7 @@ public class AccountController {
      * @return
      */
     @RequestMapping(value = AccountMapping.PAY_TIME_GIFT)
-    public RestResult payTimeGift(Integer giftId, Integer payType, String payWord, String authcode) {
+    public RestResult payTimeGift(Integer giftId, Integer payType, String payWord, String authcode,Integer payChannel) {
         String token = BaseUtil.getUserToken();
         // 判断参数值
         if (payType == null) {
@@ -151,7 +151,7 @@ public class AccountController {
             }
         }
         Integer cid = loginTokenService.validLoginCid(token);
-        return accountService.payTimeGift(cid, giftId, payType, payWord);
+        return accountService.payTimeGift(cid, giftId, payType, payWord,payChannel);
     }
 
     /**
@@ -231,7 +231,9 @@ public class AccountController {
      */
     @RequestMapping(value = AccountMapping.GET_RECHARGE_MSG)
     public RestResult getRechargeMsg() {
-        Map<String, Object> map = accountService.getRechargeMsg();
+        String token = BaseUtil.getUserToken();
+        Integer id = loginTokenService.validLoginTid(token);
+        Map<String, Object> map = accountService.getRechargeMsg(id);
         return RestResult.success("success", map);
     }
 

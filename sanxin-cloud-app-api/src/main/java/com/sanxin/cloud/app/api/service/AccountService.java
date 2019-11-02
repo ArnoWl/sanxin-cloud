@@ -73,7 +73,7 @@ public interface AccountService {
      * @param payWord 支付密码
      * @return
      */
-    RestResult payTimeGift(Integer cid, Integer giftId,Integer payType,String payWord);
+    RestResult payTimeGift(Integer cid, Integer giftId,Integer payType,String payWord,Integer payChannel);
 
     /**
      * 充值押金处理
@@ -105,7 +105,7 @@ public interface AccountService {
      * 获取充值页面数据
      * @return
      */
-    Map<String, Object> getRechargeMsg();
+    Map<String, Object> getRechargeMsg(Integer id);
 
     /**
      * 开启关闭免密支付
