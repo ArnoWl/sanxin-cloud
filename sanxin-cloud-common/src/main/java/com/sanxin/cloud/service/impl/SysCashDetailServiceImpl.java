@@ -15,6 +15,7 @@ import com.sanxin.cloud.enums.ServiceEnums;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.mapper.CAccountMapper;
 import com.sanxin.cloud.mapper.CMarginDetailMapper;
+import com.sanxin.cloud.mapper.OrderMainMapper;
 import com.sanxin.cloud.mapper.SysCashDetailMapper;
 import com.sanxin.cloud.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -53,6 +54,8 @@ public class SysCashDetailServiceImpl extends ServiceImpl<SysCashDetailMapper, S
     private CMarginDetailMapper marginDetailMapper;
     @Autowired
     private CAccountMapper accountMapper;
+    @Autowired
+    private OrderMainMapper orderMainMapper;
 
     @Override
     public RestResult handleCashStatus(Integer id, Integer status) {
@@ -182,6 +185,10 @@ public class SysCashDetailServiceImpl extends ServiceImpl<SysCashDetailMapper, S
     public RestResult marginWithdraw(Integer cid) {
         CMarginDetail detail = marginDetailMapper.selectLimt(cid);
         CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
+        OrderMain orderMain = orderMainMapper.selectOne(new QueryWrapper<OrderMain>().eq("cid", cid).eq("order_status", 1));
+        if (orderMain != null) {
+            return RestResult.success("handle_order_in");
+        }
         if (account.getDeposit().compareTo(BigDecimal.ZERO) == 0) {
             return RestResult.fail("withdraw_apply");
         }
@@ -193,21 +200,25 @@ public class SysCashDetailServiceImpl extends ServiceImpl<SysCashDetailMapper, S
             account.setDeposit(BigDecimal.ZERO);
 
             marginDetail.setCid(cid);
-            marginDetail.setCost(deposit);
+            marginDetail.setCost(account.getDeposit());
             marginDetail.setCreateTime(new Date());
             marginDetail.setIsout(0);
-
+            marginDetail.setType(1);
+            marginDetail.setRemark("押金提现");
+            int m = marginDetailMapper.insert(marginDetail);
+            int a = accountMapper.updateById(account);
+            if (a == 0) {
+                new ThrowJsonException("更新失败");
+            }
+            if (m == 0) {
+                new ThrowJsonException("插入失败");
+            }
+            return RestResult.success("success");
         }
         //如果是其他方式提现流程(未写支付所以空着)
         //TODO 未写支付所以空着
-        if (detail.getType() == 0) {
+        if (detail.getType() == 2) {
 
-        }
-
-        int m = marginDetailMapper.insert(marginDetail);
-        int a = accountMapper.updateById(account);
-        if (a == 0 || m == 0) {
-            new ThrowJsonException("插入或者更新失败");
         }
         return RestResult.success("success");
     }
