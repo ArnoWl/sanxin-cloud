@@ -1,6 +1,7 @@
 package com.sanxin.cloud.app.api.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.app.api.service.AccountService;
 import com.sanxin.cloud.app.api.service.LoginService;
 import com.sanxin.cloud.app.api.service.RegistService;
 import com.sanxin.cloud.common.FunctionUtils;
@@ -13,15 +14,20 @@ import com.sanxin.cloud.dto.CustomerHomeVo;
 import com.sanxin.cloud.dto.ProgramBindVo;
 import com.sanxin.cloud.entity.CAccount;
 import com.sanxin.cloud.entity.CCustomer;
+import com.sanxin.cloud.entity.GiftHour;
 import com.sanxin.cloud.enums.LoginChannelEnums;
+import com.sanxin.cloud.enums.TimeGiftEnums;
 import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.mapper.CAccountMapper;
+import com.sanxin.cloud.mapper.GiftHourMapper;
 import com.sanxin.cloud.service.CCustomerService;
 import com.sanxin.cloud.service.system.login.LoginDto;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 /**
  * 注册Service
@@ -41,6 +47,10 @@ public class RegistServiceImpl implements RegistService {
     private LoginTokenService loginTokenService;
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private GiftHourMapper giftHourMapper;
+    @Autowired
+    private AccountService accountService;
 
     /**
      * 发送验证码
@@ -88,6 +98,7 @@ public class RegistServiceImpl implements RegistService {
         customer.setHeadUrl(customer.getPhone());
         boolean save = customerService.save(customer);
         CAccount account = new CAccount();
+        account.setHour(accountService.payReceiveTimeGift(customer.getId()));
         account.setCid(customer.getId());
         int insert = accountMapper.insert(account);
         if (insert > 0 && save) {
@@ -99,10 +110,10 @@ public class RegistServiceImpl implements RegistService {
     @Override
     public RestResult handleProgramBindPhone(ProgramBindVo vo) {
         // 校验验证码
-        /*RestResult validCode = SMSSender.validSms((vo.getAreaCode() + vo.getPhone()), vo.getVerCode());
+        RestResult validCode = SMSSender.validSms((vo.getAreaCode() + vo.getPhone()), vo.getVerCode());
         if (!validCode.status) {
             return validCode;
-        }*/
+        }
         // 先根据手机号查询用户
         QueryWrapper<CCustomer> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("phone", vo.getPhone());
@@ -117,6 +128,7 @@ public class RegistServiceImpl implements RegistService {
             boolean save = customerService.save(customer);
             CAccount account = new CAccount();
             account.setCid(customer.getId());
+            account.setHour(accountService.payReceiveTimeGift(customer.getId()));
             int insert = accountMapper.insert(account);
             if (insert <= 0 || !save) {
                 throw new ThrowJsonException("绑定失败");

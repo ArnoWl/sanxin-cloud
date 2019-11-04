@@ -14,19 +14,19 @@ public enum TimeGiftEnums {
     /**
      * 购买
      */
-    BUY(1, "handle_type_order"),
+    BUY(1, "time_buy"),
     /**
      * 注册赠送
      */
-    GIFT(2, "service_recharge_deposit"),
+    GIFT(2, "time_gift"),
     /**
      * 数量
      */
-    NUM(3, "handle_type_cash"),
+    NUM(3, "time_num"),
     /**
      * 时间
      */
-    TIME(4, "handle_type_time");
+    TIME(4, "time_time");
 
     private Integer id;
     private String name;

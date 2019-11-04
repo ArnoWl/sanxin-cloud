@@ -130,18 +130,6 @@ public class AccountController {
     }
 
     /**
-     * 领取赠送时长
-     *
-     * @return
-     */
-    @RequestMapping(value = AccountMapping.PAY_RECEIVE_TIME_GIFT)
-    public RestResult payReceiveTimeGift() {
-        String token = BaseUtil.getUserToken();
-        Integer cid = loginTokenService.validLoginCid(token);
-        return accountService.payReceiveTimeGift(cid);
-    }
-
-    /**
      * 支付购买时长
      *
      * @param giftId  礼包id

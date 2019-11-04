@@ -71,7 +71,7 @@ public interface AccountService {
      * @param cid
      * @return
      */
-    RestResult payReceiveTimeGift(Integer cid);
+    Integer payReceiveTimeGift(Integer cid);
 
     /**
      * 支付购买时长

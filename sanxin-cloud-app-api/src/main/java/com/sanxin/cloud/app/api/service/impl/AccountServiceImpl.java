@@ -176,22 +176,26 @@ public class AccountServiceImpl implements AccountService {
      * @param cid
      * @return
      */
-    @Override
-    public RestResult payReceiveTimeGift(Integer cid) {
-        CTimeDetail type = timeDetailMapper.selectOne(new QueryWrapper<CTimeDetail>().eq("type", TimeGiftEnums.BUY.getId()).eq("cid", cid));
-        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
-        if (type != null) {
-            return RestResult.fail("您已领取过");
+    @Autowired
+    public Integer payReceiveTimeGift(Integer cid) {
+        GiftHour giftHour = giftHourMapper.selectOne(new QueryWrapper<GiftHour>().eq("type", TimeGiftEnums.GIFT.getId()));
+        if (giftHour == null) {
+            return 0;
         }
-        CTimeDetail timeDetail=new CTimeDetail();
+        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
+        CTimeDetail timeDetail = new CTimeDetail();
         timeDetail.setCid(cid);
         timeDetail.setType(TimeGiftEnums.BUY.getId());
         timeDetail.setIsout(1);
         timeDetail.setOriginal(new BigDecimal(account.getHour()));
-        timeDetail.setLast(FunctionUtils.add(new BigDecimal(account.getHour()),new BigDecimal(1),2));
+        timeDetail.setLast(FunctionUtils.add(new BigDecimal(account.getHour()), new BigDecimal(1), 2));
         timeDetail.setCreateTime(new Date());
         timeDetail.setRemark(TimeGiftEnums.BUY.getName());
-        return null;
+        int insert = timeDetailMapper.insert(timeDetail);
+        if (insert > 0) {
+            return 0;
+        }
+        return Integer.parseInt(giftHour.getHour().toString());
     }
 
     /**
@@ -252,6 +256,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 余额充值
+     *
      * @param cid
      * @param payType
      * @param payChannel

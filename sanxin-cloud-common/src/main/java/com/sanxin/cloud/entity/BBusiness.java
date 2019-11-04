@@ -42,6 +42,11 @@ public class BBusiness implements Serializable {
     private String realName;
 
     /**
+     * 国家区号
+     */
+    private String areaCode;
+
+    /**
      * 联系方式
      */
     private String phone;
@@ -187,14 +192,6 @@ public class BBusiness implements Serializable {
     @TableField(exist = false)
     private Integer distance;
 
-    public Integer getDistance() {
-        return distance;
-    }
-
-    public void setDistance(Integer distance) {
-        this.distance = distance;
-    }
-
     public Integer getId() {
         return id;
     }
@@ -235,6 +232,14 @@ public class BBusiness implements Serializable {
         this.realName = realName;
     }
 
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -259,6 +264,14 @@ public class BBusiness implements Serializable {
         this.passWord = passWord;
     }
 
+    public String getPayWord() {
+        return payWord;
+    }
+
+    public void setPayWord(String payWord) {
+        this.payWord = payWord;
+    }
+
     public Integer getCountryId() {
         return countryId;
     }
@@ -266,6 +279,7 @@ public class BBusiness implements Serializable {
     public void setCountryId(Integer countryId) {
         this.countryId = countryId;
     }
+
     public Integer getProId() {
         return proId;
     }
@@ -273,6 +287,7 @@ public class BBusiness implements Serializable {
     public void setProId(Integer proId) {
         this.proId = proId;
     }
+
     public Integer getCityId() {
         return cityId;
     }
@@ -280,6 +295,7 @@ public class BBusiness implements Serializable {
     public void setCityId(Integer cityId) {
         this.cityId = cityId;
     }
+
     public Integer getAreaId() {
         return areaId;
     }
@@ -287,6 +303,7 @@ public class BBusiness implements Serializable {
     public void setAreaId(Integer areaId) {
         this.areaId = areaId;
     }
+
     public String getAddressDetail() {
         return addressDetail;
     }
@@ -294,6 +311,7 @@ public class BBusiness implements Serializable {
     public void setAddressDetail(String addressDetail) {
         this.addressDetail = addressDetail;
     }
+
     public Integer getCardType() {
         return cardType;
     }
@@ -301,6 +319,7 @@ public class BBusiness implements Serializable {
     public void setCardType(Integer cardType) {
         this.cardType = cardType;
     }
+
     public String getCardNo() {
         return cardNo;
     }
@@ -308,6 +327,7 @@ public class BBusiness implements Serializable {
     public void setCardNo(String cardNo) {
         this.cardNo = cardNo;
     }
+
     public String getCardFront() {
         return cardFront;
     }
@@ -315,69 +335,13 @@ public class BBusiness implements Serializable {
     public void setCardFront(String cardFront) {
         this.cardFront = cardFront;
     }
+
     public String getCardBack() {
         return cardBack;
     }
 
     public void setCardBack(String cardBack) {
         this.cardBack = cardBack;
-    }
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-    public String getLicenseCode() {
-        return licenseCode;
-    }
-
-    public void setLicenseCode(String licenseCode) {
-        this.licenseCode = licenseCode;
-    }
-    public String getLicenseImg() {
-        return licenseImg;
-    }
-
-    public void setLicenseImg(String licenseImg) {
-        this.licenseImg = licenseImg;
-    }
-    public String getCompanyImg() {
-        return companyImg;
-    }
-
-    public void setCompanyImg(String companyImg) {
-        this.companyImg = companyImg;
-    }
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-    public Date getCheckTime() {
-        return checkTime;
-    }
-
-    public void setCheckTime(Date checkTime) {
-        this.checkTime = checkTime;
-    }
-
-    public String getCardTypeName() {
-        return cardTypeName;
-    }
-
-    public void setCardTypeName(String cardTypeName) {
-        this.cardTypeName = cardTypeName;
     }
 
     public String getPassPort() {
@@ -386,6 +350,38 @@ public class BBusiness implements Serializable {
 
     public void setPassPort(String passPort) {
         this.passPort = passPort;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getLicenseCode() {
+        return licenseCode;
+    }
+
+    public void setLicenseCode(String licenseCode) {
+        this.licenseCode = licenseCode;
+    }
+
+    public String getLicenseImg() {
+        return licenseImg;
+    }
+
+    public void setLicenseImg(String licenseImg) {
+        this.licenseImg = licenseImg;
+    }
+
+    public String getCompanyImg() {
+        return companyImg;
+    }
+
+    public void setCompanyImg(String companyImg) {
+        this.companyImg = companyImg;
     }
 
     public String getLonVal() {
@@ -444,6 +440,38 @@ public class BBusiness implements Serializable {
         this.coverUrl = coverUrl;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getCheckTime() {
+        return checkTime;
+    }
+
+    public void setCheckTime(Date checkTime) {
+        this.checkTime = checkTime;
+    }
+
+    public String getCardTypeName() {
+        return cardTypeName;
+    }
+
+    public void setCardTypeName(String cardTypeName) {
+        this.cardTypeName = cardTypeName;
+    }
+
     public List<String> getCoverUrlList() {
         return coverUrlList;
     }
@@ -452,36 +480,54 @@ public class BBusiness implements Serializable {
         this.coverUrlList = coverUrlList;
     }
 
-    public String getPayWord() {
-        return payWord;
+    public Integer getDistance() {
+        return distance;
     }
 
-    public void setPayWord(String payWord) {
-        this.payWord = payWord;
+    public void setDistance(Integer distance) {
+        this.distance = distance;
     }
 
     @Override
     public String toString() {
         return "BBusiness{" +
-        "id=" + id +
-        ", nickName=" + nickName +
-        ", phone=" + phone +
-        ", countryId=" + countryId +
-        ", proId=" + proId +
-        ", cityId=" + cityId +
-        ", areaId=" + areaId +
-        ", addressDetail=" + addressDetail +
-        ", cardType=" + cardType +
-        ", cardNo=" + cardNo +
-        ", cardFront=" + cardFront +
-        ", cardBack=" + cardBack +
-        ", companyName=" + companyName +
-        ", licenseCode=" + licenseCode +
-        ", licenseImg=" + licenseImg +
-        ", companyImg=" + companyImg +
-        ", status=" + status +
-        ", createTime=" + createTime +
-        ", checkTime=" + checkTime +
-        "}";
+                "id=" + id +
+                ", cid=" + cid +
+                ", code='" + code + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", realName='" + realName + '\'' +
+                ", areaCode='" + areaCode + '\'' +
+                ", phone='" + phone + '\'' +
+                ", headUrl='" + headUrl + '\'' +
+                ", passWord='" + passWord + '\'' +
+                ", payWord='" + payWord + '\'' +
+                ", countryId=" + countryId +
+                ", proId=" + proId +
+                ", cityId=" + cityId +
+                ", areaId=" + areaId +
+                ", addressDetail='" + addressDetail + '\'' +
+                ", cardType=" + cardType +
+                ", cardNo='" + cardNo + '\'' +
+                ", cardFront='" + cardFront + '\'' +
+                ", cardBack='" + cardBack + '\'' +
+                ", passPort='" + passPort + '\'' +
+                ", companyName='" + companyName + '\'' +
+                ", licenseCode='" + licenseCode + '\'' +
+                ", licenseImg='" + licenseImg + '\'' +
+                ", companyImg='" + companyImg + '\'' +
+                ", lonVal='" + lonVal + '\'' +
+                ", latVal='" + latVal + '\'' +
+                ", startDay=" + startDay +
+                ", endDay=" + endDay +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", coverUrl='" + coverUrl + '\'' +
+                ", status=" + status +
+                ", createTime=" + createTime +
+                ", checkTime=" + checkTime +
+                ", cardTypeName='" + cardTypeName + '\'' +
+                ", coverUrlList=" + coverUrlList +
+                ", distance=" + distance +
+                '}';
     }
 }
