@@ -34,7 +34,11 @@ public enum HandleTypeEnums {
     /**
      * 购买充电宝
      */
-    BUY_POWER(6, "handle_type_buy_power");
+    BUY_POWER(6, "handle_type_buy_power"),
+    /**
+     * 充值余额Balance Recharge
+     */
+    BALANCE_RECHARGE(7, "balance_recharge");
 
     private Integer id;
     private String name;

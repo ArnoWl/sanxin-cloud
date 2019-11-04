@@ -180,7 +180,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public RestResult payTimeGift(Integer cid, Integer giftId, Integer payType, String payWord,Integer payChannel) {
+    public RestResult payTimeGift(Integer cid, Integer giftId, Integer payType, String payWord, Integer payChannel) {
         GiftHour giftHour = giftHourMapper.selectById(giftId);
         if (giftHour == null) {
             return RestResult.fail("gift_abnormal");
@@ -219,6 +219,45 @@ public class AccountServiceImpl implements AccountService {
         log.setPayCode(payCode);
         log.setCreateTime(DateUtil.currentDate());
         log.setPayChannel(payChannel);
+        boolean flag = cPayLogService.save(log);
+        if (!flag) {
+            throw new ThrowJsonException(LanguageUtils.getMessage("pay_log_create_fail"));
+        }
+        return payService.handleSign(log);
+    }
+
+    /**
+     * 余额充值
+     *
+     * @param cid
+     * @param payType
+     * @param payChannel
+     * @param payMoney
+     * @return
+     */
+    @Override
+    public RestResult payBalanceRecharge(Integer cid, Integer payType, Integer payChannel, BigDecimal payMoney) {
+        CCustomer customer = customerService.getById(cid);
+        if (customer == null) {
+            return RestResult.fail("register_user_empty");
+        }
+        // 判断参数值
+        if (payType == null) {
+            return RestResult.fail("pay_type_empty");
+        }
+        if (payChannel == null) {
+            return RestResult.fail("pay_channel_empty");
+        }
+        // 数据赋值-签名
+        String payCode = FunctionUtils.getOrderCode("B");
+        CPayLog log = new CPayLog();
+        log.setCid(cid);
+        log.setPayType(payType);
+        log.setPayChannel(payChannel);
+        log.setPayMoney(payMoney);
+        log.setHandleType(HandleTypeEnums.BALANCE_RECHARGE.getId());
+        log.setServiceType(ServiceEnums.BALANCE_RECHARGE.getId());
+        log.setPayCode(payCode);
         boolean flag = cPayLogService.save(log);
         if (!flag) {
             throw new ThrowJsonException(LanguageUtils.getMessage("pay_log_create_fail"));

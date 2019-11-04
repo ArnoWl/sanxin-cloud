@@ -32,7 +32,7 @@ public class PayTask {
     /**
      * 定时查询SCB支付是否成功
      */
-    @Scheduled(cron = "0/30 * * * * ? ")
+    /*@Scheduled(cron = "0/30 * * * * ? ")
     public void handleSCBPayAuto() {
         QueryWrapper<CPayLog> wrapper = new QueryWrapper<>();
         wrapper.eq("pay_type", PayTypeEnums.SCB_PAY.getId()).eq("status", StaticUtils.STATUS_NO);
@@ -54,5 +54,5 @@ public class PayTask {
             //     }
             // }
         }
-    }
+    }*/
 }

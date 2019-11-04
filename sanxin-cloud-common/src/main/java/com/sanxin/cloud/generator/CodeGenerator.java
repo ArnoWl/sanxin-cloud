@@ -22,7 +22,7 @@ public class CodeGenerator {
 
     public static void main(String[] args) {
 //      erateByTables(false, packageName, "arno", "powerplus", "sys_menus");
-        createTable("c_money_detail");
+        createTable("c_country_mobile");
         System.out.println("completed...");
     }
 
