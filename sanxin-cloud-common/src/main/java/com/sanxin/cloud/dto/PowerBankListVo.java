@@ -99,4 +99,9 @@ public class PowerBankListVo {
      */
     private String lonVal;
 
+    /**
+     * 表示这个商家有几个机器
+     */
+    private Integer num;
+
 }
