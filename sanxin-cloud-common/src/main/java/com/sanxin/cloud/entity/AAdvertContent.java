@@ -62,6 +62,12 @@ public class AAdvertContent implements Serializable {
      */
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
     private Date createTime;
+
+    /**
+     * 首页展示小图片
+     */
+    private String minPicture;
+
     /**
      * 中文标题
      */
@@ -213,6 +219,14 @@ public class AAdvertContent implements Serializable {
         this.thaiContent = thaiContent;
     }
 
+    public String getMinPicture() {
+        return minPicture;
+    }
+
+    public void setMinPicture(String minPicture) {
+        this.minPicture = minPicture;
+    }
+
     @Override
     public String toString() {
         return "AAdvertContent{" +
@@ -225,6 +239,7 @@ public class AAdvertContent implements Serializable {
                 ", status=" + status +
                 ", homeShow=" + homeShow +
                 ", createTime=" + createTime +
+                ", minPicture='" + minPicture + '\'' +
                 ", cnTitle='" + cnTitle + '\'' +
                 ", enTitle='" + enTitle + '\'' +
                 ", thaiTitle='" + thaiTitle + '\'' +

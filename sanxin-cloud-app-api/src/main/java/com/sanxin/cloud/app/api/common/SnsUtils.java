@@ -31,7 +31,6 @@ public class SnsUtils {
 
     public static SnsUtils snsUtils = null;
 
-
     public static SnsUtils getInstance() {
         if (snsUtils == null) {
             synchronized (SnsUtils.class) {
