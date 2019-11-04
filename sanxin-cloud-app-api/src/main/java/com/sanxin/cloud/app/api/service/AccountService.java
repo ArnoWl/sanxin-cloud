@@ -6,6 +6,7 @@ import com.sanxin.cloud.entity.CMarginDetail;
 import com.sanxin.cloud.entity.CMoneyDetail;
 import com.sanxin.cloud.entity.CTimeDetail;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -66,6 +67,13 @@ public interface AccountService {
     RestResult getBuyGift(Integer cid);
 
     /**
+     * 领取赠送时长
+     * @param cid
+     * @return
+     */
+    RestResult payReceiveTimeGift(Integer cid);
+
+    /**
      * 支付购买时长
      * @param cid 用户di
      * @param giftId 礼包id
@@ -74,6 +82,17 @@ public interface AccountService {
      * @return
      */
     RestResult payTimeGift(Integer cid, Integer giftId,Integer payType,String payWord,Integer payChannel);
+
+    /**
+     * 余额充值
+     * @param cid
+     * @param payType
+     * @param payChannel
+     * @param payMoney
+     * @return
+     */
+    RestResult payBalanceRecharge(Integer cid, Integer payType, Integer payChannel, BigDecimal payMoney);
+
 
     /**
      * 充值押金处理

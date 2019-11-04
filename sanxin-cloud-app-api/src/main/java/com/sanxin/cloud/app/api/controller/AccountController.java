@@ -130,6 +130,18 @@ public class AccountController {
     }
 
     /**
+     * 领取赠送时长
+     *
+     * @return
+     */
+    @RequestMapping(value = AccountMapping.PAY_RECEIVE_TIME_GIFT)
+    public RestResult payReceiveTimeGift() {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginCid(token);
+        return accountService.payReceiveTimeGift(cid);
+    }
+
+    /**
      * 支付购买时长
      *
      * @param giftId  礼包id
@@ -153,6 +165,33 @@ public class AccountController {
         Integer cid = loginTokenService.validLoginCid(token);
         return accountService.payTimeGift(cid, giftId, payType, payWord,payChannel);
     }
+
+
+    /**
+     * 余额充值去提交
+     * @param payType
+     * @param authcode
+     * @param payChannel
+     * @param payMoney
+     * @return
+     */
+    @RequestMapping(value = AccountMapping.PAY_BALANCE_RECHARGE)
+    public RestResult payBalanceRecharge(Integer payType, String authcode,Integer payChannel,BigDecimal payMoney) {
+        String token = BaseUtil.getUserToken();
+        // 判断参数值
+        if (payType == null) {
+            return RestResult.fail("pay_type_empty");
+        }
+        if (FunctionUtils.isEquals(payType, PayTypeEnums.SCB_PAY.getType())) {
+            String scbToken = scbPayService.getToken(token, authcode);
+            if (StringUtils.isEmpty(scbToken)) {
+                return RestResult.fail("1011", "Authorization failed, please re authorize", "", "");
+            }
+        }
+        Integer cid = loginTokenService.validLoginCid(token);
+        return accountService.payBalanceRecharge(cid, payType,payChannel,payMoney);
+    }
+
 
     /**
      * 借充电宝扫码时判断是否交了押金

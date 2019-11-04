@@ -7,38 +7,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author xiaoky
- * @date 2019-09-12
+ * @author zdc
+ * @date 2019-11-4
  */
 public enum TimeGiftEnums {
     /**
-     * 订单
+     * 购买
      */
-    ORDER(1, "handle_type_order"),
+    BUY(1, "handle_type_order"),
     /**
-     * 充值押金
+     * 注册赠送
      */
-    RECHARGE_DEPOSIT_MONEY(2, "service_recharge_deposit"),
+    GIFT(2, "service_recharge_deposit"),
     /**
-     * 提现
+     * 数量
      */
-    CASH(3, "handle_type_cash"),
+    NUM(3, "handle_type_cash"),
     /**
-     * 扣除时长
+     * 时间
      */
-    TIME(4, "handle_type_time"),
-    /**
-     * 购买时长礼包
-     */
-    BUY_TIEM_GIFT(5, "buy_type_time"),
-    /**
-     * 购买充电宝
-     */
-    BUY_POWER(6, "handle_type_buy_power"),
-    /**
-     * 赠送时长
-     */
-    TIME_GIFT(7, "time_gift");
+    TIME(4, "handle_type_time");
 
     private Integer id;
     private String name;
