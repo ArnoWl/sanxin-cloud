@@ -5,7 +5,10 @@ import com.sanxin.cloud.app.api.common.AccountMapping;
 import com.sanxin.cloud.app.api.common.MappingUtils;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.FunctionUtils;
+import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.entity.BankType;
+import com.sanxin.cloud.service.BankTypeService;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.BankDetail;
@@ -16,6 +19,8 @@ import com.sanxin.cloud.service.SysCashRuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +39,8 @@ public class CashController {
     private SysCashDetailService sysCashDetailService;
     @Autowired
     private LoginTokenService loginTokenService;
+    @Autowired
+    private BankTypeService bankTypeService;
 
     /**
      * 查询银行卡列表
@@ -52,6 +59,18 @@ public class CashController {
             b.setLastCode(FunctionUtils.getLastValue(b.getBankCard(), 4));
         }
         return RestResult.success("", page);
+    }
+
+    /**
+     * 查询开户行列表
+     * @return
+     */
+    @RequestMapping(value = "/queryBankType")
+    public RestResult queryBankType() {
+        QueryWrapper<BankType> wrapper = new QueryWrapper<>();
+        wrapper.eq("status", StaticUtils.STATUS_YES);
+        List<BankType> list = bankTypeService.list(wrapper);
+        return RestResult.success("success", list);
     }
 
     /**
