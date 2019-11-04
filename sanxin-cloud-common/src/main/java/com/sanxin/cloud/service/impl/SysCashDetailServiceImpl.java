@@ -169,10 +169,10 @@ public class SysCashDetailServiceImpl extends ServiceImpl<SysCashDetailMapper, S
     @Override
     public RestResult selectLimt(Integer cid) {
         CMarginDetail detail = marginDetailMapper.selectLimt(cid);
-        if (detail != null && detail.getIsout() == 0) {
+        //if (detail != null && detail.getIsout() == 0) {
             return RestResult.success(detail.getType());
-        }
-        return RestResult.fail("withdraw_judge");
+       // }
+        //return RestResult.fail("withdraw_judge");
     }
 
     /**
