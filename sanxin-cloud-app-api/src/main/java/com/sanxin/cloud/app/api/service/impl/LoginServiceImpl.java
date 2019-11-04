@@ -47,6 +47,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -79,6 +80,8 @@ public class LoginServiceImpl implements LoginService {
     private GiftHourMapper giftHourMapper;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private CTimeDetailMapper timeDetailMapper;
 
     /**
      * 第三方登录(用户)
@@ -206,7 +209,7 @@ public class LoginServiceImpl implements LoginService {
                     customer.setHeadUrl(facebook.getPicture());
                     int cusCount = customerMapper.insert(customer);
                     account.setCid(customer.getId());
-                    account.setHour(accountService.payReceiveTimeGift(customer.getId()));
+                    account.setHour(payReceiveTimeGift(customer.getId()));
                     int AccCount = accountMapper.insert(account);
                     if (cusCount > 0 && AccCount > 0) {
                         return RestResult.success("binding_register_success");
@@ -273,7 +276,7 @@ public class LoginServiceImpl implements LoginService {
                     customer.setHeadUrl(picture);
                     int cusCount = customerMapper.insert(customer);
                     account.setCid(customer.getId());
-                    account.setHour(accountService.payReceiveTimeGift(customer.getId()));
+                    account.setHour(payReceiveTimeGift(customer.getId()));
                     int AccCount = accountMapper.insert(account);
                     if (cusCount > 0 && AccCount > 0) {
                         return RestResult.success("success");
@@ -639,5 +642,26 @@ public class LoginServiceImpl implements LoginService {
             return RestResult.fail("fail");
         }
         return RestResult.success("success");
+    }
+
+    public Integer payReceiveTimeGift(Integer cid) {
+        GiftHour giftHour = giftHourMapper.selectOne(new QueryWrapper<GiftHour>().eq("type", TimeGiftEnums.GIFT.getId()));
+        if (giftHour == null) {
+            return 0;
+        }
+        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
+        CTimeDetail timeDetail = new CTimeDetail();
+        timeDetail.setCid(cid);
+        timeDetail.setType(TimeGiftEnums.BUY.getId());
+        timeDetail.setIsout(1);
+        timeDetail.setOriginal(new BigDecimal(account.getHour()));
+        timeDetail.setLast(FunctionUtils.add(new BigDecimal(account.getHour()), new BigDecimal(1), 2));
+        timeDetail.setCreateTime(new Date());
+        timeDetail.setRemark(TimeGiftEnums.BUY.getName());
+        int insert = timeDetailMapper.insert(timeDetail);
+        if (insert > 0) {
+            return 0;
+        }
+        return Integer.parseInt(giftHour.getHour().toString());
     }
 }

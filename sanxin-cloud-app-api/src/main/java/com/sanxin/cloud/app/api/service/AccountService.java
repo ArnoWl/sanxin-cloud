@@ -67,13 +67,6 @@ public interface AccountService {
     RestResult getBuyGift(Integer cid);
 
     /**
-     * 领取赠送时长
-     * @param cid
-     * @return
-     */
-    Integer payReceiveTimeGift(Integer cid);
-
-    /**
      * 支付购买时长
      * @param cid 用户di
      * @param giftId 礼包id

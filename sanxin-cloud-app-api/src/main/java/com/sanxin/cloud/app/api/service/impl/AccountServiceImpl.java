@@ -171,34 +171,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * 领取赠送时长
-     *
-     * @param cid
-     * @return
-     */
-    @Autowired
-    public Integer payReceiveTimeGift(Integer cid) {
-        GiftHour giftHour = giftHourMapper.selectOne(new QueryWrapper<GiftHour>().eq("type", TimeGiftEnums.GIFT.getId()));
-        if (giftHour == null) {
-            return 0;
-        }
-        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
-        CTimeDetail timeDetail = new CTimeDetail();
-        timeDetail.setCid(cid);
-        timeDetail.setType(TimeGiftEnums.BUY.getId());
-        timeDetail.setIsout(1);
-        timeDetail.setOriginal(new BigDecimal(account.getHour()));
-        timeDetail.setLast(FunctionUtils.add(new BigDecimal(account.getHour()), new BigDecimal(1), 2));
-        timeDetail.setCreateTime(new Date());
-        timeDetail.setRemark(TimeGiftEnums.BUY.getName());
-        int insert = timeDetailMapper.insert(timeDetail);
-        if (insert > 0) {
-            return 0;
-        }
-        return Integer.parseInt(giftHour.getHour().toString());
-    }
-
-    /**
      * 支付购买时长
      *
      * @param cid     用户di
