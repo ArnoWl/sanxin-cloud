@@ -79,7 +79,7 @@ public class OrderController {
     public RestResult getPowerBankPrompt(String boxId) {
         List<BTerminalVo> list = RedisUtils.getInstance().getTerminalByBoxId(boxId);
         String status = "0";
-        if (list.size() > 0) {
+        if (list != null && list.size() > 0) {
             status = "1";
         }
         String useHourMoney = infoParamService.getValueByCode("useHourMoney");

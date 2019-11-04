@@ -44,5 +44,8 @@ public class MappingUtils {
 
     /**根据经纬度和范围搜索周边商铺*/
     public static final String RANGE_SHOP="/rangeShop";
-
+    /**
+     * 处理小程序绑定手机号
+     */
+    public static final String HANDLE_PROGRAM_BIND_PHONE="/handleProgramBindPhone";
 }

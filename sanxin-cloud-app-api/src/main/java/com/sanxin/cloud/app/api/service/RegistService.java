@@ -1,6 +1,7 @@
 package com.sanxin.cloud.app.api.service;
 
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.dto.ProgramBindVo;
 import com.sanxin.cloud.entity.CCustomer;
 
 /**
@@ -23,4 +24,11 @@ public interface RegistService {
      * @return
      */
     RestResult doRegister(CCustomer customer) throws Exception;
+
+    /**
+     * 处理小程序绑定手机号
+     * @param vo
+     * @return
+     */
+    RestResult handleProgramBindPhone(ProgramBindVo vo);
 }

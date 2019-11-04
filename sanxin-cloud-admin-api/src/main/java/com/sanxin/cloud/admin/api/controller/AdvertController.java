@@ -269,9 +269,6 @@ public class AdvertController {
         if (advertFind.getEvent() == null) {
             return RestResult.fail(AdminLanguageStatic.ADVERT_EVENT);
         }
-        if (advertFind.getStatus() == null) {
-            return RestResult.fail(AdminLanguageStatic.ADVERT_STATUS);
-        }
         boolean result = advertFindService.saveOrUpdate(advertFind);
         if (!result) {
             return RestResult.fail(AdminLanguageStatic.BASE_FAIL);

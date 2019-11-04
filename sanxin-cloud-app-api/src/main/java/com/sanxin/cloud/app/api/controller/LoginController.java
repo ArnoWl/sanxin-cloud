@@ -6,10 +6,13 @@ import com.sanxin.cloud.app.api.service.LoginService;
 import com.sanxin.cloud.app.api.service.RegistService;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.dto.ProgramBindVo;
+import com.sanxin.cloud.exception.ThrowJsonException;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
 import com.sanxin.cloud.dto.CustomerHomeVo;
 import com.sanxin.cloud.dto.LoginRegisterVo;
 import com.sanxin.cloud.entity.CCustomer;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,6 +98,28 @@ public class LoginController {
     @RequestMapping(value = MappingUtils.LOGIN)
     public RestResult doLogin(LoginRegisterVo loginRegisterVo) {
         return loginService.doLogin(loginRegisterVo);
+    }
+
+    /**
+     * 处理小程序绑定手机号
+     * @param vo
+     * @return
+     */
+    @RequestMapping(value = MappingUtils.HANDLE_PROGRAM_BIND_PHONE)
+    public RestResult handleProgramBindPhone(ProgramBindVo vo) {
+        if (vo == null || StringUtils.isEmpty(vo.getUserId())) {
+            return RestResult.fail("绑定失败");
+        }
+        if (StringUtils.isEmpty(vo.getPhone())) {
+            return RestResult.fail("register_phone_empty");
+        }
+        if (StringUtils.isEmpty(vo.getVerCode())) {
+            throw new ThrowJsonException("verifycode_not_exist");
+        }
+        if (StringUtils.isEmpty(vo.getAreaCode())) {
+            throw new ThrowJsonException("areaCode_not_exist");
+        }
+        return registService.handleProgramBindPhone(vo);
     }
 
     /**

@@ -397,10 +397,12 @@ public class LoginServiceImpl implements LoginService {
             // System.out.println("获取到的手机" + aliUserInfo.getPhone());
             // System.out.println("获取到的用户Id" + aliUserInfo.getUserId());
             // 查询用户
-            // TODO 默认18627315127这个用户
-            CCustomer customer = customerService.getOne(new QueryWrapper<CCustomer>().eq("user_id", "123456789"));
+            // TODO 假设获取到的支付宝ID是这个
+            String userId = "123456789";
+            CCustomer customer = customerService.getOne(new QueryWrapper<CCustomer>().eq("user_id", userId));
+            // 如果不存在该用户
             if (customer == null) {
-                throw new ThrowJsonException("register_user_empty");
+                return RestResult.success("求你去绑定", userId, "bind_phone");
             }
             //加密 封装 存入redis
             loginDto.setChannel(loginRegisterVo.getChannel());
@@ -434,7 +436,7 @@ public class LoginServiceImpl implements LoginService {
             throw new ThrowJsonException("register_password_error");
         }
         //判断账号是否被冻结
-        if (customer.getStatus() == StaticUtils.STATUS_NO) {
+        if(FunctionUtils.isEquals(customer.getStatus(), StaticUtils.STATUS_NO)) {
             throw new ThrowJsonException("register_user_freeze");
         }
         //加密 封装 存入redis
