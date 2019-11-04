@@ -97,6 +97,9 @@ public class DeviceController {
         if (device.getBid() == null) {
             return RestResult.fail("请选择所在门店");
         }
+        if (device.getTerminalPrice() == null) {
+            return RestResult.fail("请输入充电宝价格");
+        }
         boolean result = bDeviceService.saveOrUpdate(device);
         if (!result) {
             return RestResult.fail(AdminLanguageStatic.BASE_FAIL);

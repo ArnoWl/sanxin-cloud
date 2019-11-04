@@ -93,6 +93,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 strs.add("/home/queryCashStatistics");
                 strs.add("/system/importTerminalSn");
                 strs.add("/system/feedbackList");
+                strs.add("/system/getBaseSetList");
                 strs.add("/customer/amountDetails");
                 strs.add("/customer/depositDetails");
                 strs.add("/customer/timeDetails");
@@ -101,6 +102,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 strs.add("/address/addressList");
                 strs.add("/advert/queryAdvertFindList");
                 strs.add("/advert/getAdvertFindDetail");
+                strs.add("/address/queryAddressListByPid");
+                strs.add("/business/handleSaveBusiness");
                 System.out.println("returnUrl：："+returnUrl);
                 boolean bool = strs.contains(returnUrl);
                 if(!bool) {

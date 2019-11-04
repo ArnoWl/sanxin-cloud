@@ -56,6 +56,8 @@ public class SysController {
     private BBusinessService bBusinessService;
     @Autowired
     private CCustomerService cCustomerService;
+    @Autowired
+    private InfoParamService infoParamService;
 
 
     /**
@@ -304,6 +306,29 @@ public class SysController {
             return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
         return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
+    }
+
+    /**
+     * 查询基础设置列表
+     * @return
+     */
+    @GetMapping(value = "/getBaseSetList")
+    public RestResult getBaseSetList() {
+        List<InfoParam> list = infoParamService.list();
+        return RestResult.success("", list);
+    }
+
+    /**
+     * 编辑基础设置
+     * @return
+     */
+    @PostMapping(value = "/editInfoParam")
+    public RestResult editInfoParam(InfoParam param) {
+        boolean result = infoParamService.saveOrUpdate(param);
+        if (result) {
+            return RestResult.success("success");
+        }
+        return RestResult.fail("fail");
     }
 
     @GetMapping("/importDeviceSn")

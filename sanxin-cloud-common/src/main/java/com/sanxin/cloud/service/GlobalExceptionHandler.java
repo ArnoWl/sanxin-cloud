@@ -106,6 +106,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value =  Exception.class)
     @ResponseBody
     public RestResult errorResponse(HttpServletRequest req,Exception e) {
+		e.printStackTrace();
 		return RestResult.fail("request_error");
     }
 

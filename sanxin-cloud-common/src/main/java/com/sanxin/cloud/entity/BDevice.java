@@ -1,6 +1,8 @@
 package com.sanxin.cloud.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -62,6 +64,10 @@ public class BDevice implements Serializable {
      * 最后关闭时间
      */
     private Date lastCloseTime;
+    /**
+     * 充电宝借用计费标准/小时
+     */
+    private BigDecimal terminalPrice;
     /**
      * 设备添加时间
      */
@@ -186,6 +192,14 @@ public class BDevice implements Serializable {
 
     public void setStatusName(String statusName) {
         this.statusName = statusName;
+    }
+
+    public BigDecimal getTerminalPrice() {
+        return terminalPrice;
+    }
+
+    public void setTerminalPrice(BigDecimal terminalPrice) {
+        this.terminalPrice = terminalPrice;
     }
 
     @Override

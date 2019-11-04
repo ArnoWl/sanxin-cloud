@@ -43,7 +43,7 @@ public class PayService {
     @Autowired
     private BDeviceTerminalService deviceTerminalService;
     @Autowired
-    private InfoParamService infoParamService;
+    private BDeviceService bDeviceService;
     /**
      * 处理支付签名
      * @param log 支付记录数据
@@ -147,9 +147,12 @@ public class PayService {
                 if (!updateB) {
                     throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
                 }
-                String valueStr = infoParamService.getValueByCode(ParamCodeEnums.USE_HOUR_MONEY.getCode());
+                BDevice device = bDeviceService.getByCode(orderMain.getDeviceId());
+                if (device == null) {
+                    throw new ThrowJsonException(LanguageUtils.getMessage("data_exception"));
+                }
                 // 一小时多少钱
-                BigDecimal value = FunctionUtils.getValueByClass(BigDecimal.class, valueStr);
+                BigDecimal value = device.getTerminalPrice();
                 // 租金总额
                 BigDecimal rentMoney = FunctionUtils.mul(value, new BigDecimal(hour), 2);
                 // 操作订单数据

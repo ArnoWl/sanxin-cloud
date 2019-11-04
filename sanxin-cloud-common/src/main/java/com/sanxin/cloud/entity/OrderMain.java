@@ -55,6 +55,10 @@ public class OrderMain implements Serializable {
      * 充电宝id
      */
     private String terminalId;
+    /**
+     * 机柜id
+     */
+    private String deviceId;
 
     /**
      * 租金总额
@@ -435,6 +439,22 @@ public class OrderMain implements Serializable {
 
     public void setReturnAddr(String returnAddr) {
         this.returnAddr = returnAddr;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public Date getRentTime() {
+        return rentTime;
+    }
+
+    public void setRentTime(Date rentTime) {
+        this.rentTime = rentTime;
     }
 
     @Override

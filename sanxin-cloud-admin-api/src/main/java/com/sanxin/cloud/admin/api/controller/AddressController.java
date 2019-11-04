@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 地址管理Service
  * @author xiaoky
@@ -33,6 +35,13 @@ public class AddressController {
         if (address.getParentid() == null) {
             address.setParentid(0);
         }
+        if (address.getProId() != null) {
+            address.setParentid(address.getProId());
+        }
+        if (address.getCityId() != null) {
+            address.setParentid(address.getCityId());
+        }
+        wrapper.eq("parentid", address.getParentid());
         addressService.page(page, wrapper);
         return RestResult.success("success", page);
     }
@@ -48,6 +57,34 @@ public class AddressController {
         Address address = new Address();
         address.setId(id);
         address.setStatus(status);
+        boolean result = addressService.updateById(address);
+        if (result) {
+            return RestResult.success("success");
+        }
+        return RestResult.fail("fail");
+    }
+
+    /**
+     * 根据上级查询
+     * @param pid
+     * @return
+     */
+    @GetMapping(value = "/queryAddressListByPid")
+    public RestResult queryAddressListByPid(Integer pid) {
+        List<Address> list = addressService.queryAddressByPid(pid);
+        return RestResult.success("", list);
+    }
+
+    /**
+     * 根据上级查询
+     * @param address
+     * @return
+     */
+    @PostMapping(value = "/editAddress")
+    public RestResult editAddress(Address address) {
+        address.setParentid(null);
+        address.setStatus(null);
+        address.setLevel(null);
         boolean result = addressService.updateById(address);
         if (result) {
             return RestResult.success("success");

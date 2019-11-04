@@ -96,6 +96,24 @@ public class BusinessController {
      */
     @PostMapping(value = "/handleEditBusiness")
     public RestResult handleEditBusiness(BBusiness business) {
+        if (StringUtils.isBlank(business.getNickName())) {
+            return RestResult.fail("请输入昵称");
+        }
+        if (StringUtils.isBlank(business.getRealName())) {
+            return RestResult.fail("请输入姓名");
+        }
+        if (StringUtils.isBlank(business.getPhone())) {
+            return RestResult.fail("请输入联系方式");
+        }
+        if (StringUtils.isBlank(business.getAddressDetail())) {
+            return RestResult.fail("请输入详细地址");
+        }
+        if (StringUtils.isBlank(business.getCompanyName())) {
+            return RestResult.fail("请输入公司名称");
+        }
+        if (StringUtils.isBlank(business.getLicenseCode())) {
+            return RestResult.fail("请输入营业执照");
+        }
         business.setPassWord(null);
         business.setStatus(null);
         if (business.getCoverUrlList() == null || business.getCoverUrlList().size() <= 0) {
@@ -110,6 +128,51 @@ public class BusinessController {
             business.setCoverUrl(JSON.toJSONString(mapList));
         }
         Boolean result = businessService.updateById(business);
+        if (!result) {
+            return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
+        }
+        return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
+    }
+
+    /**
+     * 处理保存商家
+     * @param business
+     * @return
+     */
+    @PostMapping(value = "/handleSaveBusiness")
+    public RestResult handleSaveBusiness(BBusiness business) {
+        if (StringUtils.isBlank(business.getNickName())) {
+            return RestResult.fail("请输入昵称");
+        }
+        if (StringUtils.isBlank(business.getRealName())) {
+            return RestResult.fail("请输入姓名");
+        }
+        if (StringUtils.isBlank(business.getPhone())) {
+            return RestResult.fail("请输入联系方式");
+        }
+        if (StringUtils.isBlank(business.getAddressDetail())) {
+            return RestResult.fail("请输入详细地址");
+        }
+        if (StringUtils.isBlank(business.getCompanyName())) {
+            return RestResult.fail("请输入公司名称");
+        }
+        if (StringUtils.isBlank(business.getLicenseCode())) {
+            return RestResult.fail("请输入营业执照");
+        }
+        business.setPassWord(null);
+        business.setStatus(StaticUtils.STATUS_SUCCESS);
+        if (business.getCoverUrlList() == null || business.getCoverUrlList().size() <= 0) {
+        } else {
+            // 将图片重新封装一次
+            List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
+            for (String coverUrl : business.getCoverUrlList()) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("url", coverUrl);
+                mapList.add(map);
+            }
+            business.setCoverUrl(JSON.toJSONString(mapList));
+        }
+        Boolean result = businessService.save(business);
         if (!result) {
             return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
