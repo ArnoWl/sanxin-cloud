@@ -85,34 +85,28 @@
     <select id="rangeShop" resultType="com.sanxin.cloud.dto.PowerBankListVo">
         SELECT
         b.id,
-        b.CODE,
+        b.code,
         b.company_name,
         b.start_day,
         b.end_day,
         b.start_time,
         b.end_time,
-        SUM( d.lend_port ) AS lend_port,
-        SUM( d.repay_port ) AS repay_port,
+        (select ifnull(SUM( d.lend_port ),0) from b_device d where d.bid=b.id) as lend_port,
+        (select ifnull(SUM( d.repay_port ),0) from b_device d where d.bid=b.id) as repay_port,
         b.address_detail,
-        d.STATUS,
         b.head_url,
         b.cover_url,
         b.lat_val,
         b.lon_val,
-        round(
+        ifnull(round(
         6378.138 * 2 * asin(
         sqrt(
         pow( sin( ( #{latVal} * pi( ) / 180 - lat_val * pi( ) / 180 ) / 2 ), 2 ) + cos( lat_val * pi( ) / 180 ) * cos( lat_val * pi( ) / 180 ) * pow( sin( ( #{lonVal} * pi( ) / 180 - lon_val * pi( ) / 180 ) / 2 ), 2 )
         )
         ) * 1000
-        ) AS distance
+        ),0) AS distance
         FROM
-        b_business b,
-        b_device d
-        WHERE
-        b.id = d.bid
-        GROUP BY
-        b.id
+        b_business b
         HAVING
         distance &lt; #{distance}
     </select>
