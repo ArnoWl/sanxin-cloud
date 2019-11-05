@@ -3,6 +3,8 @@ package com.sanxin.cloud.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.Date;
@@ -176,6 +178,15 @@ public class BBusiness implements Serializable {
      * 审核时间
      */
     private Date checkTime;
+    /**
+     * 商家结算比例
+     */
+    private BigDecimal scale;
+    /**
+     * 商家邮件
+     */
+    private String email;
+
     /**
      * 证件类型
      */
@@ -486,6 +497,22 @@ public class BBusiness implements Serializable {
 
     public void setDistance(Integer distance) {
         this.distance = distance;
+    }
+
+    public BigDecimal getScale() {
+        return scale;
+    }
+
+    public void setScale(BigDecimal scale) {
+        this.scale = scale;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

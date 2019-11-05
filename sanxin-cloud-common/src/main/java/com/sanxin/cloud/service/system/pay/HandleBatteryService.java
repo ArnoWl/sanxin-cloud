@@ -1,5 +1,6 @@
 package com.sanxin.cloud.service.system.pay;
 
+import cn.hutool.core.lang.func.Func;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
@@ -297,6 +298,20 @@ public class HandleBatteryService {
         if (!result) {
             // 数据操作失败
             return RestResult.fail("fail", "00");
+        }
+        // 订单状态已完成，给商家结算金额
+        if (FunctionUtils.isEquals(orderStatus, OrderStatusEnums.OVER.getId())) {
+            // 结算商家金额
+            BigDecimal scale = business.getScale();
+            BigDecimal settleMoney = FunctionUtils.mul(orderMain.getPayMoney(), scale, 2);
+            // 判断结算金额是否充足
+            if (BigDecimal.ZERO.compareTo(settleMoney)<0) {
+                msg = handleAccountChangeService.insertBMoneyDetail(new BMoneyDetail(orderMain.getBid(), HandleTypeEnums.ORDER_BUS.getId(),
+                        StaticUtils.PAY_OUT, orderMain.getPayCode(), settleMoney, HandleTypeEnums.getName(HandleTypeEnums.ORDER_BUS.getId())));
+                if (StringUtils.isNotBlank(msg)) {
+                    return RestResult.fail(msg, "00");
+                }
+            }
         }
         // 成功
         return RestResult.success("success", "01", flag);

@@ -13,4 +13,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface BAccountMapper extends BaseMapper<BAccount> {
 
+    /**
+     * 修改商家账户信息
+     * @param account
+     * @return
+     */
+    int updateLockVersion(BAccount account);
 }

@@ -11,4 +11,18 @@
         <result column="version" property="version" />
     </resultMap>
 
+    <!-- 乐观锁修改金额 -->
+    <update id="updateLockVersion" parameterType="com.sanxin.cloud.entity.BAccount">
+        update b_account set
+        <if test="money != null">
+            money = #{money,jdbcType=DECIMAL},
+        </if>
+        <if test="totalIncome != null">
+            total_income = #{totalIncome,jdbcType=DECIMAL},
+        </if>
+        version = version+1
+        where bid = #{bid,jdbcType=INTEGER}
+        and version=#{version,jdbcType=INTEGER}
+    </update>
+
 </mapper>

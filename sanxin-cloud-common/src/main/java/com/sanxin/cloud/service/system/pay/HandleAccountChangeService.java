@@ -2,17 +2,12 @@ package com.sanxin.cloud.service.system.pay;
 
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
-import com.sanxin.cloud.entity.CAccount;
-import com.sanxin.cloud.entity.CHourDetail;
-import com.sanxin.cloud.entity.CMarginDetail;
-import com.sanxin.cloud.entity.CMoneyDetail;
+import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.exception.ThrowJsonException;
+import com.sanxin.cloud.mapper.BAccountMapper;
 import com.sanxin.cloud.mapper.CAccountMapper;
 import com.sanxin.cloud.mapper.CMarginDetailMapper;
-import com.sanxin.cloud.service.CAccountService;
-import com.sanxin.cloud.service.CHourDetailService;
-import com.sanxin.cloud.service.CMarginDetailService;
-import com.sanxin.cloud.service.CMoneyDetailService;
+import com.sanxin.cloud.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +36,13 @@ public class HandleAccountChangeService {
     private CMarginDetailService cMarginDetailService;
     @Autowired
     private CMarginDetailMapper cMarginDetailMapper;
+    @Autowired
+    private BAccountService bAccountService;
+    @Autowired
+    private BAccountMapper bAccountMapper;
+    @Autowired
+    private BMoneyDetailService bMoneyDetailService;
+
     /**
      *
      * @param detail cid typeId isOut payCode cost remark targetId
@@ -143,6 +145,44 @@ public class HandleAccountChangeService {
         } catch (Exception e) {
             logger.info("操作用户押金明细异常：" + e.getMessage());
             throw new ThrowJsonException("保存校验用户押金异常");
+        }
+        return result;
+    }
+
+    /**
+     * 操作店铺余额
+     * @param detail
+     * @return
+     */
+    public String insertBMoneyDetail(BMoneyDetail detail) {
+        String result = "";
+        try {
+            //行锁数据
+            BAccount account = bAccountService.getByBid(detail.getBid());
+            BigDecimal money = account.getMoney();
+            if (FunctionUtils.isEquals(StaticUtils.PAY_IN, detail.getIsout())) {
+                // 收入加入总收益
+                BigDecimal totalIncome = account.getTotalIncome();
+                totalIncome = FunctionUtils.add(totalIncome, detail.getCost(), 2);
+                money = FunctionUtils.add(money, detail.getCost(), 2);
+                account.setTotalIncome(totalIncome);
+            } else {
+                money = FunctionUtils.sub(money, detail.getCost(), 2);
+            }
+            System.out.println(money);
+            if (money.compareTo(BigDecimal.ZERO) < 0) {
+                return "余额不足";
+            }
+            account.setMoney(money);
+            //首先修改余额  根据当前版本号去修改
+            int i = bAccountMapper.updateLockVersion(account);
+            if (i < 1) {
+                return "重复提交数据";
+            }
+            bMoneyDetailService.save(detail);
+        } catch (Exception e) {
+            logger.info("操作商家余额明细异常：" + e.getMessage());
+            throw new ThrowJsonException("保存校验商家余额异常");
         }
         return result;
     }

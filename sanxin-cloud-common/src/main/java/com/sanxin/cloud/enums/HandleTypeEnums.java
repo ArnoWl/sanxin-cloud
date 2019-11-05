@@ -38,7 +38,11 @@ public enum HandleTypeEnums {
     /**
      * 充值余额Balance Recharge
      */
-    BALANCE_RECHARGE(7, "balance_recharge");
+    BALANCE_RECHARGE(7, "balance_recharge"),
+    /**
+     * 订单结算（商家）
+     */
+    ORDER_BUS(8, "handle_type_order_bus");
 
     private Integer id;
     private String name;

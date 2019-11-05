@@ -44,6 +44,9 @@ public class PayService {
     private BDeviceTerminalService deviceTerminalService;
     @Autowired
     private BDeviceService bDeviceService;
+    @Autowired
+    private BBusinessService businessService;
+
     /**
      * 处理支付签名
      * @param log 支付记录数据
@@ -212,6 +215,18 @@ public class PayService {
         boolean result = orderMainService.updateById(orderMain);
         if (!result) {
             throw new ThrowJsonException(LanguageUtils.getMessage("request_error"));
+        }
+        // 结算商家金额
+        BBusiness business = businessService.validById(orderMain.getBid());
+        BigDecimal scale = business.getScale();
+        BigDecimal settleMoney = FunctionUtils.mul(orderMain.getPayMoney(), scale, 2);
+        // 判断结算金额是否充足
+        if (BigDecimal.ZERO.compareTo(settleMoney)<0) {
+            String msg = handleAccountChangeService.insertBMoneyDetail(new BMoneyDetail(orderMain.getBid(), HandleTypeEnums.ORDER_BUS.getId(),
+                    StaticUtils.PAY_OUT, orderMain.getPayCode(), settleMoney, HandleTypeEnums.getName(HandleTypeEnums.ORDER_BUS.getId())));
+            if (StringUtils.isNotBlank(msg)) {
+                throw new ThrowJsonException(msg);
+            }
         }
     }
 }

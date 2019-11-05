@@ -84,6 +84,15 @@ public class BMoneyDetail implements Serializable {
     @TableField(exist = false)
     private String typeName;
 
+    public BMoneyDetail(Integer bid, Integer type, Integer isout, String payCode, BigDecimal cost, String remark) {
+        this.bid = bid;
+        this.typeId = type;
+        this.isout = isout;
+        this.payCode = payCode;
+        this.cost = cost;
+        this.remark = remark;
+    }
+
     public Integer getId() {
         return id;
     }

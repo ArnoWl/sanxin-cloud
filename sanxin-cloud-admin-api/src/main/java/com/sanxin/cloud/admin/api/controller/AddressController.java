@@ -1,10 +1,13 @@
 package com.sanxin.cloud.admin.api.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sanxin.cloud.admin.api.service.AdminAddressService;
+import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.entity.Address;
 import com.sanxin.cloud.service.AddressService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +26,8 @@ import java.util.List;
 public class AddressController {
     @Autowired
     private AddressService addressService;
+    @Autowired
+    private AdminAddressService adminAddressService;
 
     /**
      * 查询地址列表
@@ -82,6 +87,10 @@ public class AddressController {
      */
     @PostMapping(value = "/editAddress")
     public RestResult editAddress(Address address) {
+        RestResult valid = validAddressMsg(address);
+        if (!valid.status) {
+            return valid;
+        }
         address.setParentid(null);
         address.setStatus(null);
         address.setLevel(null);
@@ -90,5 +99,38 @@ public class AddressController {
             return RestResult.success("success");
         }
         return RestResult.fail("fail");
+    }
+
+    /**
+     * 根据上级新增地址
+     * @param address
+     * @return
+     */
+    @PostMapping(value = "/addAddress")
+    public RestResult addAddress(Address address) {
+        RestResult valid = validAddressMsg(address);
+        if (!valid.status) {
+            return valid;
+        }
+        RestResult result = adminAddressService.handleEditAddress(address);
+        return result;
+    }
+
+    /**
+     * 校验地址参数
+     * @param address
+     * @return
+     */
+    private RestResult validAddressMsg(Address address) {
+        if (StringUtils.isBlank(address.getName())) {
+            return RestResult.fail("请输入中文名称");
+        }
+        if (StringUtils.isBlank(address.getNameThai())) {
+            return RestResult.fail("请输入泰文名称");
+        }
+        if (StringUtils.isBlank(address.getNameEn())) {
+            return RestResult.fail("请输入英文名称");
+        }
+        return RestResult.success("success");
     }
 }

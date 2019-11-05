@@ -71,6 +71,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 strs.add("/advert/list");
                 strs.add("/business/list");
                 strs.add("/business/queryAllList");
+                strs.add("/business/validCode");
                 strs.add("/agent/list");
                 strs.add("/system/queryAgreementList");
                 strs.add("/uploadOne");
