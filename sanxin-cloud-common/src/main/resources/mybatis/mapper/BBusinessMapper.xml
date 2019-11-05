@@ -52,10 +52,10 @@
         b.end_day,
         b.start_time,
         b.end_time,
-        SUM( d.lend_port ) AS lend_port,
-        SUM( d.repay_port ) AS repay_port,
+        (select count(1) from b_device d where d.bid=b.id) as num,
+        (select ifnull(SUM( d.lend_port ),0) from b_device d where d.bid=b.id) as lend_port,
+        (select ifnull(SUM( d.repay_port ),0) from b_device d where d.bid=b.id) as repay_port,
         b.address_detail,
-        d.STATUS,
         b.head_url,
         b.cover_url,
         b.lat_val,
@@ -68,17 +68,15 @@
         ) * 1000
         ) AS distance
         FROM
-        b_business b,
-        b_device d
+        b_business b
         WHERE
-        b.id = d.bid
+        1=1
         <if test="search != null and search != ''">
             AND b.company_name like concat('%',#{search},'%')
         </if>
-        GROUP BY
-        b.id
         HAVING
         distance &lt; #{radius}
+        order by distance asc
     </select>
 
     <!--根据经纬度和范围搜索周边商铺-->
@@ -91,6 +89,7 @@
         b.end_day,
         b.start_time,
         b.end_time,
+         (select count(1) from b_device d where d.bid=b.id) as num,
         (select ifnull(SUM( d.lend_port ),0) from b_device d where d.bid=b.id) as lend_port,
         (select ifnull(SUM( d.repay_port ),0) from b_device d where d.bid=b.id) as repay_port,
         b.address_detail,
