@@ -6,6 +6,7 @@ import com.alipay.api.domain.Account;
 import com.alipay.api.domain.CustomerEntity;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.netflix.client.http.HttpRequest;
+import com.sanxin.cloud.app.api.service.AccountService;
 import com.sanxin.cloud.app.api.service.BusinessService;
 import com.sanxin.cloud.app.api.service.LoginService;
 import com.sanxin.cloud.common.FunctionUtils;
@@ -18,9 +19,8 @@ import com.sanxin.cloud.common.verification.TripartiteVerificationUtil;
 import com.sanxin.cloud.dto.VerificationVO;
 import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.enums.CashTypeEnums;
-import com.sanxin.cloud.mapper.CAccountMapper;
-import com.sanxin.cloud.mapper.CPushLogMapper;
-import com.sanxin.cloud.mapper.CVerificationMapper;
+import com.sanxin.cloud.enums.TimeGiftEnums;
+import com.sanxin.cloud.mapper.*;
 import com.sanxin.cloud.service.system.login.LoginDto;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
@@ -29,7 +29,6 @@ import com.sanxin.cloud.dto.CustomerHomeVo;
 import com.sanxin.cloud.dto.LoginRegisterVo;
 import com.sanxin.cloud.enums.LoginChannelEnums;
 import com.sanxin.cloud.exception.ThrowJsonException;
-import com.sanxin.cloud.mapper.CCustomerMapper;
 import com.sanxin.cloud.service.BBusinessService;
 import com.sanxin.cloud.service.CCustomerService;
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +47,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -76,6 +76,12 @@ public class LoginServiceImpl implements LoginService {
     private CVerificationMapper verificationMapper;
     @Autowired
     private CAccountMapper accountMapper;
+    @Autowired
+    private GiftHourMapper giftHourMapper;
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private CTimeDetailMapper timeDetailMapper;
 
     /**
      * 第三方登录(用户)
@@ -203,6 +209,7 @@ public class LoginServiceImpl implements LoginService {
                     customer.setHeadUrl(facebook.getPicture());
                     int cusCount = customerMapper.insert(customer);
                     account.setCid(customer.getId());
+                    account.setHour(payReceiveTimeGift(customer.getId()));
                     int AccCount = accountMapper.insert(account);
                     if (cusCount > 0 && AccCount > 0) {
                         return RestResult.success("binding_register_success");
@@ -269,6 +276,7 @@ public class LoginServiceImpl implements LoginService {
                     customer.setHeadUrl(picture);
                     int cusCount = customerMapper.insert(customer);
                     account.setCid(customer.getId());
+                    account.setHour(payReceiveTimeGift(customer.getId()));
                     int AccCount = accountMapper.insert(account);
                     if (cusCount > 0 && AccCount > 0) {
                         return RestResult.success("success");
@@ -436,7 +444,7 @@ public class LoginServiceImpl implements LoginService {
             throw new ThrowJsonException("register_password_error");
         }
         //判断账号是否被冻结
-        if(FunctionUtils.isEquals(customer.getStatus(), StaticUtils.STATUS_NO)) {
+        if (FunctionUtils.isEquals(customer.getStatus(), StaticUtils.STATUS_NO)) {
             throw new ThrowJsonException("register_user_freeze");
         }
         //加密 封装 存入redis
@@ -508,13 +516,18 @@ public class LoginServiceImpl implements LoginService {
         if (StringUtils.isBlank(verCode)) {
             return RestResult.fail("user_code_empty");
         }
-        //TODO 短信验证未写
+
         //密码加密
         String pass = PwdEncode.encodePwd(password);
         switch (userType) {
             //用户
             case StaticUtils.TYPE_PASS_WORD:
                 CCustomer customer = customerMapper.selectById(cid);
+                // 校验验证码
+                RestResult cus = SMSSender.validSms((customer.getAreaCode() + customer.getPhone()), verCode);
+                if (!cus.status) {
+                    return cus;
+                }
                 if (customer == null) {
                     return RestResult.fail("user_customer_empty");
                 }
@@ -550,6 +563,11 @@ public class LoginServiceImpl implements LoginService {
             //加盟商
             case StaticUtils.TYPE_FRANCHISEE:
                 BBusiness business = bbusinessService.selectById(cid);
+                // 校验验证码
+                RestResult bus = SMSSender.validSms((business.getAreaCode() + business.getPhone()), verCode);
+                if (!bus.status) {
+                    return bus;
+                }
                 switch (type) {
                     //修改登录密码
                     case StaticUtils.TYPE_PASS_WORD:
@@ -607,7 +625,7 @@ public class LoginServiceImpl implements LoginService {
             return RestResult.fail("login_not_exist");
         }
         // 校验验证码
-        RestResult result = SMSSender.validSms(customer.getPhone(), customer.getVerCode());
+        RestResult result = SMSSender.validSms(customer.getPhone(), verCode);
         if (!result.status) {
             return result;
         }
@@ -626,5 +644,24 @@ public class LoginServiceImpl implements LoginService {
         return RestResult.success("success");
     }
 
-
+    public Integer payReceiveTimeGift(Integer cid) {
+        GiftHour giftHour = giftHourMapper.selectOne(new QueryWrapper<GiftHour>().eq("type", TimeGiftEnums.GIFT.getId()));
+        if (giftHour == null) {
+            return 0;
+        }
+        CAccount account = accountMapper.selectOne(new QueryWrapper<CAccount>().eq("cid", cid));
+        CTimeDetail timeDetail = new CTimeDetail();
+        timeDetail.setCid(cid);
+        timeDetail.setType(TimeGiftEnums.BUY.getId());
+        timeDetail.setIsout(1);
+        timeDetail.setOriginal(new BigDecimal(account.getHour()));
+        timeDetail.setLast(FunctionUtils.add(new BigDecimal(account.getHour()), new BigDecimal(1), 2));
+        timeDetail.setCreateTime(new Date());
+        timeDetail.setRemark(TimeGiftEnums.BUY.getName());
+        int insert = timeDetailMapper.insert(timeDetail);
+        if (insert > 0) {
+            return 0;
+        }
+        return Integer.parseInt(giftHour.getHour().toString());
+    }
 }

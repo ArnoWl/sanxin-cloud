@@ -12,7 +12,7 @@ spring:
   datasource: # 数据库配置
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://183.60.136.220:3306/powerplus?useUnicode=true&characterEncoding=UTF-8&tinyInt1isBit=false
+    url: jdbc:mysql://35.240.194.196:3306/powerplus?useUnicode=true&characterEncoding=UTF-8&tinyInt1isBit=false
     username: root
     password: rhzh
     #下半区属性对应的是 com.alibaba.druid.pool.DruidDataSource 中的属性，Spring Boot 默认是不注入不了这些属性值的，需要自己绑定

@@ -50,9 +50,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private BBusinessService bBusinessService;
     @Autowired
-    private BDeviceTerminalMapper deviceTerminalMapper;
+    private BDeviceTerminalService bDeviceTerminalService;
     @Autowired
-    private BDeviceMapper deviceMapper;
+    private BDeviceService bDeviceService;
     @Autowired
     private CAccountMapper accountMapper;
     @Autowired
@@ -85,9 +85,9 @@ public class OrderServiceImpl implements OrderService {
             return;
         }
         //充电宝
-        BDeviceTerminal terminal = deviceTerminalMapper.selectOne(new QueryWrapper<BDeviceTerminal>().eq("terminal_id", terminalId));
+        BDeviceTerminal terminal = bDeviceTerminalService.getOne(new QueryWrapper<BDeviceTerminal>().eq("terminal_id", terminalId));
         //机柜
-        BDevice code = deviceMapper.selectOne(new QueryWrapper<BDevice>().eq("code", terminal.getdCode()));
+        BDevice code = bDeviceService.getOne(new QueryWrapper<BDevice>().eq("code", terminal.getdCode()));
 
         if (terminal == null) {
             return;
@@ -329,10 +329,14 @@ public class OrderServiceImpl implements OrderService {
         if (!FunctionUtils.isEquals(account.getRechargeDeposit(), StaticUtils.STATUS_YES)) {
             return RestResult.fail("no_deposit");
         }
+
+        BDevice device = bDeviceService.getByCode(orderMain.getDeviceId());
+        if (device == null) {
+            return RestResult.fail("data_exception");
+        }
         String msg = "";
-        String valueStr = infoParamService.getValueByCode(ParamCodeEnums.USE_HOUR_MONEY.getCode());
         // 一小时多少钱
-        BigDecimal value = FunctionUtils.getValueByClass(BigDecimal.class, valueStr);
+        BigDecimal value = device.getTerminalPrice();
         // 实际扣除时长
         Integer realHour = hour;
         // 实际扣除余额
@@ -396,9 +400,12 @@ public class OrderServiceImpl implements OrderService {
         if (!FunctionUtils.isEquals(account.getRechargeDeposit(), StaticUtils.STATUS_YES)) {
             return RestResult.fail("no_deposit");
         }
-        String valueStr = infoParamService.getValueByCode(ParamCodeEnums.USE_HOUR_MONEY.getCode());
+        BDevice device = bDeviceService.getByCode(orderMain.getDeviceId());
+        if (device == null) {
+            return RestResult.fail("data_exception");
+        }
         // 一小时多少钱
-        BigDecimal value = FunctionUtils.getValueByClass(BigDecimal.class, valueStr);
+        BigDecimal value = device.getTerminalPrice();
         // 实际扣除时长
         Integer realHour = hour;
         // 实际扣除余额

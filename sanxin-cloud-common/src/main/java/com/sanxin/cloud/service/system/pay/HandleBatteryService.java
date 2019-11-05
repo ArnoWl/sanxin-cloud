@@ -236,9 +236,8 @@ public class HandleBatteryService {
         String flag = null;
         String msg = "";
         Integer orderStatus = OrderStatusEnums.CONFIRMED.getId();
-        String valueStr = infoParamService.getValueByCode(ParamCodeEnums.USE_HOUR_MONEY.getCode());
         // 一小时多少钱
-        BigDecimal value = FunctionUtils.getValueByClass(BigDecimal.class, valueStr);
+        BigDecimal value = device.getTerminalPrice();
         // 租金总额
         BigDecimal rentMoney = FunctionUtils.mul(value, new BigDecimal(hour), 2);
         // 实际扣除时长

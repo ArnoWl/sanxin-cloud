@@ -236,6 +236,7 @@ public class HandleServiceImpl implements HandleService {
         orderMain.setRentTime(DateUtil.currentDate());
         orderMain.setFromChannel(fromChannel);
         orderMain.setRentAddr(business.getAddressDetail());
+        orderMain.setDeviceId(boxId);
         boolean result = orderMainService.save(orderMain);
         if (!result) {
             return RestResult.fail("fail");

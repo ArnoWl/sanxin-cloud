@@ -7,43 +7,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author xiaoky
- * @date 2019-09-12
+ * @author zdc
+ * @date 2019-11-4
  */
-public enum HandleTypeEnums {
+public enum TimeGiftEnums {
     /**
-     * 订单
+     * 购买
      */
-    ORDER(1, "handle_type_order"),
+    BUY(1, "time_buy"),
     /**
-     * 充值押金
+     * 注册赠送
      */
-    RECHARGE_DEPOSIT_MONEY(2, "service_recharge_deposit"),
+    GIFT(2, "time_gift"),
     /**
-     * 提现
+     * 数量
      */
-    CASH(3, "handle_type_cash"),
+    NUM(3, "time_num"),
     /**
-     * 扣除时长
+     * 时间
      */
-    TIME(4, "handle_type_time"),
-    /**
-     * 购买时长礼包
-     */
-    BUY_TIEM_GIFT(5, "buy_type_time"),
-    /**
-     * 购买充电宝
-     */
-    BUY_POWER(6, "handle_type_buy_power"),
-    /**
-     * 充值余额Balance Recharge
-     */
-    BALANCE_RECHARGE(7, "balance_recharge");
+    TIME(4, "time_time");
 
     private Integer id;
     private String name;
 
-    HandleTypeEnums(Integer id, String name) {
+    TimeGiftEnums(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -64,9 +52,9 @@ public enum HandleTypeEnums {
         this.name = name;
     }
 
-    public static List<HandleTypeEnums> queryList() {
-        List<HandleTypeEnums> list = new ArrayList<HandleTypeEnums>();
-        for (HandleTypeEnums o : HandleTypeEnums.values()) {
+    public static List<TimeGiftEnums> queryList() {
+        List<TimeGiftEnums> list = new ArrayList<TimeGiftEnums>();
+        for (TimeGiftEnums o : TimeGiftEnums.values()) {
             list.add(o);
         }
         return list;
@@ -74,7 +62,7 @@ public enum HandleTypeEnums {
 
     public static String getName(Integer id) {
         String str = "";
-        for (HandleTypeEnums o : HandleTypeEnums.values()) {
+        for (TimeGiftEnums o : TimeGiftEnums.values()) {
             if (FunctionUtils.isEquals(id, o.getId())) {
                 str = LanguageUtils.getMessage(o.getName());
                 break;

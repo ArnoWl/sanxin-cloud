@@ -56,6 +56,12 @@ public class Address implements Serializable {
     @TableField(exist = false)
     private String Translation;
 
+    @TableField(exist = false)
+    private Integer proId;
+
+    @TableField(exist = false)
+    private Integer cityId;
+
     public String getTranslation() {
         return Translation;
     }
@@ -112,6 +118,22 @@ public class Address implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getProId() {
+        return proId;
+    }
+
+    public void setProId(Integer proId) {
+        this.proId = proId;
+    }
+
+    public Integer getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
     }
 
     @Override

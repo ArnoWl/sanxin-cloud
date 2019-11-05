@@ -17,8 +17,8 @@ public enum ServiceEnums {
     CASH(3, "handle_type_cash"),
     TIME(4, "handle_type_time"),
     BUY_TIEM_GIFT(5, "buy_type_time"),
-    BUY_POWER(6, "handle_type_buy_power");
-
+    BUY_POWER(6, "handle_type_buy_power"),
+    BALANCE_RECHARGE(7, "balance_recharge");
     private int id;
     private String name;
     public int getId() {

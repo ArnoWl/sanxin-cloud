@@ -111,4 +111,9 @@ public class StaticUtils {
     public static final int SIXTY = 60;
     public static final int SEVENTY = 70;
     public static final int EIGHTY = 80;
+
+    /**
+     * 默认第一层上级地址
+     */
+    public static final int ADDRESS_COUNTRY = 0;
 }

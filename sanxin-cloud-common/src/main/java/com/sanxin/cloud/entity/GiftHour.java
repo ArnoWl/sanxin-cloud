@@ -39,6 +39,28 @@ public class GiftHour implements Serializable {
     private BigDecimal discountMoney;
 
     /**
+     * 类型见(TimeGiftEnums)枚举
+     */
+    private Integer type;
+
+    /**
+     * 礼包数量
+     */
+    private Integer num;
+
+    /**
+     * 开始时间
+     */
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
+    private Date startTime;
+
+    /**
+     * 结束时间
+     */
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
+    private Date endTime;
+
+    /**
      * 创建时间
      */
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
@@ -51,6 +73,7 @@ public class GiftHour implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+
     public BigDecimal getMoney() {
         return money;
     }
@@ -58,6 +81,7 @@ public class GiftHour implements Serializable {
     public void setMoney(BigDecimal money) {
         this.money = money;
     }
+
     public BigDecimal getHour() {
         return hour;
     }
@@ -65,6 +89,7 @@ public class GiftHour implements Serializable {
     public void setHour(BigDecimal hour) {
         this.hour = hour;
     }
+
     public BigDecimal getDiscountMoney() {
         return discountMoney;
     }
@@ -72,6 +97,39 @@ public class GiftHour implements Serializable {
     public void setDiscountMoney(BigDecimal discountMoney) {
         this.discountMoney = discountMoney;
     }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -83,11 +141,15 @@ public class GiftHour implements Serializable {
     @Override
     public String toString() {
         return "GiftHour{" +
-        "id=" + id +
-        ", money=" + money +
-        ", hour=" + hour +
-        ", discountMoney=" + discountMoney +
-        ", createTime=" + createTime +
-        "}";
+                "id=" + id +
+                ", money=" + money +
+                ", hour=" + hour +
+                ", discountMoney=" + discountMoney +
+                ", type=" + type +
+                ", num=" + num +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", createTime=" + createTime +
+                '}';
     }
 }

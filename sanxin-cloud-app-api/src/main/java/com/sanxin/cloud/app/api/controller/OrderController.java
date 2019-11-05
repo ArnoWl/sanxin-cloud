@@ -1,23 +1,24 @@
 package com.sanxin.cloud.app.api.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.sanxin.cloud.app.api.common.AccountMapping;
 import com.sanxin.cloud.app.api.common.OrderMapping;
 import com.sanxin.cloud.app.api.service.OrderService;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.FunctionUtils;
 import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.rest.RestResult;
+import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.config.redis.RedisUtils;
 import com.sanxin.cloud.dto.*;
+import com.sanxin.cloud.entity.BDevice;
+import com.sanxin.cloud.entity.OrderMain;
 import com.sanxin.cloud.enums.OrderStatusEnums;
 import com.sanxin.cloud.enums.PayTypeEnums;
+import com.sanxin.cloud.service.BBusinessService;
+import com.sanxin.cloud.service.BDeviceService;
 import com.sanxin.cloud.service.InfoParamService;
 import com.sanxin.cloud.service.OrderMainService;
 import com.sanxin.cloud.service.system.login.LoginTokenService;
-import com.sanxin.cloud.config.pages.SPage;
-import com.sanxin.cloud.entity.OrderMain;
-import com.sanxin.cloud.service.BBusinessService;
 import com.sanxin.cloud.service.system.pay.HandleBatteryService;
 import com.sanxin.cloud.service.system.pay.PayOrderService;
 import com.sanxin.cloud.service.system.pay.scb.SCBPayService;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +57,8 @@ public class OrderController {
     private SCBPayService scbPayService;
     @Autowired
     private InfoParamService infoParamService;
+    @Autowired
+    private BDeviceService bDeviceService;
 
     /**
      * 借充电宝
@@ -82,9 +86,13 @@ public class OrderController {
         if (list != null && list.size() > 0) {
             status = "1";
         }
-        String useHourMoney = infoParamService.getValueByCode("useHourMoney");
+        BDevice device = bDeviceService.getByCode(boxId);
+        if (device == null) {
+            return RestResult.fail("data_exception");
+        }
+        BigDecimal useHourMoney = device.getTerminalPrice();
         String rechargeDepositMoney = infoParamService.getValueByCode("rechargeDepositMoney");
-        Map<String, String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("standard", useHourMoney);
         map.put("deposit", rechargeDepositMoney);
         map.put("status", status);
