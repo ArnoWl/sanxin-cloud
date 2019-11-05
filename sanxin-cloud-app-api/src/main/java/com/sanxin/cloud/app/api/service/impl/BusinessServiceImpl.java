@@ -62,7 +62,7 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
         IPage<PowerBankListVo> page = new Page<>();
         page.setCurrent(current);
         page.setSize(size);
-        List<PowerBankListVo> byShops = null;
+        List<PowerBankListVo> byShops = new ArrayList<>();
         try {
             byShops = baseMapper.findByShops(page, latVal, lonVal, search, radius);
             for (PowerBankListVo byShop : byShops) {
@@ -90,7 +90,7 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
     @Override
     public RestResult rangeShop(String latVal, String lonVal, Integer distance) {
 
-        List<PowerBankListVo> byShops = null;
+        List<PowerBankListVo> byShops = new ArrayList<>();
         try {
             byShops = baseMapper.rangeShop(latVal, lonVal,distance);
             for (PowerBankListVo byShop : byShops) {
@@ -292,7 +292,7 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
             for (int i = 0; i < dateList.size(); i++) {
                 String data = dateList.get(i);
                 vo.setDate(data);
-                if (type == StaticUtils.TIME_WEEK) {
+                if (type.equals(StaticUtils.TIME_WEEK)) {
                     if (i == dateList.size() - 1) {
                         vo.setEndDate(DateUtil.toDateString(DateUtil.getEndTimeOfMonth(date)));
                     } else {
@@ -395,5 +395,51 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
     public BigDecimal getTodayIncome(Integer bid) {
         BigDecimal todayIncome = bMoneyDetailMapper.getIncome(bid, StaticUtils.TIME_DAY);
         return todayIncome;
+    }
+
+    /**
+     * 根据code获取商家个人信息
+     * @param code
+     * @param radius
+     * @return
+     */
+    @Override
+    public RestResult businessDetail(String code,Integer radius) {
+        BBusiness business = businessService.getOne(new QueryWrapper<BBusiness>().eq("code", code));
+        if (business != null) {
+            business.setPassWord(null);
+        }
+        PowerBankListVo byCode = baseMapper.findByCode(business.getId(),business.getLatVal(),business.getLonVal(),radius);
+        List<Integer> cabinet = baseMapper.findByCabinet(byCode.getId());
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < cabinet.size(); i++) {
+            if (i > 0) {
+                sb.append(" ");
+            }
+            sb.append(DeviceTypeEnums.getName(cabinet.get(i)));
+        }
+        byCode.setBusinessHours(FunctionUtils.getHours(byCode.getStartDay(), byCode.getEndDay(), byCode.getStartTime(), byCode.getEndTime()));
+        byCode.setCabinet(sb.toString());
+        if (byCode.getLendPort() == 0 && byCode.getRepayPort() != 0) {
+            byCode.setStrLendPort(LanguageUtils.getMessage("device_1"));
+            byCode.setStrRepayPort(LanguageUtils.getMessage("device_2"));
+            byCode.setRemark(LanguageUtils.getMessage("device_3"));
+        }
+        if (byCode.getLendPort() != 0 && byCode.getRepayPort() == 0) {
+            byCode.setStrLendPort(LanguageUtils.getMessage("device_4"));
+            byCode.setStrRepayPort(LanguageUtils.getMessage("device_5"));
+            byCode.setRemark(LanguageUtils.getMessage("device_6"));
+        }
+        if (byCode.getLendPort() == 0 && byCode.getRepayPort() == 0) {
+            byCode.setStrLendPort(LanguageUtils.getMessage("device_1"));
+            byCode.setStrRepayPort(LanguageUtils.getMessage("device_5"));
+            byCode.setRemark(LanguageUtils.getMessage("device_6"));
+        }
+        if (byCode.getLendPort() != 0 && byCode.getRepayPort() != 0) {
+            byCode.setStrLendPort(LanguageUtils.getMessage("device_4"));
+            byCode.setStrRepayPort(LanguageUtils.getMessage("device_2"));
+            byCode.setRemark(LanguageUtils.getMessage("device_7"));
+        }
+        return RestResult.success(byCode);
     }
 }

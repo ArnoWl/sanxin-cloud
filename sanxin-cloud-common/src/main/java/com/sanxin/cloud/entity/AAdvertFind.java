@@ -47,6 +47,16 @@ public class AAdvertFind implements Serializable {
     private Integer type;
 
     /**
+     * 经度
+     */
+    private String lonVal;
+
+    /**
+     * 纬度
+     */
+    private String latVal;
+
+    /**
      * 事件类型
      */
     private String event;
@@ -102,6 +112,22 @@ public class AAdvertFind implements Serializable {
         this.type = type;
     }
 
+    public String getLonVal() {
+        return lonVal;
+    }
+
+    public void setLonVal(String lonVal) {
+        this.lonVal = lonVal;
+    }
+
+    public String getLatVal() {
+        return latVal;
+    }
+
+    public void setLatVal(String latVal) {
+        this.latVal = latVal;
+    }
+
     public String getEvent() {
         return event;
     }
@@ -134,6 +160,8 @@ public class AAdvertFind implements Serializable {
                 ", img='" + img + '\'' +
                 ", sort=" + sort +
                 ", type=" + type +
+                ", lonVal='" + lonVal + '\'' +
+                ", latVal='" + latVal + '\'' +
                 ", event='" + event + '\'' +
                 ", status=" + status +
                 ", createTime=" + createTime +

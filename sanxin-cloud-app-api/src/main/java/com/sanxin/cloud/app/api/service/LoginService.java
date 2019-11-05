@@ -71,6 +71,14 @@ public interface LoginService {
     RestResult updatePersonalInform(CCustomer customer);
 
     /**
+     * 绑定邮箱
+     * @param cid
+     * @param email
+     * @return
+     */
+    RestResult updateEmail(Integer cid, String email);
+
+    /**
      * 修改登录或支付密码
      *
      * @param verCode  验证码

@@ -36,6 +36,7 @@ public class MessageServiceImpl implements MessageService {
     public RestResult queryAdvertList(SPage<AAdvertFind> page) {
         AAdvertContentVO contentVO = new AAdvertContentVO();
         List<AAdvertFind> transverse = advertFindService.list(new QueryWrapper<AAdvertFind>().eq("type", 0).eq("status", 1).orderByAsc("sort"));
+        List<AAdvertFind> banner = advertFindService.list(new QueryWrapper<AAdvertFind>().eq("type", 2).eq("status", 1).orderByAsc("sort"));
         QueryWrapper<AAdvertFind> wrapper = new QueryWrapper<>();
         contentVO.setTransverse(transverse);
         // 设置排序
@@ -45,6 +46,7 @@ public class MessageServiceImpl implements MessageService {
         wrapper.eq("type", 1);
         advertFindService.page(page, wrapper);
         contentVO.setPortrait(page);
+        contentVO.setBanner(banner);
         return RestResult.success(contentVO);
     }
 

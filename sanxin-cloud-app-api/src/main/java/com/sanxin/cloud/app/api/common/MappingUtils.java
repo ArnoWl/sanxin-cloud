@@ -30,6 +30,9 @@ public class MappingUtils {
     /** 修改个人资料 */
     public static final String UPDATE_PERSONAL_INFORM = "/updatePersonalInform";
 
+    /** 绑定邮箱 */
+    public static final String UPDATE_EMAIL = "/updateEmail";
+
     /** 修改登录/支付密码 */
     public static final String UPDATE_PASSWORD = "/updatePassword";
 

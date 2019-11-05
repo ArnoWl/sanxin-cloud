@@ -14,7 +14,8 @@ import java.util.Map;
 public enum EventEnums {
     HOUR_GIFT("hourGift","时长礼包"),
     RECHARGE("recharge","充值"),
-    EXTERNAL_LINK("externalLink","外部url");
+    EXTERNAL_LINK("externalLink","外部url"),
+    BUSINESS("business","跳转商家");
 
     private String url;
     private String name;

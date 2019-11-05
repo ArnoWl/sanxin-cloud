@@ -99,4 +99,11 @@ public interface BusinessService {
      */
     BigDecimal getTodayIncome(Integer bid);
 
+    /**
+     * 根据code获取商家个人信息
+     * @param code
+     * @param radius
+     * @return
+     */
+    RestResult businessDetail(String code,Integer radius);
 }

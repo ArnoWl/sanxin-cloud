@@ -151,6 +151,18 @@ public class LoginController {
     }
 
     /**
+     * 修改个人资料
+     *
+     * @return
+     */
+    @RequestMapping(value = MappingUtils.UPDATE_EMAIL)
+    public RestResult updateEmail(String email) {
+        String token = BaseUtil.getUserToken();
+        Integer cid = loginTokenService.validLoginCid(token);
+        return loginService.updateEmail(cid,email);
+    }
+
+    /**
      * 修改登录或支付密码
      *
      * @param verCode  验证码

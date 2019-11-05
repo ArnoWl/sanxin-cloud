@@ -217,11 +217,21 @@ public class BusinessController {
      * @param type 类型
      * @return
      */
-    @PostMapping(value = BusinessMapping.UPDATE_PASSWORD)
+    @RequestMapping(value = BusinessMapping.UPDATE_PASSWORD)
     public RestResult updatePassword(String verCode, String password, Integer type) {
         String token = BaseUtil.getUserToken();
         Integer bid = loginTokenService.validLoginBid(token);
         RestResult result = businessService.updatePassword(bid, verCode, password, type);
+        return result;
+    }
+
+    /**
+     * 根据code获取商家个人信息
+     * @return
+     */
+    @RequestMapping(value = BusinessMapping.BUSINESS_DETAIL)
+    public RestResult businessDetail(String code) {
+        RestResult result = businessService.businessDetail(code,radius);
         return result;
     }
 }

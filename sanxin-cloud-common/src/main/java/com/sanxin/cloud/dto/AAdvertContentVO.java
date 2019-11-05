@@ -12,4 +12,6 @@ public class AAdvertContentVO {
     private List<AAdvertFind> transverse;
     //纵向分页
     private SPage<AAdvertFind> portrait;
+    //广告轮播
+    private List<AAdvertFind> banner;
 }

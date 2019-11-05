@@ -502,6 +502,23 @@ public class LoginServiceImpl implements LoginService {
     }
 
     /**
+     * 绑定邮箱
+     * @param cid
+     * @param email
+     * @return
+     */
+    @Override
+    public RestResult updateEmail(Integer cid, String email) {
+        CCustomer customer = customerMapper.selectById(cid);
+        customer.setEmail(email);
+        int i = customerMapper.updateById(customer);
+        if (i > 0) {
+            return RestResult.success("success");
+        }
+        return RestResult.fail("fail");
+    }
+
+    /**
      * 修改登录或支付密码
      *
      * @param verCode  验证码
