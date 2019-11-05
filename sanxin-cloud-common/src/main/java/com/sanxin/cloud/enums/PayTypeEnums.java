@@ -19,11 +19,11 @@ public enum PayTypeEnums {
      */
     MONEY(1, "Balance", "http://47.106.131.191:8004//files/20191016/5295229.png", 1, 6, 1),
     SCB_PAY(2, "SCB", "http://47.106.131.191:8004//files/20191016/5250577.png", 1, 6, 0),
-    VISA_CARD(3, "VISA Card", "http://47.106.131.191:8004//files/20191016/52834612.png", 1, 6, 0),
-    MASTER_CARD(4, "LINE", "http://47.106.131.191:8004//files/20191016/52754475.png", 1, 6, 0),
-    ALI_PAY(5, "Alipay Pay", "http://47.106.131.191:8004//files/20191016/53343674.png", 1, 6, 0),
-    WE_CHAT_PAY(6, "WeChat Pay", "", 1, 6, 0),
-    PROMPT_PAY(7, "Prompt Pay", "", 1, 4, 0),
+    VISA_CARD(3, "VISA Card", "http://47.106.131.191:8004//files/20191016/52834612.png", 0, 6, 0),
+    MASTER_CARD(4, "LINE", "http://47.106.131.191:8004//files/20191016/52754475.png", 0, 6, 0),
+    ALI_PAY(5, "Alipay Pay", "http://47.106.131.191:8004//files/20191016/53343674.png", 0, 6, 0),
+    WE_CHAT_PAY(6, "WeChat Pay", "", 0, 6, 0),
+    PROMPT_PAY(7, "Prompt Pay", "", 0, 4, 0),
     GOOGLE_PAY(8, "Prompt Pay", "", 0, 4, 0),
     APPLE_PAY(9, "Prompt Pay", "", 0, 4, 0);
     private Integer id;
@@ -132,6 +132,11 @@ public enum PayTypeEnums {
     public static List<Map<String, Object>> queryListByPayPage(Integer payPageType) {
         List<Map<String, Object>> list = new ArrayList<>();
         for (PayTypeEnums o : PayTypeEnums.values()) {
+            // 如果是余额支付页面，不能添加余额支付
+            if (FunctionUtils.isEquals(payPageType, PayPageEnums.RECHARGE_MONEY.getType())
+                    && FunctionUtils.isEquals(o.getId(), PayTypeEnums.MONEY.getId())) {
+                continue;
+            }
             if (FunctionUtils.isEquals(o.getStatus(), StaticUtils.STATUS_YES)
                     && (FunctionUtils.isEquals(payPageType, o.getType())
                     || FunctionUtils.isEquals(o.getType(), 6))) {
