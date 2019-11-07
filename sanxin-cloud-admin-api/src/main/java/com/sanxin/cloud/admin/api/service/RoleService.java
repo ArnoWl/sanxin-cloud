@@ -59,30 +59,30 @@ public class RoleService {
 
     public RestResult addUser(SysUser user) {
         if(StringUtils.isEmpty(user.getLogin())){
-            return RestResult.fail("请输入账号");
+            return RestResult.fail("login_empty");
         }
         if(user.getRoleid()==null){
-            return RestResult.fail("请选择角色");
+            return RestResult.fail("user_empty");
         }
         if(user.getId()==null){
             if(StringUtils.isEmpty(user.getPassword()) ){
-                return RestResult.fail("密码不能为空");
+                return RestResult.fail("password_empty");
             }
             if(user.getPassword().length()<6 || user.getPassword().length()>20){
-                return RestResult.fail("密码长度在6~20位");
+                return RestResult.fail("password_length_error");
             }
             user.setPassword(PwdEncode.encodePwd(user.getPassword()));
             QueryWrapper<SysUser> wrapper=new QueryWrapper<>();
             wrapper.eq("login",user.getLogin());
             int count=sysUserService.count(wrapper);
             if(count>0){
-                return RestResult.fail("账号已存在");
+                return RestResult.fail("login_is_existence");
             }
             sysUserService.save(user);
         }else{
             if(!StringUtils.isEmpty(user.getPassword()) ){
                 if(user.getPassword().length()<6 || user.getPassword().length()>20){
-                    return RestResult.fail("密码长度在6~20位");
+                    return RestResult.fail("password_length_error");
                 }
                 user.setPassword(PwdEncode.encodePwd(user.getPassword()));
             }else{
@@ -92,12 +92,12 @@ public class RoleService {
             wrapper.eq("login",user.getLogin()).ne("id",user.getId());
             int count=sysUserService.count(wrapper);
             if(count>0){
-                return RestResult.fail("账号已存在");
+                return RestResult.fail("login_is_existence");
             }
             sysUserService.updateById(user);
         }
 
-        return RestResult.success("成功");
+        return RestResult.success("success");
     }
 
     /**
@@ -111,7 +111,7 @@ public class RoleService {
         sysUser.setId(id);
         sysUser.setStatus(status);
         boolean flag= sysUserService.updateById(sysUser);
-        return RestResult.result(flag,"更新失败");
+        return RestResult.result(flag,"fail");
     }
 
     /**
@@ -125,10 +125,10 @@ public class RoleService {
         if(roleid!=null){
             SysRoles sysRoles=sysRolesService.getById(roleid);
             if(sysRoles==null || FunctionUtils.isEquals(StaticUtils.STATUS_NO,sysRoles.getStatus())){
-                return RestResult.fail("角色不存在,或被关闭");
+                return RestResult.fail("login_user_not_found");
             }
             if(StringUtils.isEmpty(sysRoles.getMenuIds())){
-                return RestResult.fail("您未具备权限");
+                return RestResult.fail("user_not_have_auth");
             }
             menuids=FunctionUtils.getIntegerList(sysRoles.getMenuIds().split(","));
         }
@@ -179,7 +179,7 @@ public class RoleService {
         JSONObject result=new JSONObject();
         result.put("menusList",array);
         result.put("checkData",checkList);
-        return RestResult.success("SUCCESS",result);
+        return RestResult.success("success",result);
     }
 
     /**
@@ -191,10 +191,10 @@ public class RoleService {
     public RestResult queryMyroleMenus(String token,Integer roleid, String language) {
         SysRoles sysRoles=sysRolesService.getById(roleid);
         if(sysRoles==null || FunctionUtils.isEquals(StaticUtils.STATUS_NO,sysRoles.getStatus())){
-            return RestResult.fail("角色不存在,或被关闭");
+            return RestResult.fail("login_user_not_found");
         }
         if(StringUtils.isEmpty(sysRoles.getMenuIds())){
-            return RestResult.fail("您未具备权限");
+            return RestResult.fail("user_not_have_auth");
         }
         List<SysMenus> list=utilService.getMenus(token);
         if(list==null || list.size()<1){
@@ -244,10 +244,10 @@ public class RoleService {
 
     public RestResult updateRoles(Integer id,String name, String menuids) {
         if(StringUtils.isEmpty(name)){
-            return RestResult.fail("请填写角色名称");
+            return RestResult.fail("user_name_empty");
         }
         if(StringUtils.isEmpty(menuids)){
-            return RestResult.fail("请选择菜单");
+            return RestResult.fail("user_menu_empty");
         }
         SysRoles sysRoles=new SysRoles();
         sysRoles.setId(id);

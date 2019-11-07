@@ -42,6 +42,6 @@ public class LoginController {
     public RestResult loginOut(){
         String token=BaseUtil.getToken();
         loginService.loginOutByToken(token);
-        return  RestResult.success("退出成功");
+        return  RestResult.success("success");
     }
 }

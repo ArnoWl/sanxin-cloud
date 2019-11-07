@@ -48,10 +48,10 @@ public class LoginService {
      */
     public RestResult login(String username ,String password){
         if(StringUtils.isEmpty(username)){
-            return RestResult.fail("请输入账号");
+            return RestResult.fail("login_empty");
         }
         if(StringUtils.isEmpty(password)){
-            return RestResult.fail("请输入密码");
+            return RestResult.fail("login_password_empty");
         }
         //先清除账号残留的token
         loginOutByUsername(username);
@@ -59,14 +59,14 @@ public class LoginService {
         wrapper.eq("login",username);
         SysUser sysUser=sysUserService.getOne(wrapper);
         if(sysUser==null){
-            return RestResult.fail("账户不存在");
+            return RestResult.fail("login_not_found");
         }
         if(FunctionUtils.isEquals(StaticUtils.STATUS_NO,sysUser.getStatus())){
-            return RestResult.fail("账户被冻结");
+            return RestResult.fail("login_frozen");
         }
         String pwd= PwdEncode.encodePwd(password);
         if(!pwd.equals(sysUser.getPassword())){
-            return RestResult.fail("账号或密码错误");
+            return RestResult.fail("login_error");
         }
         String key=username;
         String token= PwdEncode.encodePwd(RandNumUtils.get(RandNumType.NUMBER_LETTER_SYMBOL,16));
@@ -121,14 +121,14 @@ public class LoginService {
         wrapper.eq("login",key);
         SysUser sysUser=sysUserService.getOne(wrapper);
         if(sysUser==null){
-            throw new LoginOutException("账户不存在");
+            throw new LoginOutException("login_not_found");
         }
         if(FunctionUtils.isEquals(StaticUtils.STATUS_NO,sysUser.getStatus())){
-            throw new LoginOutException("账户被冻结");
+            throw new LoginOutException("login_frozen");
         }
         SysRoles sysRoles=sysRolesService.getById(sysUser.getRoleid());
         if(sysRoles==null || FunctionUtils.isEquals(StaticUtils.STATUS_NO,sysRoles.getStatus())){
-            throw new LoginOutException("角色不存在或被冻结");
+            throw new LoginOutException("login_user_not_found");
         }
         JSONObject jsonObject=new JSONObject();
         jsonObject.put("roleid",String.valueOf(sysUser.getRoleid()));
@@ -139,6 +139,6 @@ public class LoginService {
         }
         jsonObject.put("nickname",sysUser.getName());
         jsonObject.put("introduction",sysRoles.getName());
-        return RestResult.success("Success",jsonObject);
+        return RestResult.success("success",jsonObject);
     }
 }

@@ -158,37 +158,46 @@ public class BusinessController {
      */
     public RestResult validBusinessValue(BBusiness business) {
         if (StringUtils.isBlank(business.getNickName())) {
-            return RestResult.fail("请输入昵称");
+            return RestResult.fail("business_nickname_empty");
         }
         if (StringUtils.isBlank(business.getCode())) {
-            return RestResult.fail("请输入编号");
+            return RestResult.fail("business_code_empty");
+        }
+        QueryWrapper<BBusiness> wrapper = new QueryWrapper<>();
+        wrapper.eq("code", business.getCode());
+        if (business.getId() != null) {
+            wrapper.ne("id", business.getId());
+        }
+        int count = businessService.count(wrapper);
+        if (count > 0) {
+            return RestResult.fail("business_code_use");
         }
         if (business.getScale() == null) {
-            return RestResult.fail("请输入结算比例");
+            return RestResult.fail("business_scale_empty");
         }
         if (StringUtils.isBlank(business.getRealName())) {
-            return RestResult.fail("请输入姓名");
+            return RestResult.fail("business_name_empty");
         }
         if (StringUtils.isBlank(business.getPhone())) {
-            return RestResult.fail("请输入联系方式");
+            return RestResult.fail("business_phone_empty");
         }
         if (StringUtils.isBlank(business.getAddressDetail())) {
-            return RestResult.fail("请输入详细地址");
+            return RestResult.fail("business_address_empty");
         }
         if (StringUtils.isBlank(business.getLonVal())) {
-            return RestResult.fail("请输入店铺所在地址经度");
+            return RestResult.fail("business_lon_empty");
         }
         if (StringUtils.isBlank(business.getLatVal())) {
-            return RestResult.fail("请输入店铺所在地址纬度");
+            return RestResult.fail("business_lat_empty");
         }
         if (StringUtils.isBlank(business.getCompanyName())) {
-            return RestResult.fail("请输入公司名称");
+            return RestResult.fail("business_company_empty");
         }
         if (StringUtils.isBlank(business.getLicenseCode())) {
-            return RestResult.fail("请输入营业执照");
+            return RestResult.fail("business_license_empty");
         }
         if (StringUtils.isBlank(business.getEmail())) {
-            return RestResult.fail("请输入邮箱");
+            return RestResult.fail("business_email_empty");
         }
         return RestResult.success("success");
     }
@@ -262,9 +271,12 @@ public class BusinessController {
      * @return
      */
     @PostMapping(value = "/validCode")
-    public RestResult validCode(String bid, String code) {
+    public RestResult validCode(Integer bid, String code) {
         QueryWrapper<BBusiness> wrapper = new QueryWrapper<>();
-        wrapper.eq("code", code).ne("id", bid);
+        wrapper.eq("code", code);
+        if (bid != null) {
+            wrapper.ne("id", bid);
+        }
         int count = businessService.count(wrapper);
         return RestResult.success(count);
     }

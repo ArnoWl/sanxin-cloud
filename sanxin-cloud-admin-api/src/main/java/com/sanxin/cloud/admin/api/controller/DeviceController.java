@@ -89,16 +89,16 @@ public class DeviceController {
     @PostMapping("/handleEditDevice")
     public RestResult handleEditDevice(BDevice device) {
         if (StringUtils.isBlank(device.getCode())) {
-            return RestResult.fail("请输入设备编号");
+            return RestResult.fail("device_code_empty");
         }
         if (device.getType() == null) {
-            return RestResult.fail("请选择设备类型");
+            return RestResult.fail("device_type_empty");
         }
         if (device.getBid() == null) {
-            return RestResult.fail("请选择所在门店");
+            return RestResult.fail("device_bus_empty");
         }
         if (device.getTerminalPrice() == null) {
-            return RestResult.fail("请输入充电宝价格");
+            return RestResult.fail("device_price_empty");
         }
         boolean result = bDeviceService.saveOrUpdate(device);
         if (!result) {

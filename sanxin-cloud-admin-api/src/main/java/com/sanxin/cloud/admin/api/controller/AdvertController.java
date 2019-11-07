@@ -57,7 +57,7 @@ public class AdvertController {
             wrapper.eq("status", advert.getStatus());
         }
         advertService.page(page, wrapper);
-        return RestResult.success("", page);
+        return RestResult.success("success", page);
     }
 
     /**
@@ -75,9 +75,9 @@ public class AdvertController {
         advert.setCheckTime(new Date());
         boolean result = advertService.updateById(advert);
         if (result) {
-            return RestResult.success(AdminLanguageStatic.BASE_SUCCESS);
+            return RestResult.success("success");
         }
-        return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
+        return RestResult.fail("fail");
     }
 
     /**
@@ -89,7 +89,7 @@ public class AdvertController {
     @GetMapping(value = "/getAdvertDetail")
     public RestResult getAdvertDetail(Integer id) {
         AAdvert advert = advertService.getById(id);
-        return RestResult.success("", advert);
+        return RestResult.success("success", advert);
     }
 
     /**
@@ -113,7 +113,7 @@ public class AdvertController {
         }
         wrapper.orderByDesc("create_time");
         advertContentService.queryAdvertContentList(page, wrapper);
-        return RestResult.success("", page);
+        return RestResult.success("success", page);
     }
 
     /**
@@ -125,7 +125,7 @@ public class AdvertController {
     @GetMapping(value = "/getAdvertContentDetail")
     public RestResult getAdvertContentDetail(Integer id) {
         AAdvertContent advertContent = advertContentService.getMsgById(id);
-        return RestResult.success("", advertContent);
+        return RestResult.success("success", advertContent);
     }
 
     /**
@@ -237,7 +237,7 @@ public class AdvertController {
     @GetMapping("/queryAdvertFindList")
     public RestResult queryAdvertFindList(SPage<AAdvertFind> page) {
         advertFindService.queryAdvertFindList(page);
-        return RestResult.success("", page);
+        return RestResult.success("success", page);
     }
 
     /**
@@ -249,7 +249,7 @@ public class AdvertController {
     @GetMapping(value = "/getAdvertFindDetail")
     public RestResult getAdvertFindDetail(Integer id) {
         AAdvertFind aAdvertFind = advertFindService.getById(id);
-        return RestResult.success("", aAdvertFind);
+        return RestResult.success("success", aAdvertFind);
     }
 
     /**
