@@ -123,13 +123,13 @@ public class AddressController {
      */
     private RestResult validAddressMsg(Address address) {
         if (StringUtils.isBlank(address.getName())) {
-            return RestResult.fail("请输入中文名称");
+            return RestResult.fail("ch_content_empty");
         }
         if (StringUtils.isBlank(address.getNameThai())) {
-            return RestResult.fail("请输入泰文名称");
+            return RestResult.fail("thai_content_empty");
         }
         if (StringUtils.isBlank(address.getNameEn())) {
-            return RestResult.fail("请输入英文名称");
+            return RestResult.fail("en_content_empty");
         }
         return RestResult.success("success");
     }

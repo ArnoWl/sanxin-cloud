@@ -164,6 +164,9 @@ public class AdvertController {
         if (advertContent.getId() == null && StringUtils.isBlank(advertContent.getFrameImg())) {
             return RestResult.fail(AdminLanguageStatic.ADVERT_FRAME_IMG);
         }
+        if (advertContent.getId() == null && StringUtils.isBlank(advertContent.getMinPicture())) {
+            return RestResult.fail("advert_min_pic_empty");
+        }
         /*if (advertContent.getId() == null && StringUtils.isBlank(advertContent.getImg())) {
             return RestResult.fail(AdminLanguageStatic.ADVERT_IMG));
         }
@@ -269,6 +272,13 @@ public class AdvertController {
         if (advertFind.getEvent() == null) {
             return RestResult.fail(AdminLanguageStatic.ADVERT_EVENT);
         }
+        if (StringUtils.isBlank(advertFind.getLonVal())) {
+            return RestResult.fail(AdminLanguageStatic.ADVERT_EVENT);
+        }
+        if (StringUtils.isBlank(advertFind.getLatVal())) {
+            return RestResult.fail(AdminLanguageStatic.ADVERT_EVENT);
+        }
+
         boolean result = advertFindService.saveOrUpdate(advertFind);
         if (!result) {
             return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
