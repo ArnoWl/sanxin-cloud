@@ -28,13 +28,12 @@ public interface BusinessService {
     IPage<PowerBankListVo> findByShops(Integer current, Integer size, String latVal, String lonVal, String search, Integer radius);
 
     /**
-     * 根据经纬度和范围搜索周边商铺
+     * 根据经纬度搜索所有商铺
      * @param latVal
      * @param lonVal
-     * @param distance
      * @return
      */
-    RestResult rangeShop(String latVal, String lonVal, Integer distance);
+    RestResult rangeShop(String latVal, String lonVal);
 
 
     /**

@@ -56,15 +56,14 @@ public class BusinessController {
     }
 
     /**
-     * 根据经纬度和范围搜索周边商铺
+     * 根据经纬度搜索所有商铺
      * @param latVal 纬度
      * @param lonVal 经度
-     * @param distance 范围距离(米)
      * @return
      */
     @RequestMapping(value = MappingUtils.RANGE_SHOP)
-    public RestResult rangeShop(String latVal, String lonVal,Integer distance){
-        return businessService.rangeShop(latVal, lonVal, distance);
+    public RestResult rangeShop(String latVal, String lonVal){
+        return businessService.rangeShop(latVal, lonVal);
     }
 
     /**

@@ -81,18 +81,17 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
     }
 
     /**
-     * 根据经纬度和范围搜索周边商铺
+     * 根据经纬度搜索所有商铺
      * @param latVal
      * @param lonVal
-     * @param distance
      * @return
      */
     @Override
-    public RestResult rangeShop(String latVal, String lonVal, Integer distance) {
+    public RestResult rangeShop(String latVal, String lonVal) {
 
         List<PowerBankListVo> byShops = new ArrayList<>();
         try {
-            byShops = baseMapper.rangeShop(latVal, lonVal,distance);
+            byShops = baseMapper.rangeShop(latVal, lonVal);
             for (PowerBankListVo byShop : byShops) {
                 if (byShop.getDistance() > 1000) {
                     double v = FunctionUtils.div(new BigDecimal(byShop.getDistance()), new BigDecimal(1000), 2).doubleValue();

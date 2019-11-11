@@ -106,8 +106,7 @@
         ),0) AS distance
         FROM
         b_business b
-        HAVING
-        distance &lt; #{distance}
+        ORDER BY distance
     </select>
 
     <!-- 大小机柜分类 -->
