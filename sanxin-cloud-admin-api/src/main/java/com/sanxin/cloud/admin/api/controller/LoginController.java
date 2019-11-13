@@ -2,8 +2,10 @@ package com.sanxin.cloud.admin.api.controller;
 
 import com.sanxin.cloud.admin.api.service.LoginService;
 import com.sanxin.cloud.common.BaseUtil;
+import com.sanxin.cloud.common.pwd.PwdEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.redis.RedisUtilsService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +39,45 @@ public class LoginController {
         return result;
     }
 
-
     @PostMapping("/loginOut")
     public RestResult loginOut(){
         String token=BaseUtil.getToken();
         loginService.loginOutByToken(token);
         return  RestResult.success("success");
+    }
+
+    /**
+     * 修改头像
+     * @return
+     */
+    @RequestMapping("/user/updateHeadUrl")
+    public RestResult updateHeadUrl(String headurl){
+        if (StringUtils.isBlank(headurl)) {
+            return RestResult.fail("请上传图片");
+        }
+        String token= BaseUtil.getToken();
+        return loginService.updateHeadUrl(token, headurl);
+    }
+
+    /**
+     * 修改密码
+     * @param password
+     * @param confirmPassword
+     * @return
+     */
+    @RequestMapping("/user/updatePassword")
+    public RestResult updatePassword(String password, String confirmPassword){
+        if (StringUtils.isBlank(password)) {
+            return RestResult.fail("password_empty");
+        }
+        if (StringUtils.isBlank(confirmPassword)) {
+            return RestResult.fail("confirm_password_empty");
+        }
+        if (!password.equals(confirmPassword)) {
+            return RestResult.fail("confirm_password_error");
+        }
+        String token= BaseUtil.getToken();
+        password = PwdEncode.encodePwd(password);
+        return loginService.updatePassword(token, password);
     }
 }

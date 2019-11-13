@@ -141,4 +141,64 @@ public class LoginService {
         jsonObject.put("introduction",sysRoles.getName());
         return RestResult.success("success",jsonObject);
     }
+
+    /**
+     * 修改操作员头像
+     * @param token
+     * @return
+     */
+    public RestResult updateHeadUrl(String token, String headurl) {
+        if(StringUtils.isBlank(token)){
+            throw new LoginOutException("token is empty");
+        }
+        String key=redisUtilsService.getKey(token);
+        if(StringUtils.isEmpty(key)){
+            throw new LoginOutException("token is timeout");
+        }
+        QueryWrapper<SysUser> wrapper=new QueryWrapper<>();
+        wrapper.eq("login",key);
+        SysUser sysUser=sysUserService.getOne(wrapper);
+        if(sysUser==null){
+            throw new LoginOutException("login_not_found");
+        }
+        if(FunctionUtils.isEquals(StaticUtils.STATUS_NO,sysUser.getStatus())){
+            throw new LoginOutException("login_frozen");
+        }
+        sysUser.setHeadurl(headurl);
+        boolean result = sysUserService.updateById(sysUser);
+        if (result) {
+            return RestResult.success("success");
+        }
+        return RestResult.fail("fail");
+    }
+
+    /**
+     * 修改用户密码
+     * @param token
+     * @return
+     */
+    public RestResult updatePassword(String token, String password) {
+        String key=redisUtilsService.getKey(token);
+        if(StringUtils.isEmpty(key)){
+            throw new LoginOutException("token is timeout");
+        }
+        QueryWrapper<SysUser> wrapper=new QueryWrapper<>();
+        wrapper.eq("login",key);
+        SysUser sysUser=sysUserService.getOne(wrapper);
+        if(sysUser==null){
+            throw new LoginOutException("login_not_found");
+        }
+        if(FunctionUtils.isEquals(StaticUtils.STATUS_NO,sysUser.getStatus())){
+            throw new LoginOutException("login_frozen");
+        }
+        sysUser.setPassword(password);
+        boolean result = sysUserService.updateById(sysUser);
+        if (result) {
+            redisUtilsService.deleteKey(token);
+            redisUtilsService.deleteKey(key);
+            utilService.removeMenus(token);
+            return RestResult.success("update_password_success");
+        }
+        return RestResult.fail("fail");
+    }
 }

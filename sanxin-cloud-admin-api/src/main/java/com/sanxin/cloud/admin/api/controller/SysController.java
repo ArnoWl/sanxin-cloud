@@ -3,14 +3,9 @@ package com.sanxin.cloud.admin.api.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.netflix.discovery.converters.Auto;
 import com.sanxin.cloud.common.BaseUtil;
 import com.sanxin.cloud.common.FunctionUtils;
-import com.sanxin.cloud.common.StaticUtils;
 import com.sanxin.cloud.common.language.AdminLanguageStatic;
-import com.sanxin.cloud.common.language.LanguageUtils;
-import com.sanxin.cloud.common.pwd.DESEncode;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.config.pages.SPage;
 import com.sanxin.cloud.dto.LanguageVo;
@@ -18,7 +13,7 @@ import com.sanxin.cloud.entity.*;
 import com.sanxin.cloud.enums.LanguageEnums;
 import com.sanxin.cloud.enums.RichTextEnums;
 import com.sanxin.cloud.service.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -29,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -301,7 +295,7 @@ public class SysController {
         }
         BigDecimal discountMoney = FunctionUtils.sub(hour.getHour(), hour.getMoney(), 2);
         hour.setDiscountMoney(discountMoney);
-        boolean result = giftHourService.updateById(hour);
+        boolean result = giftHourService.saveOrUpdate(hour);
         if (!result) {
             return RestResult.fail(AdminLanguageStatic.BASE_FAIL);
         }
@@ -324,6 +318,12 @@ public class SysController {
      */
     @PostMapping(value = "/editInfoParam")
     public RestResult editInfoParam(InfoParam param) {
+        if (StringUtils.isBlank(param.getKcode())) {
+            return RestResult.fail("info_key_empty");
+        }
+        if (StringUtils.isBlank(param.getKvalue())) {
+            return RestResult.fail("info_value_empty");
+        }
         boolean result = infoParamService.saveOrUpdate(param);
         if (result) {
             return RestResult.success("success");

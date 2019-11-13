@@ -64,6 +64,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 }
                 System.out.println("str：：：："+strs);
                 strs.add("/user/getInfo");
+                strs.add("/user/updateHeadUrl");
+                strs.add("/user/updatePassword");
                 strs.add("/role/queryMyroleMenus");
                 strs.add("/role/querySysUserList");
                 strs.add("/role/queryRoleList");
