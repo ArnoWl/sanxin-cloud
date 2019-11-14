@@ -60,6 +60,14 @@ public class SysUser implements Serializable {
      * 1有效 0无效
      */
     private Integer status;
+    /**
+     * 是否代理  1 是  0 不是
+     */
+    private Integer isAg;
+    /**
+     * 代理id
+     */
+    private Integer agId;
 
     /**
      * 角色名称
@@ -131,8 +139,21 @@ public class SysUser implements Serializable {
         this.status = status;
     }
 
+    public Integer getIsAg() {
+        return isAg;
+    }
 
+    public void setIsAg(Integer isAg) {
+        this.isAg = isAg;
+    }
 
+    public Integer getAgId() {
+        return agId;
+    }
+
+    public void setAgId(Integer agId) {
+        this.agId = agId;
+    }
 
     @Override
     public String toString() {

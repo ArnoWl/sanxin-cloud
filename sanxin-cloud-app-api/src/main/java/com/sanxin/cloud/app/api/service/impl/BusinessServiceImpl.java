@@ -87,11 +87,11 @@ public class BusinessServiceImpl extends ServiceImpl<BBusinessMapper, BBusiness>
      * @return
      */
     @Override
-    public RestResult rangeShop(String latVal, String lonVal) {
+    public RestResult rangeShop(String latVal, String lonVal, Integer radius) {
 
         List<PowerBankListVo> byShops = new ArrayList<>();
         try {
-            byShops = baseMapper.rangeShop(latVal, lonVal);
+            byShops = baseMapper.rangeShop(latVal, lonVal, radius);
             for (PowerBankListVo byShop : byShops) {
                 if (byShop.getDistance() > 1000) {
                     double v = FunctionUtils.div(new BigDecimal(byShop.getDistance()), new BigDecimal(1000), 2).doubleValue();

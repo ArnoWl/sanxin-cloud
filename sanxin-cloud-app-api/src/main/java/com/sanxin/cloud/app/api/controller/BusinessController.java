@@ -62,8 +62,8 @@ public class BusinessController {
      * @return
      */
     @RequestMapping(value = MappingUtils.RANGE_SHOP)
-    public RestResult rangeShop(String latVal, String lonVal){
-        return businessService.rangeShop(latVal, lonVal);
+    public RestResult rangeShop(String latVal, String lonVal, Integer radius){
+        return businessService.rangeShop(latVal, lonVal, radius);
     }
 
     /**

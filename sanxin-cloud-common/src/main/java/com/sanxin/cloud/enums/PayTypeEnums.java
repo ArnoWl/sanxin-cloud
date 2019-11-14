@@ -17,11 +17,11 @@ public enum PayTypeEnums {
     /**
      * 支付方式
      */
-    MONEY(1, "Balance", "http://47.106.131.191:8004//files/20191016/5295229.png", 1, 6, 1),
-    SCB_PAY(2, "SCB", "http://47.106.131.191:8004//files/20191016/5250577.png", 1, 6, 0),
-    VISA_CARD(3, "VISA Card", "http://47.106.131.191:8004//files/20191016/52834612.png", 0, 6, 0),
-    MASTER_CARD(4, "LINE", "http://47.106.131.191:8004//files/20191016/52754475.png", 0, 6, 0),
-    ALI_PAY(5, "Alipay Pay", "http://47.106.131.191:8004//files/20191016/53343674.png", 0, 6, 0),
+    MONEY(1, "Balance", "http://47.244.167.166:8004//files/20191016/5295229.png", 1, 6, 1),
+    SCB_PAY(2, "SCB", "http://47.244.167.166:8004//files/20191016/5250577.png", 1, 6, 0),
+    VISA_CARD(3, "VISA Card", "http://47.244.167.166:8004//files/20191016/52834612.png", 0, 6, 0),
+    MASTER_CARD(4, "LINE", "http://47.244.167.166:8004//files/20191016/52754475.png", 0, 6, 0),
+    ALI_PAY(5, "Alipay Pay", "http://47.244.167.166:8004//files/20191016/53343674.png", 0, 6, 0),
     WE_CHAT_PAY(6, "WeChat Pay", "", 0, 6, 0),
     PROMPT_PAY(7, "Prompt Pay", "", 0, 4, 0),
     GOOGLE_PAY(8, "Prompt Pay", "", 0, 4, 0),

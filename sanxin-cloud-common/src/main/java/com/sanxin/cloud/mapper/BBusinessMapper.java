@@ -35,7 +35,7 @@ public interface BBusinessMapper extends BaseMapper<BBusiness> {
      * @param lonVal
      * @return
      */
-    List<PowerBankListVo> rangeShop(@Param(value = "latVal")String latVal,@Param(value = "lonVal") String lonVal);
+    List<PowerBankListVo> rangeShop(@Param(value = "latVal")String latVal,@Param(value = "lonVal") String lonVal, @Param("radius") Integer radius);
 
 
     /**

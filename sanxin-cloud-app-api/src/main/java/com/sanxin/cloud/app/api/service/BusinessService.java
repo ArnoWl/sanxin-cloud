@@ -33,7 +33,7 @@ public interface BusinessService {
      * @param lonVal
      * @return
      */
-    RestResult rangeShop(String latVal, String lonVal);
+    RestResult rangeShop(String latVal, String lonVal, Integer radius);
 
 
     /**
