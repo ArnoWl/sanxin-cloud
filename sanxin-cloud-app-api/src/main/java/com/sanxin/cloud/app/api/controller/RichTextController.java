@@ -5,6 +5,7 @@ import com.sanxin.cloud.common.language.LanguageUtils;
 import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.SysRichText;
 import com.sanxin.cloud.service.AddressService;
+import com.sanxin.cloud.service.AppStartupService;
 import com.sanxin.cloud.service.CCountryMobileService;
 import com.sanxin.cloud.service.SysRichTextService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,8 @@ public class RichTextController {
     private AddressService addressService;
     @Autowired
     private CCountryMobileService countryMobileService;
-
+    @Autowired
+    private AppStartupService appStartupService;
     /**
      * 使用充电宝指南
      * @return
@@ -79,5 +81,14 @@ public class RichTextController {
     @RequestMapping(value = "/address")
     public RestResult getAddress(Integer parent) {
         return addressService.getAddress(parent);
+    }
+
+    /**
+     * 启动图
+     * @return
+     */
+    @RequestMapping(value = "/startupDiagram")
+    public RestResult getStartupDiagram() {
+        return appStartupService.getStartupDiagram();
     }
 }

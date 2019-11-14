@@ -1,5 +1,6 @@
 package com.sanxin.cloud.service;
 
+import com.sanxin.cloud.common.rest.RestResult;
 import com.sanxin.cloud.entity.AppStartup;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface AppStartupService extends IService<AppStartup> {
 
+    /**
+     * 获取启动图
+     * @return
+     */
+    RestResult getStartupDiagram();
 }
