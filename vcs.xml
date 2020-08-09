@@ -26,6 +26,10 @@
           <option name="url" value="http://192.168.0.18:8841/java/bz-coins.git" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="http://192.168.0.18/java/jmcoins.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
     <option name="cloneParentDir" value="$USER_HOME$/Documents" />
